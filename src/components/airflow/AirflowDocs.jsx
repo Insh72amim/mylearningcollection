@@ -1,6 +1,41 @@
 import React from 'react';
 import { BookOpen, Server, Activity, Clock, GitBranch, Database, Shield, Cpu } from 'lucide-react';
-import Mermaid from '../common/Mermaid';
+import InteractiveDiagram from '../common/InteractiveDiagram';
+import CodeBlock from '../common/CodeBlock';
+import { MarkerType } from 'reactflow';
+
+const airflowNodes = [
+  // Control Plane
+  { id: 'ws', position: { x: 100, y: 50 }, data: { label: 'Web Server' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 120 } },
+  { id: 'sch', position: { x: 300, y: 50 }, data: { label: 'Scheduler' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 120 } },
+  { id: 'db', position: { x: 200, y: 150 }, data: { label: 'Metadata DB' }, style: { background: '#5b21b6', color: 'white', border: '1px solid #8b5cf6', width: 120 } },
+  { id: 'ex', position: { x: 450, y: 150 }, data: { label: 'Executor' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 100 } },
+  
+  // Workers
+  { id: 'w1', position: { x: 350, y: 300 }, data: { label: 'Worker 1' }, style: { background: '#064e3b', color: 'white', border: '1px solid #10b981', width: 100 } },
+  { id: 'w2', position: { x: 470, y: 300 }, data: { label: 'Worker 2' }, style: { background: '#064e3b', color: 'white', border: '1px solid #10b981', width: 100 } },
+  { id: 'w3', position: { x: 590, y: 300 }, data: { label: 'Worker 3' }, style: { background: '#064e3b', color: 'white', border: '1px solid #10b981', width: 100 } },
+
+  // Storage
+  { id: 'dags', position: { x: 50, y: 250 }, data: { label: 'DAG Files' }, style: { background: '#374151', color: 'white', border: '1px dashed #9ca3af', width: 100 } },
+  { id: 'logs', position: { x: 350, y: 400 }, data: { label: 'Task Logs' }, style: { background: '#374151', color: 'white', border: '1px dashed #9ca3af', width: 340 } },
+];
+
+const airflowEdges = [
+  { id: 'e1', source: 'ws', target: 'db', animated: true, style: { stroke: '#9ca3af' } },
+  { id: 'e2', source: 'sch', target: 'db', animated: true, style: { stroke: '#9ca3af' } },
+  { id: 'e3', source: 'sch', target: 'ex', animated: true, style: { stroke: '#3b82f6' } },
+  { id: 'e4', source: 'ex', target: 'w1', animated: true, style: { stroke: '#10b981' } },
+  { id: 'e5', source: 'ex', target: 'w2', animated: true, style: { stroke: '#10b981' } },
+  { id: 'e6', source: 'ex', target: 'w3', animated: true, style: { stroke: '#10b981' } },
+  { id: 'e7', source: 'dags', target: 'sch', type: 'smoothstep', style: { stroke: '#6b7280', strokeDasharray: '5,5' } },
+  { id: 'e8', source: 'dags', target: 'ws', type: 'smoothstep', style: { stroke: '#6b7280', strokeDasharray: '5,5' } },
+  { id: 'e9', source: 'dags', target: 'w1', type: 'smoothstep', style: { stroke: '#6b7280', strokeDasharray: '5,5' } },
+  { id: 'e10', source: 'w1', target: 'logs', style: { stroke: '#6b7280' } },
+  { id: 'e11', source: 'w2', target: 'logs', style: { stroke: '#6b7280' } },
+  { id: 'e12', source: 'w3', target: 'logs', style: { stroke: '#6b7280' } },
+  { id: 'e13', source: 'ws', target: 'logs', type: 'smoothstep', style: { stroke: '#6b7280', strokeDasharray: '5,5' } },
+];
 
 const AirflowDocs = () => {
   return (
@@ -28,43 +63,12 @@ const AirflowDocs = () => {
           
           {/* Mermaid Diagram */}
 
-          <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 mb-6 overflow-x-auto flex justify-center">
-            <Mermaid chart={`
-graph TD
-    subgraph "Control Plane"
-        WS[Web Server] <--> DB[(Metadata DB)]
-        SCH[Scheduler] <--> DB
-        SCH --> EX[Executor]
-    end
-    
-    subgraph "Data Plane"
-        EX -.-> W1[Worker 1]
-        EX -.-> W2[Worker 2]
-        EX -.-> W3[Worker 3]
-    end
-
-    subgraph "Storage"
-        DAGs[DAG Files] -.-> SCH
-        DAGs -.-> WS
-        DAGs -.-> W1
-        DAGs -.-> W2
-        DAGs -.-> W3
-        Logs[Task Logs]
-    end
-
-    W1 --> Logs
-    W2 --> Logs
-    W3 --> Logs
-    WS -.-> Logs
-
-    style WS fill:#2563eb,stroke:#3b82f6,stroke-width:2px
-    style SCH fill:#2563eb,stroke:#3b82f6,stroke-width:2px
-    style DB fill:#7c3aed,stroke:#8b5cf6,stroke-width:2px
-    style W1 fill:#059669,stroke:#10b981,stroke-width:2px
-    style W2 fill:#059669,stroke:#10b981,stroke-width:2px
-    style W3 fill:#059669,stroke:#10b981,stroke-width:2px
-            `} />
-            <p className="text-center text-gray-500 text-sm mt-2">Figure 1: Airflow Multi-Node Architecture</p>
+          <div className="mb-8">
+            <InteractiveDiagram 
+              initialNodes={airflowNodes} 
+              initialEdges={airflowEdges} 
+              title="Airflow Multi-Node Architecture" 
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -114,8 +118,10 @@ graph TD
             <p className="text-gray-300 mb-4">
               A <strong>DAG (Directed Acyclic Graph)</strong> represents a workflow. It is a collection of tasks with dependencies.
             </p>
-            <div className="bg-gray-900 p-4 rounded-lg border border-gray-700 font-mono text-sm text-gray-300 overflow-x-auto">
-{`from airflow import DAG
+            <CodeBlock 
+              language="python" 
+              title="example_dag.py"
+              code={`from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime
 
@@ -137,8 +143,8 @@ with DAG('example_dag', start_date=datetime(2023, 1, 1), schedule_interval='@dai
     )
 
     # Dependency Definition
-    extract >> process`}
-            </div>
+    extract >> process`} 
+            />
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-gray-900/30 p-3 rounded border border-gray-700">
                 <span className="font-bold text-teal-300">Operators</span>: Templates for tasks (e.g., `PythonOperator`, `BashOperator`, `PostgresOperator`). They define <em>what</em> to do.

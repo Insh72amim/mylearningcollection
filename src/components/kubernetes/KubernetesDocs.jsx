@@ -1,7 +1,6 @@
 import React from 'react';
 import Mermaid from '../common/Mermaid';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import CodeBlock from '../common/CodeBlock';
 
 const KubernetesDocs = () => {
   return (
@@ -235,9 +234,10 @@ const KubernetesDocs = () => {
         
         <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
           <h3 className="text-xl font-semibold text-white mb-4">Deployment + Service</h3>
-          <div className="rounded-lg overflow-hidden border border-gray-700">
-            <SyntaxHighlighter language="yaml" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1.5rem' }}>
-{`apiVersion: apps/v1
+            <CodeBlock 
+              language="yaml" 
+              title="deployment.yaml"
+              code={`apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment
@@ -274,9 +274,8 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
-  type: LoadBalancer`}
-            </SyntaxHighlighter>
-          </div>
+  type: LoadBalancer`} 
+            />
         </div>
       </section>
 

@@ -13,6 +13,10 @@ const AirflowDocs = React.lazy(() => import('../components/airflow/AirflowDocs')
 const FlinkDocs = React.lazy(() => import('../components/flink/FlinkDocs'));
 const DbtDocs = React.lazy(() => import('../components/dbt/DbtDocs'));
 
+// Lazy load book components
+const DDIABook = React.lazy(() => import('../components/books/DDIABook'));
+const DatabaseInternalsBook = React.lazy(() => import('../components/books/DatabaseInternalsBook'));
+
 // Lazy load visualizer components
 const KafkaArchitecture = React.lazy(() => import('../components/kafka/KafkaArchitecture'));
 
@@ -37,6 +41,8 @@ const TechnologyPage = () => {
       case 'AirflowDocs': return AirflowDocs;
       case 'FlinkDocs': return FlinkDocs;
       case 'DbtDocs': return DbtDocs;
+      case 'DDIABook': return DDIABook;
+      case 'DatabaseInternalsBook': return DatabaseInternalsBook;
       default: return null;
     }
   };

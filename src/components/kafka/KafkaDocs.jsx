@@ -1,7 +1,6 @@
 import React from 'react';
 import Mermaid from '../common/Mermaid';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import CodeBlock from '../common/CodeBlock';
 
 const KafkaDocs = () => {
   return (
@@ -165,9 +164,10 @@ const KafkaDocs = () => {
             <p className="text-sm text-gray-400 mb-3">
               Configured for high durability (`acks=all`) and high throughput (`linger.ms`, `batch.size`).
             </p>
-            <div className="rounded-lg overflow-hidden border border-gray-700 shadow-2xl">
-              <SyntaxHighlighter language="java" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1.5rem' }}>
-{`import org.apache.kafka.clients.producer.*;
+            <CodeBlock 
+              language="java" 
+              title="SecureProducer.java"
+              code={`import org.apache.kafka.clients.producer.*;
 import java.util.Properties;
 
 public class SecureProducer {
@@ -204,9 +204,8 @@ public class SecureProducer {
             }
         }
     }
-}`}
-              </SyntaxHighlighter>
-            </div>
+}`} 
+            />
           </div>
 
           <div>
@@ -214,9 +213,10 @@ public class SecureProducer {
             <p className="text-sm text-gray-400 mb-3">
               Demonstrating manual offset management for "At-Least-Once" processing.
             </p>
-            <div className="rounded-lg overflow-hidden border border-gray-700 shadow-2xl">
-              <SyntaxHighlighter language="java" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1.5rem' }}>
-{`import org.apache.kafka.clients.consumer.*;
+            <CodeBlock 
+              language="java" 
+              title="ReliableConsumer.java"
+              code={`import org.apache.kafka.clients.consumer.*;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
@@ -257,9 +257,8 @@ public class ReliableConsumer {
     private static void processPayment(String paymentData) {
         // ... logic ...
     }
-}`}
-              </SyntaxHighlighter>
-            </div>
+}`} 
+            />
           </div>
         </div>
       </section>
@@ -386,12 +385,12 @@ public class ReliableConsumer {
               Prevents duplicate messages when retries occur. Kafka assigns a <strong>Producer ID</strong> and 
               <strong>Sequence Number</strong> to each message.
             </p>
-            <div className="rounded-lg overflow-hidden border border-gray-700">
-              <SyntaxHighlighter language="java" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem' }}>
-{`props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
-// Automatically sets: acks=all, retries=MAX, max.in.flight.requests=5`}
-              </SyntaxHighlighter>
-            </div>
+            <CodeBlock 
+              language="java" 
+              title="IdempotentProducerConfig.java"
+              code={`props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
+// Automatically sets: acks=all, retries=MAX, max.in.flight.requests=5`} 
+            />
           </div>
 
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
@@ -399,9 +398,10 @@ public class ReliableConsumer {
             <p className="mb-4 text-gray-400">
               Allows atomic writes to multiple partitions. Either all messages commit, or none do.
             </p>
-            <div className="rounded-lg overflow-hidden border border-gray-700">
-              <SyntaxHighlighter language="java" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1.5rem' }}>
-{`Properties props = new Properties();
+            <CodeBlock 
+              language="java" 
+              title="TransactionalProducer.java"
+              code={`Properties props = new Properties();
 props.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, "tx-producer-1");
 props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
 
@@ -415,9 +415,8 @@ try {
     producer.commitTransaction();
 } catch (Exception e) {
     producer.abortTransaction();
-}`}
-              </SyntaxHighlighter>
-            </div>
+}`} 
+            />
           </div>
         </div>
       </section>
@@ -566,9 +565,10 @@ try {
 
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">Stream Processing Example: Real-Time Aggregation</h3>
-            <div className="rounded-lg overflow-hidden border border-gray-700">
-              <SyntaxHighlighter language="java" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1.5rem' }}>
-{`import org.apache.kafka.streams.*;
+            <CodeBlock 
+              language="java" 
+              title="PageViewCounter.java"
+              code={`import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
 import java.time.Duration;
 
@@ -591,9 +591,8 @@ public class PageViewCounter {
         KafkaStreams streams = new KafkaStreams(builder.build(), config);
         streams.start();
     }
-}`}
-              </SyntaxHighlighter>
-            </div>
+}`} 
+            />
           </div>
 
           <div className="bg-gradient-to-r from-purple-900/30 to-pink-900/30 p-6 rounded-xl border border-purple-700/50">

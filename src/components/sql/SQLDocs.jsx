@@ -1,7 +1,6 @@
 import React from 'react';
 import Mermaid from '../common/Mermaid';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import CodeBlock from '../common/CodeBlock';
 
 const SQLDocs = () => {
   return (
@@ -115,9 +114,10 @@ const SQLDocs = () => {
 
           <div className="bg-gray- 800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">Join Example with Execution Plan</h3>
-            <div className="rounded-lg overflow-hidden border border-gray-700">
-              <SyntaxHighlighter language="sql" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1.5rem' }}>
-{`-- Query: Find all orders with customer details
+            <CodeBlock 
+              language="sql" 
+              title="join_example.sql"
+              code={`-- Query: Find all orders with customer details
 SELECT 
   c.name,
   o.order_id,
@@ -133,9 +133,8 @@ WHERE c.country = 'USA'
 -- 3. Choose join algorithm:
 --    - Hash Join if no indexes
 --    - Index Nested Loop if orders.customer_id indexed
--- 4. Project only needed columns`}
-              </SyntaxHighlighter>
-            </div>
+-- 4. Project only needed columns`} 
+            />
           </div>
         </div>
       </section>
@@ -175,9 +174,10 @@ WHERE c.country = 'USA'
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h3 className="text-xl font-semibold text-white mb-3">Creating Indexes</h3>
-              <div className="rounded-lg overflow-hidden border border-gray-700">
-                <SyntaxHighlighter language="sql" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1rem' }}>
-{`-- Single column index
+              <CodeBlock 
+                language="sql" 
+                title="create_index.sql"
+                code={`-- Single column index
 CREATE INDEX idx_users_email 
 ON users(email);
 
@@ -193,9 +193,8 @@ WHERE is_active = true;
 -- Covering index
 CREATE INDEX idx_orders_covering 
 ON orders(customer_id) 
-INCLUDE (order_date, total);`}
-                </SyntaxHighlighter>
-              </div>
+INCLUDE (order_date, total);`} 
+              />
             </div>
 
             <div>
@@ -304,9 +303,10 @@ INCLUDE (order_date, total);`}
 
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">Transaction Example</h3>
-            <div className="rounded-lg overflow-hidden border border-gray-700">
-              <SyntaxHighlighter language="sql" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1.5rem' }}>
-{`-- Bank transfer: Atomic money movement
+            <CodeBlock 
+              language="sql" 
+              title="transaction.sql"
+              code={`-- Bank transfer: Atomic money movement
 BEGIN TRANSACTION;
 
 -- Deduct from account A
@@ -324,9 +324,8 @@ IF (SELECT balance FROM accounts WHERE account_id = 'A123') < 0 THEN
   ROLLBACK;  -- Insufficient funds
 ELSE
   COMMIT;    -- Success
-END IF;`}
-              </SyntaxHighlighter>
-            </div>
+END IF;`} 
+            />
           </div>
         </div>
       </section>
@@ -344,9 +343,10 @@ END IF;`}
             <p className="text-sm text-gray-400 mb-4">
               Always use <code className="bg-gray-900 px-1">EXPLAIN ANALYZE</code> to understand your query's execution plan.
             </p>
-            <div className="rounded-lg overflow-hidden border border-gray-700">
-              <SyntaxHighlighter language="sql" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem' }}>
-{`EXPLAIN ANALYZE
+            <CodeBlock 
+              language="sql" 
+              title="explain_analyze.sql"
+              code={`EXPLAIN ANALYZE
 SELECT * FROM orders 
 WHERE customer_id = 123 
   AND order_date >= '2024-01-01';
@@ -355,9 +355,8 @@ WHERE customer_id = 123
 -- - Seq Scan vs Index Scan
 -- - Actual time vs Estimated time
 -- - Rows scanned vs returned
--- - Join methods used`}
-              </SyntaxHighlighter>
-            </div>
+-- - Join methods used`} 
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -401,9 +400,10 @@ WHERE customer_id = 123
             <p className="text-sm text-gray-400 mb-4">
               Perform calculations across rows related to the current row.
             </p>
-            <div className="rounded-lg overflow-hidden border border-gray-700">
-              <SyntaxHighlighter language="sql" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1.5rem' }}>
-{`-- Running total
+            <CodeBlock 
+              language="sql" 
+              title="window_functions.sql"
+              code={`-- Running total
 SELECT 
   order_id,
   order_date,
@@ -427,16 +427,16 @@ SELECT
     ORDER BY date 
     ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
   ) as moving_avg_7d
-FROM daily_sales;`}
-              </SyntaxHighlighter>
-            </div>
+FROM daily_sales;`} 
+            />
           </div>
 
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">Common Table Expressions (CTEs)</h3>
-            <div className="rounded-lg overflow-hidden border border-gray-700">
-              <SyntaxHighlighter language="sql" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1.5rem' }}>
-{`-- Recursive CTE: Organization hierarchy
+            <CodeBlock 
+              language="sql" 
+              title="cte.sql"
+              code={`-- Recursive CTE: Organization hierarchy
 WITH RECURSIVE org_chart AS (
   -- Base case: CEO
   SELECT id, name, manager_id, 1 as level
@@ -450,17 +450,17 @@ WITH RECURSIVE org_chart AS (
   FROM employees e
   INNER JOIN org_chart oc ON e.manager_id = oc.id
 )
-SELECT * FROM org_chart ORDER BY level, name;`}
-              </SyntaxHighlighter>
-            </div>
+SELECT * FROM org_chart ORDER BY level, name;`} 
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h3 className="text-xl font-semibold text-white mb-3">JSONB (PostgreSQL)</h3>
-              <div className="rounded-lg overflow-hidden border border-gray-700">
-                <SyntaxHighlighter language="sql" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', fontSize: '0.75rem' }}>
-{`-- Query JSON data
+              <CodeBlock 
+                language="sql" 
+                title="jsonb.sql"
+                code={`-- Query JSON data
 SELECT 
   id,
   data->>'name' as name,
@@ -470,16 +470,16 @@ WHERE data @> '{"active": true}';
 
 -- Create GIN index for fast JSON queries
 CREATE INDEX idx_users_data 
-ON users USING GIN (data);`}
-                </SyntaxHighlighter>
-              </div>
+ON users USING GIN (data);`} 
+              />
             </div>
 
             <div>
               <h3 className="text-xl font-semibold text-white mb-3">Materialized Views</h3>
-              <div className="rounded-lg overflow-hidden border border-gray-700">
-                <SyntaxHighlighter language="sql" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', fontSize: '0.75rem' }}>
-{`-- Pre-compute expensive aggregations
+              <CodeBlock 
+                language="sql" 
+                title="materialized_view.sql"
+                code={`-- Pre-compute expensive aggregations
 CREATE MATERIALIZED VIEW daily_summary AS
 SELECT 
   DATE(created_at) as date,
@@ -489,9 +489,8 @@ FROM orders
 GROUP BY DATE(created_at);
 
 -- Refresh periodically
-REFRESH MATERIALIZED VIEW daily_summary;`}
-                </SyntaxHighlighter>
-              </div>
+REFRESH MATERIALIZED VIEW daily_summary;`} 
+              />
             </div>
           </div>
         </div>

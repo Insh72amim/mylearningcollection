@@ -1,4 +1,4 @@
-import { Database, HardDrive, Code, Server, Boxes, Cloud, Activity, Layout, Shield, Brain, Cpu, GitBranch, Terminal } from 'lucide-react';
+import { Database, HardDrive, Code, Server, Boxes, Cloud, Activity, Layout, Shield, Brain, Cpu, GitBranch, Terminal, BookOpen } from 'lucide-react';
 
 export const categories = [
   {
@@ -582,6 +582,30 @@ export const categories = [
         hasDoc: false,
         badge: 'Vulnerabilities',
         comingSoon: true,
+      },
+    ],
+  },
+  {
+    id: 'books',
+    name: 'Books',
+    icon: BookOpen,
+    color: 'amber',
+    technologies: [
+      {
+        id: 'ddia',
+        name: 'Designing Data-Intensive Applications',
+        hasVisualizer: false,
+        hasDoc: true,
+        docComponent: 'DDIABook',
+        badge: 'Martin Kleppmann',
+      },
+      {
+        id: 'database-internals',
+        name: 'Database Internals',
+        hasVisualizer: false,
+        hasDoc: true,
+        docComponent: 'DatabaseInternalsBook',
+        badge: 'Alex Petrov',
       },
     ],
   },

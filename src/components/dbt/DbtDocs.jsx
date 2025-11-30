@@ -1,6 +1,38 @@
 import React from 'react';
 import { Database, Layers, GitBranch, CheckCircle, FileText, RefreshCw, Shield } from 'lucide-react';
-import Mermaid from '../common/Mermaid';
+import InteractiveDiagram from '../common/InteractiveDiagram';
+import CodeBlock from '../common/CodeBlock';
+
+const dbtNodes = [
+  // Sources
+  { id: 'src', position: { x: 50, y: 100 }, data: { label: 'Sources (Raw Data)' }, style: { background: '#374151', color: '#9ca3af', border: '1px dashed #4b5563', width: 180, height: 200 }, type: 'group' },
+  { id: 's1', position: { x: 20, y: 40 }, data: { label: 'Postgres' }, parentNode: 'src', extent: 'parent', style: { width: 140 } },
+  { id: 's2', position: { x: 20, y: 90 }, data: { label: 'Stripe API' }, parentNode: 'src', extent: 'parent', style: { width: 140 } },
+  { id: 's3', position: { x: 20, y: 140 }, data: { label: 'Google Sheets' }, parentNode: 'src', extent: 'parent', style: { width: 140 } },
+
+  // Warehouse
+  { id: 'wh', position: { x: 300, y: 50 }, data: { label: 'Data Warehouse' }, style: { background: '#064e3b', color: '#6ee7b7', border: '1px solid #059669', width: 200, height: 300 }, type: 'group' },
+  { id: 'raw', position: { x: 30, y: 40 }, data: { label: 'Raw Tables' }, parentNode: 'wh', extent: 'parent', style: { width: 140 } },
+  { id: 'stg', position: { x: 30, y: 100 }, data: { label: 'Staging Models' }, parentNode: 'wh', extent: 'parent', style: { width: 140 } },
+  { id: 'int', position: { x: 30, y: 160 }, data: { label: 'Intermediate' }, parentNode: 'wh', extent: 'parent', style: { width: 140 } },
+  { id: 'mart', position: { x: 30, y: 220 }, data: { label: 'Data Marts' }, parentNode: 'wh', extent: 'parent', style: { width: 140, background: '#059669', color: 'white' } },
+
+  // dbt
+  { id: 'dbt', position: { x: 600, y: 100 }, data: { label: 'dbt Core' }, style: { background: '#c2410c', color: 'white', border: '1px solid #ea580c', width: 150, height: 180 }, type: 'group' },
+  { id: 'comp', position: { x: 25, y: 40 }, data: { label: 'Compiler' }, parentNode: 'dbt', extent: 'parent', style: { width: 100 } },
+  { id: 'run', position: { x: 25, y: 90 }, data: { label: 'Runner' }, parentNode: 'dbt', extent: 'parent', style: { width: 100 } },
+  { id: 'docs', position: { x: 25, y: 140 }, data: { label: 'Docs Site' }, parentNode: 'dbt', extent: 'parent', style: { width: 100 } },
+];
+
+const dbtEdges = [
+  { id: 'e1', source: 'src', target: 'raw', animated: true, label: 'Load (Fivetran)' },
+  { id: 'e2', source: 'raw', target: 'stg', type: 'smoothstep' },
+  { id: 'e3', source: 'stg', target: 'int', type: 'smoothstep' },
+  { id: 'e4', source: 'int', target: 'mart', type: 'smoothstep' },
+  { id: 'e5', source: 'dbt', target: 'stg', style: { stroke: '#f97316', strokeDasharray: '5,5' } },
+  { id: 'e6', source: 'dbt', target: 'int', style: { stroke: '#f97316', strokeDasharray: '5,5' } },
+  { id: 'e7', source: 'dbt', target: 'mart', style: { stroke: '#f97316', strokeDasharray: '5,5' } },
+];
 
 const DbtDocs = () => {
   return (
@@ -28,44 +60,12 @@ const DbtDocs = () => {
           
           {/* Mermaid Diagram */}
 
-          <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 mb-6 overflow-x-auto flex justify-center">
-            <Mermaid chart={`
-graph LR
-    subgraph "Sources (Raw Data)"
-        S1[Postgres]
-        S2[Stripe API]
-        S3[Google Sheets]
-    end
-
-    subgraph "Data Warehouse (Snowflake/BigQuery)"
-        Raw[Raw Tables]
-        Staging[Staging Models]
-        Inter[Intermediate Models]
-        Marts[Data Marts]
-    end
-
-    subgraph "dbt"
-        Compile[Compiler]
-        Run[Runner]
-        Docs[Docs Site]
-    end
-
-    S1 --> Raw
-    S2 --> Raw
-    S3 --> Raw
-
-    Raw --> Staging
-    Staging --> Inter
-    Inter --> Marts
-
-    dbt -.-> Staging
-    dbt -.-> Inter
-    dbt -.-> Marts
-
-    style dbt fill:#ea580c,stroke:#c2410c,stroke-width:2px
-    style Marts fill:#059669,stroke:#10b981,stroke-width:2px
-            `} />
-            <p className="text-center text-gray-500 text-sm mt-2">Figure 1: The ELT Workflow with dbt</p>
+          <div className="mb-8">
+            <InteractiveDiagram 
+              initialNodes={dbtNodes} 
+              initialEdges={dbtEdges} 
+              title="The ELT Workflow with dbt" 
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -97,8 +97,10 @@ graph LR
             <p className="text-gray-300 mb-4">
               A model is just a `.sql` file in your `models/` directory.
             </p>
-            <div className="bg-gray-900 p-4 rounded-lg border border-gray-700 font-mono text-sm text-gray-300 overflow-x-auto">
-{`-- models/customers.sql
+            <CodeBlock 
+              language="sql" 
+              title="models/customers.sql"
+              code={`-- models/customers.sql
 
 {{ config(materialized='table') }}
 
@@ -115,8 +117,8 @@ SELECT
     SUM(p.amount) as lifetime_value
 FROM orders o
 LEFT JOIN payments p ON o.order_id = p.order_id
-GROUP BY 1`}
-            </div>
+GROUP BY 1`} 
+            />
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-gray-900/30 p-3 rounded border border-gray-700">
                   <span className="font-bold text-orange-300">Jinja Templating</span>: Use <code>{`{{ ref('model_name') }}`}</code> to reference other models. This builds the lineage graph automatically.
@@ -162,8 +164,10 @@ GROUP BY 1`}
             dbt treats data quality and documentation as first-class citizens. You define them in YAML files alongside your models.
           </p>
 
-          <div className="bg-gray-900 p-4 rounded-lg border border-gray-700 font-mono text-sm text-gray-300 overflow-x-auto mb-6">
-{`version: 2
+          <CodeBlock 
+            language="yaml" 
+            title="schema.yml"
+            code={`version: 2
 
 models:
   - name: customers
@@ -177,8 +181,8 @@ models:
       - name: status
         tests:
           - accepted_values:
-              values: ['active', 'churned']`}
-          </div>
+              values: ['active', 'churned']`} 
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-700">

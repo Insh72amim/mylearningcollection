@@ -1,7 +1,6 @@
 import React from 'react';
 import Mermaid from '../common/Mermaid';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import CodeBlock from '../common/CodeBlock';
 
 const SparkDocs = () => {
   return (
@@ -169,18 +168,18 @@ const SparkDocs = () => {
 
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">WordCount: The Classic Example</h3>
-            <div className="rounded-lg overflow-hidden border border-gray-700">
-              <SyntaxHighlighter language="scala" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1.5rem' }}>
-{`val textFile = sc.textFile("hdfs://path/to/file.txt")
+            <CodeBlock 
+              language="scala" 
+              title="WordCount.scala"
+              code={`val textFile = sc.textFile("hdfs://path/to/file.txt")
 
 val counts = textFile
   .flatMap(line => line.split(" "))        // Split into words
   .map(word => (word, 1))                  // Create (word, 1) pairs
   .reduceByKey(_ + _)                      // Sum counts per word
   
-counts.saveAsTextFile("hdfs://output")     // Triggers execution!`}
-              </SyntaxHighlighter>
-            </div>
+counts.saveAsTextFile("hdfs://output")     // Triggers execution!`} 
+            />
           </div>
         </div>
       </section>
@@ -218,9 +217,10 @@ counts.saveAsTextFile("hdfs://output")     // Triggers execution!`}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h3 className="text-xl font-semibold text-white mb-3">DataFrame Example</h3>
-              <div className="rounded-lg overflow-hidden border border-gray-700">
-                <SyntaxHighlighter language="python" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1rem' }}>
-{`from pyspark.sql import SparkSession
+              <CodeBlock 
+                language="python" 
+                title="dataframe_example.py"
+                code={`from pyspark.sql import SparkSession
 
 spark = SparkSession.builder.appName("app").getOrCreate()
 
@@ -233,16 +233,16 @@ result = df.filter(df['age'] > 21) \\
            .groupBy("age") \\
            .count()
 
-result.show()`}
-                </SyntaxHighlighter>
-              </div>
+result.show()`} 
+              />
             </div>
 
             <div>
               <h3 className="text-xl font-semibold text-white mb-3">Dataset Example (Scala)</h3>
-              <div className="rounded-lg overflow-hidden border border-gray-700">
-                <SyntaxHighlighter language="scala" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1rem' }}>
-{`case class Person(name: String, age: Int)
+              <CodeBlock 
+                language="scala" 
+                title="dataset_example.scala"
+                code={`case class Person(name: String, age: Int)
 
 val ds = spark.read.json("data.json")
   .as[Person]  // Type-safe!
@@ -251,9 +251,8 @@ val ds = spark.read.json("data.json")
 val adults = ds.filter(_.age > 21)
                .map(_.name)
                
-adults.show()`}
-                </SyntaxHighlighter>
-              </div>
+adults.show()`} 
+              />
             </div>
           </div>
         </div>
@@ -307,9 +306,10 @@ adults.show()`}
 
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">SQL Example with Optimization</h3>
-            <div className="rounded-lg overflow-hidden border border-gray-700">
-              <SyntaxHighlighter language="sql" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1.5rem' }}>
-{`-- Register DataFrame as temp view
+            <CodeBlock 
+              language="sql" 
+              title="catalyst_example.sql"
+              code={`-- Register DataFrame as temp view
 CREATE OR REPLACE TEMP VIEW users AS 
 SELECT * FROM parquet.\`/data/users.parquet\`;
 
@@ -329,9 +329,8 @@ LIMIT 10;
 -- 1. Push down "age > 18" filter to Parquet reader
 -- 2. Prune columns (read only: country, age, is_active)
 -- 3. Choose aggregation strategy (hash vs sort)
--- 4. Generate optimized bytecode`}
-              </SyntaxHighlighter>
-            </div>
+-- 4. Generate optimized bytecode`} 
+            />
           </div>
         </div>
       </section>
@@ -555,26 +554,27 @@ LIMIT 10;
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gradient-to-br from-blue-900/30 to-indigo-900/30 p-6 rounded-xl border border-blue-700/50">
               <h3 className="text-xl font-semibold text-white mb-3">⚡ Caching Strategies</h3>
-              <div className="rounded-lg overflow-hidden border border-gray-700 mb-3">
-                <SyntaxHighlighter language="scala" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', fontSize: '0.75rem' }}>
-{`// Cache if reused multiple times
+              <CodeBlock 
+                language="scala" 
+                title="caching.scala"
+                code={`// Cache if reused multiple times
 val df = spark.read.parquet("data")
 df.cache()  // or persist(MEMORY_AND_DISK)
 
 df.filter("age > 21").count()
 df.filter("age < 30").count()  // Uses cache!
 
-df.unpersist()  // Free memory`}
-                </SyntaxHighlighter>
-              </div>
+df.unpersist()  // Free memory`} 
+              />
               <p className="text-xs text-gray-400">✓ Use for iterative algorithms (ML)</p>
             </div>
 
             <div className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 p-6 rounded-xl border border-purple-700/50">
               <h3 className="text-xl font-semibold text-white mb-3">🔥 Broadcast Joins</h3>
-              <div className="rounded-lg overflow-hidden border border-gray-700 mb-3">
-                <SyntaxHighlighter language="scala" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem', fontSize: '0.75rem' }}>
-{`import org.apache.spark.sql.functions.broadcast
+              <CodeBlock 
+                language="scala" 
+                title="broadcast.scala"
+                code={`import org.apache.spark.sql.functions.broadcast
 
 // Small table (< 10MB)
 val smallDF = spark.read.json("small.json")
@@ -583,9 +583,8 @@ val smallDF = spark.read.json("small.json")
 val result = largeDF.join(
   broadcast(smallDF), 
   "key"
-)`}
-                </SyntaxHighlighter>
-              </div>
+)`} 
+              />
               <p className="text-xs text-gray-400">✓ Avoids expensive shuffle for small tables</p>
             </div>
           </div>
@@ -633,9 +632,10 @@ val result = largeDF.join(
 
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">Streaming Example: Real-Time Aggregation</h3>
-            <div className="rounded-lg overflow-hidden border border-gray-700">
-              <SyntaxHighlighter language="python" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1.5rem' }}>
-{`from pyspark.sql import SparkSession
+            <CodeBlock 
+              language="python" 
+              title="structured_streaming.py"
+              code={`from pyspark.sql import SparkSession
 from pyspark.sql.functions import window, col
 
 spark = SparkSession.builder.appName("streaming").getOrCreate()
@@ -665,9 +665,8 @@ query = windowed.writeStream \\
   .option("checkpointLocation", "/tmp/checkpoint") \\
   .start()
 
-query.awaitTermination()`}
-              </SyntaxHighlighter>
-            </div>
+query.awaitTermination()`} 
+            />
           </div>
 
           <div className="bg-gradient-to-r from-indigo-900/30 to-blue-900/30 p-6 rounded-xl border border-indigo-700/50">
@@ -675,15 +674,15 @@ query.awaitTermination()`}
             <p className="text-sm mb-3">
               Handle late-arriving events by specifying how long to wait:
             </p>
-            <div className="rounded-lg overflow-hidden border border-gray-700">
-              <SyntaxHighlighter language="python" style={vscDarkPlus} customStyle={{ margin: 0, padding: '1rem' }}>
-{`# Wait up to 10 minutes for late events
+            <CodeBlock 
+              language="python" 
+              title="watermark.py"
+              code={`# Wait up to 10 minutes for late events
 windowed = events \\
   .withWatermark("timestamp", "10 minutes") \\
   .groupBy(window(col("timestamp"), "5 minutes")) \\
-  .count()`}
-              </SyntaxHighlighter>
-            </div>
+  .count()`} 
+            />
           </div>
         </div>
       </section>

@@ -1,7 +1,6 @@
 import React from 'react';
 import Mermaid from '../common/Mermaid';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import CodeBlock from '../common/CodeBlock';
 
 const RedisDocs = () => {
   return (
@@ -263,9 +262,10 @@ const RedisDocs = () => {
         <div className="space-y-8">
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">Using ioredis</h3>
-            <div className="rounded-lg overflow-hidden border border-gray-700">
-              <SyntaxHighlighter language="javascript" style={vscDarkPlus} showLineNumbers customStyle={{ margin: 0, padding: '1.5rem' }}>
-{`const Redis = require('ioredis');
+            <CodeBlock 
+              language="javascript" 
+              title="redis_example.js"
+              code={`const Redis = require('ioredis');
 const redis = new Redis({
   host: 'localhost',
   port: 6379,
@@ -302,9 +302,8 @@ sub.subscribe('notifications', (err) => {
 
 sub.on('message', (channel, message) => {
   console.log(\`Received \${message} from \${channel}\`);
-});`}
-              </SyntaxHighlighter>
-            </div>
+});`} 
+            />
           </div>
         </div>
       </section>

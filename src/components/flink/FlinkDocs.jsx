@@ -1,6 +1,34 @@
 import React from 'react';
 import { Zap, Server, Activity, Layers, Database, Shield, GitBranch } from 'lucide-react';
-import Mermaid from '../common/Mermaid';
+import InteractiveDiagram from '../common/InteractiveDiagram';
+import CodeBlock from '../common/CodeBlock';
+
+const flinkNodes = [
+  { id: 'client', position: { x: 50, y: 150 }, data: { label: 'Client / Job Submission' }, style: { background: '#374151', color: 'white', border: '1px solid #4b5563', width: 150 } },
+  { id: 'jm', position: { x: 300, y: 50 }, data: { label: 'JobManager (Master)' }, style: { background: '#be185d', color: 'white', border: '1px solid #db2777', width: 160 } },
+  { id: 'rm', position: { x: 550, y: 50 }, data: { label: 'ResourceManager' }, style: { background: '#be185d', color: 'white', border: '1px solid #db2777', width: 140 } },
+  { id: 'ds', position: { x: 550, y: 120 }, data: { label: 'Dispatcher' }, style: { background: '#be185d', color: 'white', border: '1px solid #db2777', width: 140 } },
+  
+  // Task Managers
+  { id: 'tm1', position: { x: 250, y: 250 }, data: { label: 'TaskManager 1' }, style: { background: '#c2410c', color: 'white', border: '1px solid #ea580c', width: 180, height: 120 }, type: 'group' },
+  { id: 'tm2', position: { x: 500, y: 250 }, data: { label: 'TaskManager 2' }, style: { background: '#c2410c', color: 'white', border: '1px solid #ea580c', width: 180, height: 120 }, type: 'group' },
+
+  // Slots
+  { id: 's1', position: { x: 20, y: 40 }, data: { label: 'Slot 1' }, parentNode: 'tm1', extent: 'parent', style: { background: '#7c2d12', color: 'white', width: 60 } },
+  { id: 's2', position: { x: 100, y: 40 }, data: { label: 'Slot 2' }, parentNode: 'tm1', extent: 'parent', style: { background: '#7c2d12', color: 'white', width: 60 } },
+  { id: 's3', position: { x: 20, y: 40 }, data: { label: 'Slot 1' }, parentNode: 'tm2', extent: 'parent', style: { background: '#7c2d12', color: 'white', width: 60 } },
+  { id: 's4', position: { x: 100, y: 40 }, data: { label: 'Slot 2' }, parentNode: 'tm2', extent: 'parent', style: { background: '#7c2d12', color: 'white', width: 60 } },
+];
+
+const flinkEdges = [
+  { id: 'e1', source: 'client', target: 'jm', animated: true, label: 'Submit Job' },
+  { id: 'e2', source: 'jm', target: 'tm1', animated: true },
+  { id: 'e3', source: 'jm', target: 'tm2', animated: true },
+  { id: 'e4', source: 'jm', target: 'rm', style: { stroke: '#db2777' } },
+  { id: 'e5', source: 'jm', target: 'ds', style: { stroke: '#db2777' } },
+  { id: 'e6', source: 's1', target: 's3', style: { strokeDasharray: '5,5', stroke: '#fb923c' }, animated: true },
+  { id: 'e7', source: 's2', target: 's4', style: { strokeDasharray: '5,5', stroke: '#fb923c' }, animated: true },
+];
 
 const FlinkDocs = () => {
   return (
@@ -28,38 +56,12 @@ const FlinkDocs = () => {
           
           {/* Mermaid Diagram */}
 
-          <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 mb-6 overflow-x-auto flex justify-center">
-            <Mermaid chart={`
-graph TD
-    Client[Client / Job Submission] --> JM[JobManager (Master)]
-    
-    subgraph "Cluster"
-        JM --> TM1[TaskManager 1]
-        JM --> TM2[TaskManager 2]
-        
-        subgraph "TaskManager 1"
-            S1[Slot 1]
-            S2[Slot 2]
-        end
-        
-        subgraph "TaskManager 2"
-            S3[Slot 1]
-            S4[Slot 2]
-        end
-    end
-
-    JM <--> RM[ResourceManager]
-    JM <--> DS[Dispatcher]
-    
-    S1 -.-> S3
-    S2 -.-> S4
-
-    style JM fill:#db2777,stroke:#be185d,stroke-width:2px
-    style TM1 fill:#ea580c,stroke:#c2410c,stroke-width:2px
-    style TM2 fill:#ea580c,stroke:#c2410c,stroke-width:2px
-    style Client fill:#4b5563,stroke:#374151,stroke-width:2px
-            `} />
-            <p className="text-center text-gray-500 text-sm mt-2">Figure 1: Flink Runtime Architecture</p>
+          <div className="mb-8">
+            <InteractiveDiagram 
+              initialNodes={flinkNodes} 
+              initialEdges={flinkEdges} 
+              title="Flink Runtime Architecture" 
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -172,8 +174,10 @@ graph TD
           <p className="text-gray-300 mb-4">
             You can write Flink jobs in Java, Scala, Python, or SQL. SQL is becoming the standard for 80% of use cases.
           </p>
-          <div className="bg-gray-900 p-4 rounded-lg border border-gray-700 font-mono text-sm text-gray-300 overflow-x-auto">
-{`-- Define Source (Kafka)
+          <CodeBlock 
+            language="sql" 
+            title="fraud_detection.sql"
+            code={`-- Define Source (Kafka)
 CREATE TABLE transactions (
     user_id STRING,
     amount DOUBLE,
@@ -207,8 +211,8 @@ FROM transactions
 GROUP BY 
     user_id, 
     TUMBLE(ts, INTERVAL '1' HOUR)
-HAVING SUM(amount) > 10000;`}
-          </div>
+HAVING SUM(amount) > 10000;`} 
+          />
         </div>
       </section>
     </div>
