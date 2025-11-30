@@ -1,4 +1,4 @@
-import { Database, HardDrive, Code, Server, Boxes, Cloud, Activity, Layout, Shield, Brain, Cpu, GitBranch, Terminal, BookOpen } from 'lucide-react';
+import { Database, HardDrive, Code, Server, Boxes, Cloud, Activity, Layout, Shield, Brain, Cpu, GitBranch, Terminal, BookOpen, Calculator, Sigma } from 'lucide-react';
 
 export const categories = [
   {
@@ -451,7 +451,7 @@ export const categories = [
   },
   {
     id: 'system-design',
-    name: 'System Design',
+    name: 'High Level Design',
     icon: Activity,
     color: 'indigo',
     technologies: [
@@ -502,6 +502,30 @@ export const categories = [
         hasDoc: false,
         badge: 'Paxos/Raft',
         comingSoon: true,
+      },
+    ],
+  },
+  {
+    id: 'low-level-design',
+    name: 'Low Level Design',
+    icon: Layout,
+    color: 'orange',
+    technologies: [
+      {
+        id: 'design-patterns',
+        name: 'Design Patterns',
+        hasVisualizer: false,
+        hasDoc: true,
+        docComponent: 'DesignPatterns',
+        badge: 'Gang of Four',
+      },
+      {
+        id: 'lld-examples',
+        name: 'LLD Examples',
+        hasVisualizer: false,
+        hasDoc: true,
+        docComponent: 'LLDExamples',
+        badge: 'Object Oriented',
       },
     ],
   },
@@ -610,42 +634,53 @@ export const categories = [
     ],
   },
   {
+    id: 'finance',
+    name: 'Finance',
+    icon: Calculator,
+    color: 'green',
+    technologies: [
+      {
+        id: 'finance-overview',
+        name: 'Finance',
+        hasVisualizer: false,
+        hasDoc: true,
+        docComponent: 'CategoryPage',
+        categoryData: 'finance',
+        badge: 'Quant',
+      },
+    ],
+  },
+  {
+    id: 'mathematics',
+    name: 'Mathematics',
+    icon: Sigma,
+    color: 'indigo',
+    technologies: [
+      {
+        id: 'mathematics-overview',
+        name: 'Mathematics',
+        hasVisualizer: false,
+        hasDoc: true,
+        docComponent: 'CategoryPage',
+        categoryData: 'mathematics',
+        badge: 'Theory',
+      },
+    ],
+  },
+  {
     id: 'ai-engineering',
     name: 'AI & ML Engineering',
     icon: Brain,
     color: 'fuchsia',
     technologies: [
       {
-        id: 'llms',
-        name: 'Large Language Models',
+        id: 'ml-overview',
+        name: 'Machine Learning',
         hasVisualizer: false,
-        hasDoc: false,
-        badge: 'GenAI',
-        comingSoon: true,
-      },
-      {
-        id: 'rag',
-        name: 'RAG',
-        hasVisualizer: false,
-        hasDoc: false,
-        badge: 'Retrieval',
-        comingSoon: true,
-      },
-      {
-        id: 'vector-dbs',
-        name: 'Vector Databases',
-        hasVisualizer: false,
-        hasDoc: false,
-        badge: 'Embeddings',
-        comingSoon: true,
-      },
-      {
-        id: 'mlops',
-        name: 'MLOps',
-        hasVisualizer: false,
-        hasDoc: false,
-        badge: 'Operations',
-        comingSoon: true,
+        hasDoc: true,
+        docComponent: 'CategoryPage',
+        categoryData: 'machine-learning',
+        badge: 'AI/ML',
       },
     ],
   },

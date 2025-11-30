@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, BookOpen, User, Calendar } from 'lucide-react';
+import { ChevronDown, ChevronRight, BookOpen, User, Calendar, AlertCircle, Zap, Database } from 'lucide-react';
 import InteractiveDiagram from '../common/InteractiveDiagram';
+import CodeBlock from '../common/CodeBlock';
+import { dbInternalsChapters4to14 } from './db-internals-chapters-4-14';
 
 const DatabaseInternalsBook = () => {
   const [expandedChapters, setExpandedChapters] = useState({});
@@ -17,27 +19,148 @@ const DatabaseInternalsBook = () => {
       id: 1,
       part: 'I',
       title: 'Introduction and Overview',
-      summary: 'Introduction to database management systems architecture, covering DBMS vs SQL, database design considerations, and the separation of storage and compute.',
+      summary: 'Introduction to DBMS architecture: query processing, storage engines, and the fundamental distinction between OLTP and OLAP workloads.',
+      detailedContent: 'Databases are layered systems. Understanding each layer—from SQL parsing to disk I/O—is crucial for building and tuning performant systems.',
       keyPoints: [
-        'DBMS architecture: Query processor, execution engine, storage engine',
-        'Memory vs disk-based DBMS: Trade-offs between speed and durability',
-        'Column vs row-oriented storage: OLTP vs OLAP workloads',
-        'Data files and index files: Primary vs secondary indexes'
+        '**DBMS Components**: Query parser → optimizer → execution engine → storage engine → disk I/O',
+        '**Memory vs Disk**: In-memory DBs (Redis, VoltDB) trade durability for speed. Disk-based (PostgreSQL, MySQL) persist data',
+        '**Row vs Column storage**: Row-oriented for OLTP (transactions), column-oriented for OLAP (analytics, aggregations)',
+        '**Index structures**: B-Trees for general purpose, LSM-Trees for write-heavy, hash for key-value'
       ],
+      sections: [
+        {
+          title: 'DBMS Architecture Layers',
+          points: [
+            'Transport layer: Client protocol handling (MySQL wire protocol, PostgreSQL protocol)',
+            'Query processor: Parsing SQL, semantic analysis, query rewriting',
+            'Query optimizer: Cost-based selection of execution plan (index scans, join algorithms)',
+            'Execution engine: Iterators (Volcano model), vectorized execution',
+            'Storage engine: Buffer pool management, page layout, indexing',
+            'Recovery manager: Write-ahead logging (WAL), checkpointing, crash recovery'
+          ]
+        },
+        {
+          title: 'OLTP vs OLAP Comparison',
+          content: 'Transactional workloads need fast point queries and updates. Analytical workloads scan large  datasets for aggregations.',
+          points: [
+            'OLTP: Row-oriented, B-Tree indexes, frequent small updates (e-commerce, banking)',
+            'OLAP: Column-oriented (Parquet, ORC), compression, bulk scans (data warehousing)',
+            'Hybrid (HTAP): Run analytics on transactional data (TiDB, CockroachDB)',
+            'Separation: ETL from OLTP to OLAP data warehouse (traditional approach)'
+          ]
+        }
+      ],
+      diagram: {
+        title: 'DBMS Architecture',
+        nodes: [
+          { id: 'client', type: 'default', position: { x: 300, y: 50 }, data: { label: 'SQL Client' }, style: { background: '#6366f1', color: 'white', padding: 15 } },
+          { id: 'parser', type: 'default', position: { x: 300, y: 130 }, data: { label: 'Query Parser\n& Optimizer' }, style: { background: '#f59e0b', color: 'white', padding: 15, fontSize: 12 } },
+          { id: 'engine', type: 'default', position: { x: 300, y: 220 }, data: { label: 'Execution\nEngine' }, style: { background: '#10b981', color: 'white', padding: 15, fontSize: 12 } },
+          { id: 'storage', type: 'default', position: { x: 300, y: 310 }, data: { label: 'Storage\nEngine' }, style: { background: '#8b5cf6', color: 'white', padding: 15, fontSize: 12 } },
+          { id: 'disk', type: 'default', position: { x: 300, y: 400 }, data: { label: 'Disk I/O' }, style: { background: '#475569', color: 'white', padding: 15 } },
+        ],
+        edges: [
+          { id: 'e1', source: 'client', target: 'parser', label: 'SQL', animated: true },
+          { id: 'e2', source: 'parser', target: 'engine', label: 'Plan', animated: false},
+          { id: 'e3', source: 'engine', target: 'storage', label: 'Get/Put', animated: false },
+          { id: 'e4', source: 'storage', target: 'disk', label: 'Read/Write', animated: false },
+        ]
+      }
     },
     {
       id: 2,
       part: 'I',
       title: 'B-Tree Basics',
-      summary: 'Deep dive into B-Trees, the most widely used data structure in databases. Covers tree structure, node splits, and search operations.',
+      summary: 'B-Trees are self-balancing search trees optimized for disk I/O. Most databases use variants of B-Trees for indexing.',
+      detailedContent: 'Unlike binary search trees, B-Trees have multiple keys per node (high fan-out), minimizing tree height and disk reads.',
       keyPoints: [
-        'B-Tree properties: Self-balancing, sorted keys, logarithmic operations',
-        'Node structure: Keys, values, and child pointers',
-        'Search operation: O(log n) time complexity',
-        'Insert and split: Maintaining balance through node splits'
+        '**Properties**: Sorted keys, logarithmic height O(log n), balanced (all leaves at same level)',
+        '**Node structure**: Internal nodes store keys and child pointers, leaf nodes store keys and values',
+        '**Operations**: Search is binary search within node then recurse. Insert may cause splits upward',
+        '**Fan-out**: Number of children per node. Higher fan-out = shorter tree = fewer I/Os'
+      ],
+      sections: [
+        {
+          title: 'B-Tree Search Operation',
+          content: 'Start at root. Binary search within node to find child pointer. Recurse until reaching leaf. O(log_F(N)) where F is fan-out.',
+          example: {
+            language: 'python',
+            title: 'btree_search.py',
+            code: `class BTreeNode:
+    def __init__(self, is_leaf=False):
+        self.keys = []
+        self.children = []
+        self.is_leaf = is_leaf
+    
+    def search(self, key):
+        # Binary search within node
+        i = 0
+        while i < len(self.keys) and key > self.keys[i]:
+            i += 1
+        
+        # Found key
+        if i < len(self.keys) and key == self.keys[i]:
+            return self
+        
+        # Key might be in subtree
+        if self.is_leaf:
+            return None  # Not found
+        
+        # Recurse to child
+        return self.children[i].search(key)
+
+# Example: Search in B-Tree of order 3
+# Root: [10, 20]
+#  /      |       \\
+# [5,7]  [12,15]  [25,30]
+
+# search(12) → Root → Middle child → Found
+# search(100) → Root → Right child → Not found`
+          }
+        },
+        {
+          title: 'B-Tree Insertion and Splits',
+          points: [
+            'Insert key in appropriate leaf node (keep sorted order)',
+            'If node overflows (> M-1 keys), split into two nodes',
+            'Promote median key to parent, propagate split upward if needed',
+            'If root splits, tree height increases by 1 (only way to grow)'
+          ],
+          example: {
+            language: 'python',
+            title: 'btree_insert.py',
+            code: `def insert(self, key, value):
+    if len(self.keys) < self.max_keys:
+        # Simple case: Node has space
+        self.keys.insert_sorted(key)
+        self.values.insert_sorted(value)
+    else:
+        # Node is full, split required
+        self.split_and_insert(key, value)
+
+def split_and_insert(self, key, value):
+    # Find median
+    mid = len(self.keys) // 2
+    median_key = self.keys[mid]
+    
+    # Create new right sibling
+    right = BTreeNode()
+    right.keys = self.keys[mid+1:]
+    self.keys = self.keys[:mid]
+    
+    # Promote median to parent
+    self.parent.insert_median(median_key, self, right)
+    
+    # Insert new key in appropriate half
+    if key < median_key:
+        self.insert(key, value)
+    else:
+        right.insert(key, value)`
+          }
+        }
       ],
       diagram: {
-        title: 'B-Tree Structure',
+        title: 'B-Tree Structure (Order 3)',
         nodes: [
           { id: 'root', type: 'default', position: { x: 300, y: 50 }, data: { label: '[15, 30]' }, style: { background: '#2563eb', color: 'white', padding: 15, border: '2px solid #3b82f6' } },
           { id: 'left', type: 'default', position: { x: 100, y: 150 }, data: { label: '[5, 10]' }, style: { background: '#059669', color: 'white', padding: 15 } },
@@ -55,178 +178,76 @@ const DatabaseInternalsBook = () => {
       id: 3,
       part: 'I',
       title: 'File Formats',
-      summary: 'How databases organize data on disk: page structure, slotted pages, cell layouts, and versioning.',
+      summary: 'How databases organize data files on disk: pages, slotted pages for variable-length records, and checksums for corruption detection.',
+      detailedContent: 'Databases read/write data in fixed-size pages (typically 4KB-16KB), not individual records. This matches OS page size for efficient I/O.',
       keyPoints: [
-        'Page structure: Fixed-size blocks (typically 4-16KB)',
-        'Slotted pages: Variable-length records with indirection',
-        'Cell layout: Keys, values, and overflow pages',
-        'Checksums: Detecting corruption through CRC'
+        '**Page structure**: Header (metadata, checksum) + cell directory + free space + cells (records)',
+        '**Slotted pages**: Indirection layer for variable-length records. Cells grow from end, directory from start',
+        '**Overflow pages**: Large records that don\'t fit in single page are chained',
+        '**Checksums**: CRC32 or xxHash to detect corruption. Stored in page header, verified on read'
       ],
-    },
-    {
-      id: 4,
-      part: 'I',
-      title: 'Implementing B-Trees',
-      summary: 'Practical B-Tree implementation details: page headers, binary search within nodes, propagating splits, and merging underflowing nodes.',
-      keyPoints: [
-        'Page header: Magic number, page type, number of cells',
-        'Binary search: Locating keys within a node',
-        'Node splits: Rebalancing when nodes overflow',
-        'Merges and redistributions: Handling underflows'
-      ],
-    },
-    {
-      id: 5,
-      part: 'I',
-      title: 'Transaction Processing and Recovery',
-      summary: 'ACID properties, write-ahead logging (WAL), checkpointing, and crash recovery mechanisms.',
-      keyPoints: [
-        'Write-Ahead Logging: Log changes before applying to database',
-        'ARIES recovery: Analysis, Redo, Undo phases',
-        'Checkpointing: Periodic snapshots to limit WAL replay',
-        'Durability guarantees: fsync() and O_DIRECT flags'
-      ],
-    },
-    {
-      id: 6,
-      part: 'I',
-      title: 'B-Tree Variants',
-      summary: 'Copy-on-Write B-Trees, lazy B-Trees, and other optimizations like prefix truncation and suffix truncation.',
-      keyPoints: [
-        'Copy-on-Write: Immutable trees (LMDB, SQLite)',
-        'Lazy B-Trees: Buffering updates in memory',
-        'FD-Trees: Fractional cascading for better performance',
-        'Bw-Trees: Lock-free implementation using delta records'
-      ],
-    },
-    {
-      id: 7,
-      part: 'I',
-      title: 'Log-Structured Storage',
-      summary: 'LSM-Trees and their components: memtable, SSTables, compaction strategies, and merge operations.',
-      keyPoints: [
-        'Memtable: In-memory sorted structure (skip list, red-black tree)',
-        'SSTable: Sorted String Table on disk',
-        'Compaction: Size-tiered vs leveled strategies',
-        'Read amplification: Multiple levels to check for a key'
+      sections: [
+        {
+          title: 'Page Layout',
+          points: [
+            'Page header (64-128 bytes): Magic number, page type, LSN, checksum, free space pointer',
+            'Cell directory: Array of offsets pointing to cells (records). Enables binary search',
+            'Free space: Unused bytes between directory and cells',
+            'Cells: Actual records, growing backward from end of page',
+            'When directory meets cells, page is full → split or overflow'
+          ]
+        },
+        {
+          title: 'Slotted Page Example',
+          content: 'PostgreSQL uses slotted pages. MySQL InnoDB uses similar structure with "supremum" and "infimum" records.',
+          example: {
+            language: 'c',
+            title: 'page_structure.c',
+            code: `struct PageHeader {
+    uint32_t magic;           // 0xDEADBEEF
+    uint16_t page_type;       // LEAF, INTERNAL, etc.
+    uint16_t num_cells;       // Number of records
+    uint16_t free_start;      // Offset to free space
+    uint16_t free_end;        // End of free space
+    uint64_t lsn;             // Log sequence number
+    uint32_t checksum;        // CRC32 of page
+};
+
+struct SlotDirectory {
+    uint16_t offsets[MAX_SLOTS];  // Offsets to cells
+};
+
+// Page layout (8KB example):
+// [Header: 0-64]
+// [Slot Directory: 64-128]
+// [Free Space: 128-6000]
+// [Cells: 6000-8192] (growing backward)
+
+// Adding record:
+// 1. Append cell to end
+// 2. Add offset to directory
+// 3. Update free_start and free_end`
+          }
+        }
       ],
       diagram: {
-        title: 'LSM-Tree Architecture',
+        title: 'Slotted Page Layout',
         nodes: [
-          { id: 'memtable', type: 'default', position: { x: 100, y: 50 }, data: { label: 'MemTable\n(In-Memory)' }, style: { background: '#dc2626', color: 'white', padding: 20, border: '2px solid #ef4444' } },
-          { id: 'l0', type: 'default', position: { x: 350, y: 50 }, data: { label: 'L0' }, style: { background: '#f59e0b', color: 'white', padding: 15 } },
-          { id: 'l1', type: 'default', position: { x: 350, y: 130 }, data: { label: 'L1' }, style: { background: '#3b82f6', color: 'white', padding: 15 } },
-          { id: 'l2', type: 'default', position: { x: 350, y: 210 }, data: { label: 'L2' }, style: { background: '#8b5cf6', color: 'white', padding: 15 } },
+          { id: 'header', type: 'default', position: { x: 100, y: 100 }, data: { label: 'Page Header\n64 bytes' }, style: { background: '#3b82f6', color: 'white', padding: 15, fontSize: 11 } },
+          { id: 'directory', type: 'default', position: { x: 300, y: 100 }, data: { label: 'Cell Directory\nOffsets →' }, style: { background: '#10b981', color: 'white', padding: 15, fontSize: 11 } },
+          { id: 'free', type: 'default', position: { x: 500, y: 100 }, data: { label: 'Free Space' }, style: { background: '#6b7280', color: 'white', padding: 15, fontSize: 11 } },
+          { id: 'cells', type: 'default', position: { x: 700, y: 100 }, data: { label: '← Cells\nRecords' }, style: { background: '#8b5cf6', color: 'white', padding: 15, fontSize: 11 } },
         ],
-        edges: [
-          { id: 'e1', source: 'memtable', target: 'l0', label: 'Flush', animated: true },
-          { id: 'e2', source: 'l0', target: 'l1', label: 'Compact', animated: true },
-          { id: 'e3', source: 'l1', target: 'l2', label: 'Compact', animated: true },
-        ]
-      }
-    },
-    {
-      id: 8,
-      part: 'II',
-      title: 'Introduction and Overview (Distributed Systems)',
-      summary: 'Challenges in distributed systems: consistency, consensus, failure detection, and distributed transactions.',
-      keyPoints: [
-        'Consistency models: Linearizability, sequential, causal',
-        'Failure models: Crash-stop, crash-recovery, Byzantine',
-        'Distributed transactions: Two-phase commit (2PC)',
-        'Time and order: Logical clocks (Lamport, Vector)'
-      ],
-    },
-    {
-      id: 9,
-      part: 'II',
-      title: 'Failure Detection',
-      summary: 'Detecting failed nodes in distributed systems using heartbeats, timeouts, and failure detectors.',
-      keyPoints: [
-        'Heartbeat mechanisms: Periodic ping messages',
-        'Timeout-based detection: Trade-off between false positives and detection time',
-        'Phi Accrual Failure Detector: Continuous suspicion level',
-        'Gossip protocols: Epidemic information dissemination'
-      ],
-    },
-    {
-      id: 10,
-      part: 'II',
-      title: 'Leader Election',
-      summary: 'Algorithms for electing a leader among distributed processes: Bully algorithm, ring-based election, and ZooKeeper.',
-      keyPoints: [
-        'Bully algorithm: Highest ID wins',
-        'Ring-based election: Tokens circulate around a ring',
-        'Stable leader election: Using external coordination services',
-        'Split-brain prevention: Fencing tokens and generation numbers'
-      ],
-    },
-    {
-      id: 11,
-      part: 'II',
-      title: 'Replication and Consistency',
-      summary: 'Replication strategies, consistency guarantees, and quorum-based protocols.',
-      keyPoints: [
-        'Primary-backup replication: Single writer, multiple readers',
-        'Chain replication: Sequential writes through a chain of nodes',
-        'Quorum reads and writes: R + W > N for strong consistency',
-        'Tunable consistency: Trading consistency for availability (Dynamo, Cassandra)'
-      ],
-    },
-    {
-      id: 12,
-      part: 'II',
-      title: 'Anti-Entropy and Dissemination',
-      summary: 'Techniques for ensuring replicas converge: read repair, Merkle trees, and gossip protocols.',
-      keyPoints: [
-        'Read repair: Fix inconsistencies during reads',
-        'Merkle trees: Efficient comparison of replica states',
-        'Gossip protocols: Peer-to-peer state exchange',
-        'Vector clocks: Tracking causality across replicas'
-      ],
-    },
-    {
-      id: 13,
-      part: 'II',
-      title: 'Distributed Transactions',
-      summary: 'Making distributed transactions work: Two-Phase Commit (2PC), cohorts, and coordinator recovery.',
-      keyPoints: [
-        'Two-Phase Commit: Prepare and commit phases',
-        'Coordinator: Orchestrates transaction across participants',
-        'Blocking problem: Coordinator failure blocks participants',
-        'Three-Phase Commit: Non-blocking but rarely used in practice'
-      ],
-    },
-    {
-      id: 14,
-      part: 'II',
-      title: 'Consensus',
-      summary: 'Consensus algorithms for agreeing on values: Paxos, Raft, and their variants.',
-      keyPoints: [
-        'Paxos: Classic consensus algorithm (proposers, acceptors, learners)',
-        'Raft: Understandable consensus with leader election and log replication',
-        'Multi-Paxos: Optimized for multiple rounds of consensus',
-        'Viewstamped Replication: Alternative to Paxos with similar properties'
-      ],
-      diagram: {
-        title: 'Raft Consensus',
-        nodes: [
-          { id: 'leader', type: 'default', position: { x: 300, y: 50 }, data: { label: 'Leader' }, style: { background: '#dc2626', color: 'white', padding: 20, border: '3px solid #ef4444' } },
-          { id: 'follower1', type: 'default', position: { x: 100, y: 180 }, data: { label: 'Follower 1' }, style: { background: '#3b82f6', color: 'white', padding: 20 } },
-          { id: 'follower2', type: 'default', position: { x: 300, y: 180 }, data: { label: 'Follower 2' }, style: { background: '#3b82f6', color: 'white', padding: 20 } },
-          { id: 'follower3', type: 'default', position: { x: 500, y: 180 }, data: { label: 'Follower 3' }, style: { background: '#3b82f6', color: 'white', padding: 20 } },
-        ],
-        edges: [
-          { id: 'e1', source: 'leader', target: 'follower1', label: 'AppendEntries', animated: true },
-          { id: 'e2', source: 'leader', target: 'follower2', label: 'AppendEntries', animated: true },
-          { id: 'e3', source: 'leader', target: 'follower3', label: 'AppendEntries', animated: true },
-        ]
+        edges: []
       }
     }
   ];
 
-  const partI = chapters.filter(ch => ch.part === 'I');
-  const partII = chapters.filter(ch => ch.part === 'II');
+  // Merge with chapters 4-14
+  const allChapters = [...chapters, ...dbInternalsChapters4to14];
+  
+  const partI = allChapters.filter(ch => ch.part === 'I');
+  const partII = allChapters.filter(ch => ch.part === 'II');
 
   const renderChapters = (chapterList) => (
     chapterList.map((chapter) => (
@@ -260,23 +281,62 @@ const DatabaseInternalsBook = () => {
 
         {expandedChapters[chapter.id] && (
           <div className="px-6 pb-6 pt-2 border-t border-gray-700 space-y-6">
-            <div>
-              <h4 className="text-md font-semibold text-white mb-2">Summary</h4>
-              <p className="text-gray-300 leading-relaxed">{chapter.summary}</p>
+            {/* Summary */}
+            <div className="bg-purple-900/20 p-4 rounded-lg border-l-4 border-purple-500">
+              <h4 className="text-md font-semibold text-white mb-2 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4" />
+                Chapter Overview
+              </h4>
+              <p className="text-gray-300 leading-relaxed mb-2">{chapter.summary}</p>
+              {chapter.detailedContent && (
+                <p className="text-gray-400 text-sm italic mt-2">{chapter.detailedContent}</p>
+              )}
             </div>
 
+            {/* Key Points */}
             <div>
-              <h4 className="text-md font-semibold text-white mb-3">Key Concepts</h4>
+              <h4 className="text-md font-semibold text-white mb-3 flex items-center gap-2">
+                <Database className="w-4 h-4 text-purple-400" />
+                Key Concepts
+              </h4>
               <ul className="space-y-2">
                 {chapter.keyPoints.map((point, idx) => (
                   <li key={idx} className="flex gap-3 text-gray-300">
                     <span className="text-purple-400 mt-1">•</span>
-                    <span>{point}</span>
+                    <span dangerouslySetInnerHTML={{ __html: point }} />
                   </li>
                 ))}
               </ul>
             </div>
 
+            {/* Sections with Examples */}
+            {chapter.sections && chapter.sections.map((section, idx) => (
+              <div key={idx} className="bg-gray-900/50 p-5 rounded-lg border border-gray-700">
+                <h5 className="text-lg font-semibold text-white mb-3">{section.title}</h5>
+                {section.content && (
+                  <p className="text-gray-300 mb-3">{section.content}</p>
+                )}
+                {section.points && (
+                  <ul className="space-y-2 mb-3">
+                    {section.points.map((point, pidx) => (
+                      <li key={pidx} className="flex gap-2 text-sm text-gray-300">
+                        <span className="text-purple-400">→</span>
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {section.example && (
+                  <CodeBlock
+                    language={section.example.language}
+                    title={section.example.title}
+                    code={section.example.code}
+                  />
+                )}
+              </div>
+            ))}
+
+            {/* Diagram */}
             {chapter.diagram && (
               <div>
                 <h4 className="text-md font-semibold text-white mb-3">Architecture Diagram</h4>

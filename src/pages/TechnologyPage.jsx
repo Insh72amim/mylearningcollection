@@ -17,6 +17,13 @@ const DbtDocs = React.lazy(() => import('../components/dbt/DbtDocs'));
 const DDIABook = React.lazy(() => import('../components/books/DDIABook'));
 const DatabaseInternalsBook = React.lazy(() => import('../components/books/DatabaseInternalsBook'));
 
+// Lazy load category page
+const CategoryPage = React.lazy(() => import('../components/common/CategoryPage'));
+
+// Lazy load LLD components
+const DesignPatterns = React.lazy(() => import('../components/lld/DesignPatterns'));
+const LLDExamples = React.lazy(() => import('../components/lld/LLDExamples'));
+
 // Lazy load visualizer components
 const KafkaArchitecture = React.lazy(() => import('../components/kafka/KafkaArchitecture'));
 
@@ -43,6 +50,9 @@ const TechnologyPage = () => {
       case 'DbtDocs': return DbtDocs;
       case 'DDIABook': return DDIABook;
       case 'DatabaseInternalsBook': return DatabaseInternalsBook;
+      case 'CategoryPage': return CategoryPage;
+      case 'DesignPatterns': return DesignPatterns;
+      case 'LLDExamples': return LLDExamples;
       default: return null;
     }
   };
