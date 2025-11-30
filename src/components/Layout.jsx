@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { BookOpen, ChevronDown, ChevronRight } from 'lucide-react';
+import { BookOpen, ChevronDown, ChevronRight, ChevronsUp } from 'lucide-react';
 import { categories } from '../config/technologies';
 
 const Layout = () => {
@@ -76,6 +76,17 @@ const Layout = () => {
             <BookOpen size={20} />
             <span>Home</span>
           </Link>
+
+          {/* Collapse All Option */}
+          {expandedCategories.length > 0 && (
+            <button
+              onClick={() => setExpandedCategories([])}
+              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-lg transition-colors group"
+            >
+              <ChevronsUp size={16} className="group-hover:-translate-y-0.5 transition-transform" />
+              <span>Collapse All</span>
+            </button>
+          )}
 
           {/* Categories */}
           {categories.map((category) => {
