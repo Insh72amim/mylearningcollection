@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { BookOpen, ChevronDown, ChevronRight, ChevronsUp } from 'lucide-react';
+import { BookOpen, ChevronDown, ChevronRight, ChevronsUp, Menu, X } from 'lucide-react';
 import { categories } from '../config/technologies';
 
 const Layout = () => {
   const location = useLocation();
   const [expandedCategories, setExpandedCategories] = useState(['data-engineering', 'databases']);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleCategory = (categoryId) => {
     setExpandedCategories(prev =>
@@ -54,10 +55,27 @@ const Layout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-900 text-white">
-      {/* Sidebar */}
-      <div className="w-72 bg-gray-800 border-r border-gray-700 flex flex-col overflow-hidden">
-        <div className="p-6 border-b border-gray-700 flex-shrink-0">
+    <div className="flex h-screen bg-gray-900 text-white overflow-hidden">
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-4 z-50">
+        <Link to="/" className="flex items-center gap-2">
+          <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-lg" />
+          <h1 className="text-xl font-bold">LearnWithAI</h1>
+        </Link>
+        <button 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="p-2 text-gray-400 hover:text-white"
+        >
+          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Sidebar - Desktop & Mobile Overlay */}
+      <div className={`
+        fixed md:static inset-y-0 left-0 z-40 w-72 bg-gray-800 border-r border-gray-700 flex flex-col transform transition-transform duration-300 ease-in-out
+        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
+        <div className="p-6 border-b border-gray-700 flex-shrink-0 hidden md:block">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-lg" />
             <h1 className="text-xl font-bold">LearnWithAI</h1>
@@ -65,10 +83,16 @@ const Layout = () => {
           <p className="text-xs text-gray-400 mt-1">Master Backend & Data Engineering</p>
         </div>
 
+        {/* Mobile Menu Header (just for spacing/close) */}
+        <div className="md:hidden h-16 flex items-center justify-end px-4 border-b border-gray-700">
+           {/* Spacer to align with header */}
+        </div>
+
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {/* Home Link */}
           <Link
             to="/"
+            onClick={() => setIsMobileMenuOpen(false)}
             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
               isActive('/') ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700'
             }`}
@@ -121,14 +145,13 @@ const Layout = () => {
                         <Link
                           key={tech.id}
                           to={tech.comingSoon ? '#' : techPath}
-                          className={`flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
-                            active
-                              ? `${colorClasses.bg} ${colorClasses.text} font-medium`
-                              : tech.comingSoon
-                              ? 'text-gray-500 cursor-not-allowed'
-                              : 'text-gray-400 hover:text-white hover:bg-gray-700'
-                          }`}
-                          onClick={(e) => tech.comingSoon && e.preventDefault()}
+                          onClick={(e) => {
+                            if (tech.comingSoon) {
+                              e.preventDefault();
+                            } else {
+                              setIsMobileMenuOpen(false);
+                            }
+                          }}
                         >
                           <span>{tech.name}</span>
                           {tech.comingSoon ? (
@@ -151,8 +174,16 @@ const Layout = () => {
         </nav>
       </div>
 
+      {/* Overlay backdrop for mobile */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Main Content */}
-      <div className="flex-1 overflow-auto bg-gray-900">
+      <div className="flex-1 overflow-auto bg-gray-900 pt-16 md:pt-0 w-full">
         <Outlet />
       </div>
     </div>
