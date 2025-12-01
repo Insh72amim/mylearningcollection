@@ -1,8 +1,71 @@
 import React from 'react';
-import Mermaid from '../common/Mermaid';
+import { MarkerType } from 'reactflow';
+import InteractiveDiagram from '../common/InteractiveDiagram';
 import CodeBlock from '../common/CodeBlock';
 
 const SnowflakeDocs = () => {
+  // 1. Architecture Diagram
+  const archNodes = [
+    { id: 'users', position: { x: 250, y: 0 }, data: { label: 'Users & Apps (BI, ETL, DS)' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 200 } },
+    { id: 'services', position: { x: 250, y: 100 }, data: { label: 'Cloud Services (Auth, Meta, Opt)' }, style: { background: '#7c2d12', color: 'white', border: '1px solid #f97316', width: 250 } },
+    { id: 'vw1', position: { x: 50, y: 250 }, data: { label: 'VW: Small' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 100 } },
+    { id: 'vw2', position: { x: 250, y: 250 }, data: { label: 'VW: Large' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 100 } },
+    { id: 'vw3', position: { x: 450, y: 250 }, data: { label: 'VW: X-Large' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 100 } },
+    { id: 'storage', position: { x: 250, y: 350 }, data: { label: 'Storage (S3/Blob/GCS)' }, style: { background: '#065f46', color: 'white', border: '1px solid #10b981', width: 250 } },
+  ];
+  const archEdges = [
+    { id: 'e1', source: 'users', target: 'services', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e2', source: 'services', target: 'vw1', style: { stroke: '#f97316' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e3', source: 'services', target: 'vw2', style: { stroke: '#f97316' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e4', source: 'services', target: 'vw3', style: { stroke: '#f97316' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e5', source: 'vw1', target: 'storage', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e6', source: 'vw2', target: 'storage', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e7', source: 'vw3', target: 'storage', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
+  // 2. Caching Flow
+  const cacheNodes = [
+    { id: 'u1', position: { x: 0, y: 0 }, data: { label: 'User 1' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 80 } },
+    { id: 'vw', position: { x: 150, y: 100 }, data: { label: 'Warehouse' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 100 } },
+    { id: 's', position: { x: 150, y: 200 }, data: { label: 'Storage' }, style: { background: '#065f46', color: 'white', border: '1px solid #10b981', width: 100 } },
+    { id: 'rc', position: { x: 300, y: 100 }, data: { label: 'Result Cache' }, style: { background: '#7c3aed', color: 'white', border: '1px solid #8b5cf6', width: 100 } },
+    { id: 'u2', position: { x: 450, y: 0 }, data: { label: 'User 2' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 80 } },
+  ];
+  const cacheEdges = [
+    { id: 'c1', source: 'u1', target: 'vw', label: 'Query', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'c2', source: 'vw', target: 's', label: 'Read', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'c3', source: 's', target: 'vw', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'c4', source: 'vw', target: 'rc', label: 'Save', style: { stroke: '#8b5cf6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'c5', source: 'u2', target: 'rc', label: 'Same Query', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'c6', source: 'rc', target: 'u2', label: 'Instant Result', style: { stroke: '#8b5cf6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
+  // 3. Time Travel Timeline
+  const timeNodes = [
+    { id: 'now', position: { x: 0, y: 50 }, data: { label: 'Active Data' }, style: { background: '#059669', color: 'white', border: '1px solid #10b981', width: 120 } },
+    { id: 'tt', position: { x: 200, y: 50 }, data: { label: 'Time Travel (1-90 days)' }, style: { background: '#1e40af', color: 'white', border: '1px solid #3b82f6', width: 180 } },
+    { id: 'fs', position: { x: 450, y: 50 }, data: { label: 'Fail-Safe (7 days)' }, style: { background: '#b91c1c', color: 'white', border: '1px solid #ef4444', width: 150 } },
+    { id: 'del', position: { x: 650, y: 50 }, data: { label: 'Deleted' }, style: { background: '#1f2937', color: 'gray', border: '1px dashed gray', width: 100 } },
+  ];
+  const timeEdges = [
+    { id: 't1', source: 'now', target: 'tt', label: 'History', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 't2', source: 'tt', target: 'fs', label: 'Expire', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 't3', source: 'fs', target: 'del', label: 'Purge', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
+  // 4. Data Sharing
+  const shareNodes = [
+    { id: 'prov', position: { x: 50, y: 100 }, data: { label: 'Provider DB' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 120 } },
+    { id: 'share', position: { x: 250, y: 100 }, data: { label: 'Share Object' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 120 } },
+    { id: 'c1', position: { x: 450, y: 0 }, data: { label: 'Consumer 1 DB' }, style: { background: '#065f46', color: 'white', border: '1px solid #10b981', width: 120 } },
+    { id: 'c2', position: { x: 450, y: 200 }, data: { label: 'Consumer 2 DB' }, style: { background: '#065f46', color: 'white', border: '1px solid #10b981', width: 120 } },
+  ];
+  const shareEdges = [
+    { id: 's1', source: 'prov', target: 'share', label: 'Grant Access', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 's2', source: 'share', target: 'c1', label: 'Read Only', style: { stroke: '#3b82f6', strokeDasharray: '5,5' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 's3', source: 'share', target: 'c2', label: 'Read Only', style: { stroke: '#3b82f6', strokeDasharray: '5,5' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
   return (
     <div className="max-w-5xl mx-auto text-gray-300 space-y-16 pb-20">
       
@@ -26,49 +89,12 @@ const SnowflakeDocs = () => {
         
         <div className="bg-gray-800 p-8 rounded-xl border border-gray-700 mb-8">
           <h3 className="text-xl font-semibold text-white mb-4">The Three-Layer Architecture</h3>
-          <Mermaid chart={`
-            graph TB
-              subgraph Users [Users & Applications]
-                U1[BI Tools]
-                U2[ETL Pipelines]
-                U3[Data Scientists]
-              end
-              
-              subgraph Compute [Virtual Warehouses - Compute Layer]
-                VW1[VW: SMALL<br/>1 node]
-                VW2[VW: LARGE<br/>8 nodes]
-                VW3[VW: X-LARGE<br/>16 nodes]
-              end
-              
-              subgraph Services [Cloud Services Layer]
-                AUTH[Authentication]
-                META[Metadata]
-                QO[Query Optimizer]
-                TX[Transaction Manager]
-              end
-              
-              subgraph Storage [Storage Layer - S3/Azure Blob/GCS]
-                T1[(Table 1<br/>Micro-partitions)]
-                T2[(Table 2<br/>Micro-partitions)]
-                T3[(Table 3<br/>Micro-partitions)]
-              end
-              
-              U1 --> Services
-              U2 --> Services
-              U3 --> Services
-              
-              Services --> VW1
-              Services --> VW2
-              Services --> VW3
-              
-              VW1 --> Storage
-              VW2 --> Storage
-              VW3 --> Storage
-              
-              style Services fill:#7c2d12,stroke:#f97316
-              style Compute fill:#1e3a8a,stroke:#3b82f6
-              style Storage fill:#065f46,stroke:#10b981
-          `} />
+          <InteractiveDiagram 
+            initialNodes={archNodes} 
+            initialEdges={archEdges} 
+            title="Snowflake Architecture"
+            height="450px"
+          />
           
           <div className="mt-6 space-y-4">
             <div className="bg-gray-900 p-4 rounded border border-blue-900/50">
@@ -189,27 +215,12 @@ ALTER WAREHOUSE ETL_WH SET SCALING_POLICY = 'ECONOMY';`} />
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">Result Set Caching</h3>
             <p className="mb-4">Snowflake caches query results for 24 hours. Identical queries = instant results, zero compute cost.</p>
-            <Mermaid chart={`
-              sequenceDiagram
-                participant U1 as User 1
-                participant VW as Virtual Warehouse
-                participant RC as Result Cache
-                participant S as Storage
-                
-                U1->>VW: SELECT * FROM sales WHERE date='2024-01-15'
-                VW->>S: Read micro-partitions
-                S->>VW: Data
-                VW->>VW: Process query
-                VW->>RC: Cache result (24h TTL)
-                VW->>U1: Result
-                
-                Note over U1,RC: 10 minutes later...
-                
-                participant U2 as User 2
-                U2->>VW: SELECT * FROM sales WHERE date='2024-01-15' (exact same)
-                VW->>RC: Check cache
-                RC->>U2: Cached result (0 compute cost!)
-            `} />
+            <InteractiveDiagram 
+              initialNodes={cacheNodes} 
+              initialEdges={cacheEdges} 
+              title="Result Cache Flow"
+              height="350px"
+            />
           </div>
         </div>
       </section>
@@ -295,17 +306,12 @@ WHERE table_name = 'EVENTS';`} />
         <div className="space-y-6">
           <div className="bg-gray-800 p-8 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">Time Travel Capabilities</h3>
-            <Mermaid chart={`
-              timeline
-                title Data Retention Timeline
-                section Time Travel (Queryable)
-                  Standard: 1 day (default)
-                  Enterprise: Up to 90 days
-                section Fail-Safe (Recovery Only)
-                  All Editions: 7 days after Time Travel
-                section Permanently Deleted
-                  After Fail-Safe: Data gone
-            `} />
+            <InteractiveDiagram 
+              initialNodes={timeNodes} 
+              initialEdges={timeEdges} 
+              title="Time Travel Timeline"
+              height="350px"
+            />
             
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-gray-900 p-4 rounded border border-blue-900/50">
@@ -365,29 +371,11 @@ CREATE TABLE sales_experiment CLONE sales;
         <div className="space-y-6">
           <div className="bg-gray-800 p-8 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">How Data Sharing Works</h3>
-            <Mermaid chart={`
-              graph LR
-                subgraph Provider Account
-                  DB[(Production DB)]
-                  SHARE[Share Object]
-                  DB --> SHARE
-                end
-                
-                subgraph Consumer Account 1
-                  VWDB1[(Virtual DB)]
-                end
-                
-                subgraph Consumer Account 2
-                  VWDB2[(Virtual DB)]
-                end
-                
-                SHARE -.-> VWDB1
-                SHARE -.-> VWDB2
-                
-                style SHARE fill:#1e3a8a,stroke:#3b82f6
-                style VWDB1 fill:#065f46,stroke:#10b981
-                style VWDB2 fill:#065f46,stroke:#10b981
-            `} />
+            <InteractiveDiagram 
+              initialNodes={shareNodes} 
+              initialEdges={shareEdges} 
+              title="Secure Data Sharing" 
+            />
             
             <div className="mt-6 bg-gray-900 p-4 rounded border border-gray-700">
               <p className="text-sm">

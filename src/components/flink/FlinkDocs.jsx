@@ -54,7 +54,7 @@ const FlinkDocs = () => {
             Flink is a distributed processing engine. It follows a Master-Slave architecture where the JobManager coordinates execution and TaskManagers execute the actual code.
           </p>
           
-          {/* Mermaid Diagram */}
+
 
           <div className="mb-8">
             <InteractiveDiagram 

@@ -1,8 +1,38 @@
 import React from 'react';
-import Mermaid from '../common/Mermaid';
+import { MarkerType } from 'reactflow';
+import InteractiveDiagram from '../common/InteractiveDiagram';
 import CodeBlock from '../common/CodeBlock';
 
 const ParquetDocs = () => {
+  const fileStructureNodes = [
+    { id: 'h1', position: { x: 250, y: 0 }, data: { label: 'Header: PAR1' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 200 } },
+    
+    // Row Group 1
+    { id: 'rg1', position: { x: 100, y: 100 }, data: { label: 'Row Group 1' }, style: { background: 'rgba(30, 58, 138, 0.1)', color: 'white', border: '1px dashed #3b82f6', width: 200, height: 250, zIndex: -1 } },
+    { id: 'cc1a', position: { x: 125, y: 140 }, data: { label: 'Col Chunk: id' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 150 } },
+    { id: 'cc1b', position: { x: 125, y: 200 }, data: { label: 'Col Chunk: name' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 150 } },
+    { id: 'cc1c', position: { x: 125, y: 260 }, data: { label: 'Col Chunk: age' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 150 } },
+
+    // Row Group 2
+    { id: 'rg2', position: { x: 400, y: 100 }, data: { label: 'Row Group 2' }, style: { background: 'rgba(30, 58, 138, 0.1)', color: 'white', border: '1px dashed #3b82f6', width: 200, height: 250, zIndex: -1 } },
+    { id: 'cc2a', position: { x: 425, y: 140 }, data: { label: 'Col Chunk: id' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 150 } },
+    { id: 'cc2b', position: { x: 425, y: 200 }, data: { label: 'Col Chunk: name' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 150 } },
+    { id: 'cc2c', position: { x: 425, y: 260 }, data: { label: 'Col Chunk: age' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 150 } },
+
+    { id: 'fm', position: { x: 250, y: 400 }, data: { label: 'Footer Metadata' }, style: { background: '#7c2d12', color: 'white', border: '1px solid #f97316', width: 200 } },
+    { id: 'h2', position: { x: 250, y: 500 }, data: { label: 'Footer: PAR1' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 200 } },
+  ];
+
+  const fileStructureEdges = [
+    { id: 'e1', source: 'h1', target: 'rg1', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e2', source: 'h1', target: 'rg2', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    
+    { id: 'e3', source: 'rg1', target: 'fm', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e4', source: 'rg2', target: 'fm', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    
+    { id: 'e5', source: 'fm', target: 'h2', style: { stroke: '#f97316' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
   return (
     <div className="max-w-5xl mx-auto text-gray-300 space-y-16 pb-20">
       
@@ -83,36 +113,11 @@ const ParquetDocs = () => {
 
         <div className="bg-gray-800 p-8 rounded-xl border border-gray-700 mb-8">
           <h3 className="text-xl font-semibold text-white mb-4">Parquet File Structure</h3>
-          <Mermaid chart={`
-            graph TB
-              subgraph " "
-                H1[Header: Magic Number PAR1]
-                
-                subgraph RG1[Row Group 1]
-                  CC1A[Column Chunk: id]
-                  CC1B[Column Chunk: name]
-                  CC1C[Column Chunk: age]
-                end
-                
-                subgraph RG2[Row Group 2]
-                  CC2A[Column Chunk: id]
-                  CC2B[Column Chunk: name]
-                  CC2C[Column Chunk: age]
-                end
-                
-                FM[Footer Metadata]
-                H2[Footer: Magic Number PAR1]
-              end
-              
-              H1 --> RG1
-              RG1 --> RG2
-              RG2 --> FM
-              FM --> H2
-              
-              style H1 fill:#1e3a8a,stroke:#3b82f6
-              style H2 fill:#1e3a8a,stroke:#3b82f6
-              style FM fill:#7c2d12,stroke:#f97316
-          `} />
+          <InteractiveDiagram 
+            initialNodes={fileStructureNodes} 
+            initialEdges={fileStructureEdges} 
+            title="Parquet File Structure" 
+          />
           
           <div className="mt-6 space-y-4">
             <div className="bg-gray-900 p-4 rounded border border-gray-600">

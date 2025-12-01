@@ -86,7 +86,7 @@ const Home = () => {
           <h3 className="text-xl font-bold text-white mb-2">🚀 Interactive Learning</h3>
           <p className="text-gray-300">
             Each module includes comprehensive documentation with syntax-highlighted code examples, 
-            Mermaid architecture diagrams, and for select technologies, interactive visualizations 
+            Interactive architecture diagrams, and for select technologies, interactive visualizations 
             to see concepts in action.
           </p>
         </div>

@@ -21,6 +21,11 @@ const AvroDocs = React.lazy(() => import("../components/avro/AvroDocs"));
 const ProtobufDocs = React.lazy(() => import("../components/protobuf/ProtobufDocs"));
 const IcebergDocs = React.lazy(() => import("../components/iceberg/IcebergDocs"));
 const SnowflakeDocs = React.lazy(() => import("../components/snowflake/SnowflakeDocs"));
+const MongoDBDocs = React.lazy(() => import("../components/mongodb/MongoDBDocs"));
+const CassandraDocs = React.lazy(() => import("../components/cassandra/CassandraDocs"));
+const DynamoDBDocs = React.lazy(() => import("../components/dynamodb/DynamoDBDocs"));
+const ElasticsearchDocs = React.lazy(() => import("../components/elasticsearch/ElasticsearchDocs"));
+const Neo4jDocs = React.lazy(() => import("../components/neo4j/Neo4jDocs"));
 
 // Lazy load book components
 const DDIABook = React.lazy(() => import("../components/books/DDIABook"));
@@ -95,6 +100,16 @@ const TechnologyPage = () => {
         return IcebergDocs;
       case "SnowflakeDocs":
         return SnowflakeDocs;
+      case "MongoDBDocs":
+        return MongoDBDocs;
+      case "CassandraDocs":
+        return CassandraDocs;
+      case "DynamoDBDocs":
+        return DynamoDBDocs;
+      case "ElasticsearchDocs":
+        return ElasticsearchDocs;
+      case "Neo4jDocs":
+        return Neo4jDocs;
       case "DDIABook":
         return DDIABook;
       case "DatabaseInternalsBook":

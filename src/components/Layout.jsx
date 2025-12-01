@@ -81,6 +81,30 @@ const Layout = () => {
         text: "text-red-400",
         hover: "hover:bg-red-900/50",
       },
+      amber: {
+        bg: "bg-amber-900/30",
+        border: "border-amber-700/50",
+        text: "text-amber-400",
+        hover: "hover:bg-amber-900/50",
+      },
+      sky: {
+        bg: "bg-sky-900/30",
+        border: "border-sky-700/50",
+        text: "text-sky-400",
+        hover: "hover:bg-sky-900/50",
+      },
+      indigo: {
+        bg: "bg-indigo-900/30",
+        border: "border-indigo-700/50",
+        text: "text-indigo-400",
+        hover: "hover:bg-indigo-900/50",
+      },
+      fuchsia: {
+        bg: "bg-fuchsia-900/30",
+        border: "border-fuchsia-700/50",
+        text: "text-fuchsia-400",
+        hover: "hover:bg-fuchsia-900/50",
+      },
     };
     return colors[color] || colors.blue;
   };

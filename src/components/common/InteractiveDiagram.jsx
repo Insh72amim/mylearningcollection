@@ -9,7 +9,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
-const InteractiveDiagram = ({ initialNodes, initialEdges, title = "Architecture Diagram" }) => {
+const InteractiveDiagram = ({ initialNodes, initialEdges, title = "Architecture Diagram", height = "500px" }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
@@ -19,7 +19,7 @@ const InteractiveDiagram = ({ initialNodes, initialEdges, title = "Architecture 
   );
 
   return (
-    <div className="h-[500px] w-full bg-gray-900 rounded-xl border border-gray-700 overflow-hidden shadow-2xl">
+    <div className={`h-[${height}] w-full bg-gray-900 rounded-xl border border-gray-700 overflow-hidden shadow-2xl`} style={{ height }}>
       <div className="bg-gray-800 px-4 py-2 border-b border-gray-700 flex justify-between items-center">
         <span className="text-sm font-medium text-gray-300">{title}</span>
         <span className="text-xs text-gray-500">Interactive • Scroll to Zoom • Drag to Pan</span>
@@ -31,6 +31,9 @@ const InteractiveDiagram = ({ initialNodes, initialEdges, title = "Architecture 
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         fitView
+        fitViewOptions={{ padding: 0.15, minZoom: 0.5, maxZoom: 1.5 }}
+        minZoom={0.3}
+        maxZoom={2}
         attributionPosition="bottom-right"
         className="bg-gray-900"
       >

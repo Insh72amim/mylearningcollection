@@ -1,13 +1,33 @@
 import React from 'react';
-import Mermaid from '../common/Mermaid';
+import { MarkerType } from 'reactflow';
+import InteractiveDiagram from '../common/InteractiveDiagram';
 import CodeBlock from '../common/CodeBlock';
 
 const SQLDocs = () => {
+  const executionNodes = [
+    { id: 'sql', position: { x: 50, y: 100 }, data: { label: 'SQL Query' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 100 } },
+    { id: 'p', position: { x: 200, y: 100 }, data: { label: 'Parser' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 100 } },
+    { id: 'lp', position: { x: 350, y: 100 }, data: { label: 'Logical Plan' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 100 } },
+    { id: 'opt', position: { x: 500, y: 100 }, data: { label: 'Optimizer' }, style: { background: '#7c3aed', color: 'white', border: '1px solid #8b5cf6', width: 100 } },
+    { id: 'pp', position: { x: 650, y: 100 }, data: { label: 'Physical Plan' }, style: { background: '#059669', color: 'white', border: '1px solid #10b981', width: 100 } },
+    { id: 'ex', position: { x: 800, y: 100 }, data: { label: 'Executor' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 100 } },
+    { id: 'r', position: { x: 950, y: 100 }, data: { label: 'Results' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 100 } },
+  ];
+
+  const executionEdges = [
+    { id: 'e1', source: 'sql', target: 'p', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e2', source: 'p', target: 'lp', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e3', source: 'lp', target: 'opt', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e4', source: 'opt', target: 'pp', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e5', source: 'pp', target: 'ex', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e6', source: 'ex', target: 'r', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
   return (
     <div className="max-w-5xl mx-auto text-gray-300 space-y-16 pb-20">
       
       {/* Header */}
-      <div className="border-b border gray-700 pb-8">
+      <div className="border-b border-gray-700 pb-8">
         <h1 className="text-4xl font-bold text-white mb-4">SQL: The Deep Dive</h1>
         <p className="text-xl text-gray-400">
           A comprehensive guide to Structured Query Language, from query fundamentals to advanced optimization techniques.
@@ -26,18 +46,11 @@ const SQLDocs = () => {
         
         <div className="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-8">
           <h3 className="text-xl font-semibold text-white mb-4">The Query Execution Flow</h3>
-          <Mermaid chart={`
-            graph LR
-              SQL[SQL Query] --> P[Parser]
-              P --> LP[Logical Plan]
-              LP --> OPT[Optimizer]
-              OPT --> PP[Physical Plan]
-              PP --> EX[Executor]
-              EX --> R[Results]
-              
-              style OPT fill:#7c3aed,stroke:#a78bfa
-              style PP fill:#059669,stroke:#10b981
-          `} />
+          <InteractiveDiagram 
+            initialNodes={executionNodes} 
+            initialEdges={executionEdges} 
+            title="SQL Query Execution Pipeline" 
+          />
           <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
             <div className="bg-gray-900 p-3 rounded">
               <strong className="text-blue-400 block mb-1">1. Parser</strong>
@@ -112,7 +125,7 @@ const SQLDocs = () => {
             </div>
           </div>
 
-          <div className="bg-gray- 800 p-6 rounded-xl border border-gray-700">
+          <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">Join Example with Execution Plan</h3>
             <CodeBlock 
               language="sql" 

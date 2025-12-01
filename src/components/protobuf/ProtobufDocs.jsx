@@ -1,8 +1,44 @@
 import React from 'react';
-import Mermaid from '../common/Mermaid';
+import { MarkerType } from 'reactflow';
+import InteractiveDiagram from '../common/InteractiveDiagram';
 import CodeBlock from '../common/CodeBlock';
 
 const ProtobufDocs = () => {
+  const protoNodes = [
+    // Definition
+    { id: 'def', position: { x: 50, y: 150 }, data: { label: '.proto File (Schema)' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 150 } },
+    
+    // Compiler
+    { id: 'comp', position: { x: 250, y: 150 }, data: { label: 'protoc Compiler' }, style: { background: '#7c2d12', color: 'white', border: '1px solid #f97316', width: 150 } },
+    
+    // Generated Code
+    { id: 'gen', position: { x: 450, y: 50 }, data: { label: 'Generated Code' }, style: { background: '#374151', color: 'white', border: '1px dashed #4b5563', width: 180, height: 220 }, type: 'group' },
+    { id: 'java', position: { x: 20, y: 40 }, data: { label: 'Java Classes' }, parentNode: 'gen', extent: 'parent', style: { width: 140, fontSize: '12px' } },
+    { id: 'py', position: { x: 20, y: 80 }, data: { label: 'Python Classes' }, parentNode: 'gen', extent: 'parent', style: { width: 140, fontSize: '12px' } },
+    { id: 'go', position: { x: 20, y: 120 }, data: { label: 'Go Structs' }, parentNode: 'gen', extent: 'parent', style: { width: 140, fontSize: '12px' } },
+    { id: 'cpp', position: { x: 20, y: 160 }, data: { label: 'C++ Classes' }, parentNode: 'gen', extent: 'parent', style: { width: 140, fontSize: '12px' } },
+
+    // Runtime
+    { id: 'run', position: { x: 700, y: 50 }, data: { label: 'Runtime' }, style: { background: '#064e3b', color: 'white', border: '1px dashed #059669', width: 200, height: 220 }, type: 'group' },
+    { id: 'ser', position: { x: 30, y: 40 }, data: { label: 'Serialization' }, parentNode: 'run', extent: 'parent', style: { width: 140 } },
+    { id: 'bin', position: { x: 30, y: 100 }, data: { label: 'Binary Message' }, parentNode: 'run', extent: 'parent', style: { width: 140, background: '#065f46', border: '1px solid #10b981' } },
+    { id: 'deser', position: { x: 30, y: 160 }, data: { label: 'Deserialization' }, parentNode: 'run', extent: 'parent', style: { width: 140 } },
+  ];
+
+  const protoEdges = [
+    { id: 'e1', source: 'def', target: 'comp', label: 'Compile', markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e2', source: 'comp', target: 'java', type: 'smoothstep', markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e3', source: 'comp', target: 'py', type: 'smoothstep', markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e4', source: 'comp', target: 'go', type: 'smoothstep', markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e5', source: 'comp', target: 'cpp', type: 'smoothstep', markerEnd: { type: MarkerType.ArrowClosed } },
+    
+    { id: 'e6', source: 'java', target: 'ser', label: 'Use', type: 'smoothstep', markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e7', source: 'py', target: 'ser', label: 'Use', type: 'smoothstep', markerEnd: { type: MarkerType.ArrowClosed } },
+    
+    { id: 'e8', source: 'ser', target: 'bin', markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e9', source: 'bin', target: 'deser', markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
   return (
     <div className="max-w-5xl mx-auto text-gray-300 space-y-16 pb-20">
       
@@ -26,44 +62,12 @@ const ProtobufDocs = () => {
         
         <div className="bg-gray-800 p-8 rounded-xl border border-gray-700 mb-8">
           <h3 className="text-xl font-semibold text-white mb-4">The Protobuf Workflow</h3>
-          <Mermaid chart={`
-            graph LR
-              subgraph Definition
-                PROTO[.proto File<br/>Schema Definition]
-              end
-              
-              subgraph Compilation
-                PROTOC[protoc Compiler]
-              end
-              
-              subgraph Generated Code
-                JAVA[Java Classes]
-                PYTHON[Python Classes]
-                GO[Go Structs]
-                CPP[C++ Classes]
-              end
-              
-              subgraph Runtime
-                SER[Serialization]
-                DESER[Deserialization]
-                BINARY[Binary Message]
-              end
-              
-              PROTO --> PROTOC
-              PROTOC --> JAVA
-              PROTOC --> PYTHON
-              PROTOC --> GO
-              PROTOC --> CPP
-              
-              JAVA --> SER
-              PYTHON --> SER
-              SER --> BINARY
-              BINARY --> DESER
-              
-              style PROTO fill:#1e3a8a,stroke:#3b82f6
-              style PROTOC fill:#7c2d12,stroke:#f97316
-              style BINARY fill:#065f46,stroke:#10b981
-          `} />
+          <InteractiveDiagram 
+            initialNodes={protoNodes} 
+            initialEdges={protoEdges} 
+            title="Protobuf Workflow"
+            height="400px"
+          />
           
           <div className="mt-6 space-y-4">
             <div className="bg-gray-900 p-4 rounded border border-blue-900/50">

@@ -1,8 +1,55 @@
 import React from 'react';
-import Mermaid from '../common/Mermaid';
+import { MarkerType } from 'reactflow';
+import InteractiveDiagram from '../common/InteractiveDiagram';
 import CodeBlock from '../common/CodeBlock';
 
 const IcebergDocs = () => {
+  // 1. Three-Layer Architecture
+  const layerNodes = [
+    { id: 'cat', position: { x: 250, y: 0 }, data: { label: 'Catalog (metadata.json)' }, style: { background: '#7c2d12', color: 'white', border: '1px solid #f97316', width: 200 } },
+    { id: 'snap', position: { x: 250, y: 100 }, data: { label: 'Snapshot Layer' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 200 } },
+    { id: 'ml', position: { x: 250, y: 200 }, data: { label: 'Manifest List Layer' }, style: { background: '#065f46', color: 'white', border: '1px solid #10b981', width: 200 } },
+    { id: 'm', position: { x: 250, y: 300 }, data: { label: 'Manifest Layer' }, style: { background: '#581c87', color: 'white', border: '1px solid #a855f7', width: 200 } },
+    { id: 'data', position: { x: 250, y: 400 }, data: { label: 'Data Files (Parquet)' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 200 } },
+  ];
+  const layerEdges = [
+    { id: 'e1', source: 'cat', target: 'snap', label: 'Points to current', style: { stroke: '#f97316' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e2', source: 'snap', target: 'ml', label: 'Lists manifests', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e3', source: 'ml', target: 'm', label: 'Contains', style: { stroke: '#10b981' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e4', source: 'm', target: 'data', label: 'Stats & Path', style: { stroke: '#a855f7' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
+  // 2. Atomic Commits
+  const commitNodes = [
+    { id: 'w1', position: { x: 0, y: 0 }, data: { label: 'Writer 1' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 100 } },
+    { id: 'w2', position: { x: 400, y: 0 }, data: { label: 'Writer 2' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 100 } },
+    { id: 'cat', position: { x: 200, y: 150 }, data: { label: 'Catalog' }, style: { background: '#7c2d12', color: 'white', border: '1px solid #f97316', width: 100 } },
+    { id: 's3', position: { x: 200, y: 300 }, data: { label: 'Storage (S3)' }, style: { background: '#065f46', color: 'white', border: '1px solid #10b981', width: 100 } },
+  ];
+  const commitEdges = [
+    { id: 'c1', source: 'w1', target: 'cat', label: '1. Read v1', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'c2', source: 'w2', target: 'cat', label: '2. Read v1', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'c3', source: 'w1', target: 's3', label: '3. Write Data', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'c4', source: 'w2', target: 's3', label: '4. Write Data', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'c5', source: 'w1', target: 'cat', label: '5. Swap v1->v2 (OK)', style: { stroke: '#10b981' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'c6', source: 'w2', target: 'cat', label: '6. Swap v1->v3 (FAIL)', style: { stroke: '#ef4444' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
+  // 3. Pruning
+  const pruneNodes = [
+    { id: 'q', position: { x: 250, y: 0 }, data: { label: 'Query: WHERE date=... AND id=...' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 250 } },
+    { id: 'p1', position: { x: 250, y: 100 }, data: { label: '1. Partition Pruning' }, style: { background: '#065f46', color: 'white', border: '1px solid #10b981', width: 200 } },
+    { id: 'p2', position: { x: 250, y: 200 }, data: { label: '2. Manifest Pruning' }, style: { background: '#065f46', color: 'white', border: '1px solid #10b981', width: 200 } },
+    { id: 'p3', position: { x: 250, y: 300 }, data: { label: '3. File Pruning (Min/Max)' }, style: { background: '#065f46', color: 'white', border: '1px solid #10b981', width: 200 } },
+    { id: 'res', position: { x: 250, y: 400 }, data: { label: 'Read 1 File' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 150 } },
+  ];
+  const pruneEdges = [
+    { id: 'pr1', source: 'q', target: 'p1', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'pr2', source: 'p1', target: 'p2', label: 'Filter Partitions', style: { stroke: '#10b981' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'pr3', source: 'p2', target: 'p3', label: 'Filter Manifests', style: { stroke: '#10b981' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'pr4', source: 'p3', target: 'res', label: 'Filter Files', style: { stroke: '#10b981' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
   return (
     <div className="max-w-5xl mx-auto text-gray-300 space-y-16 pb-20">
       
@@ -26,52 +73,12 @@ const IcebergDocs = () => {
         
         <div className="bg-gray-800 p-8 rounded-xl border border-gray-700 mb-8">
           <h3 className="text-xl font-semibold text-white mb-4">The Three-Layer Architecture</h3>
-          <Mermaid chart={`
-            graph TB
-              subgraph Catalog [Metadata Catalog]
-                META[metadata.json<br/>Current Snapshot Pointer]
-              end
-              
-              subgraph Snapshot [Snapshot Layer]
-                S1[Snapshot 1<br/>timestamp: t1]
-                S2[Snapshot 2<br/>timestamp: t2]
-                S3[Snapshot 3<br/>timestamp: t3]
-              end
-              
-              subgraph Manifest Lists [Manifest List Layer]
-                ML1[manifest-list-s1.avro]
-                ML2[manifest-list-s2.avro]
-                ML3[manifest-list-s3.avro]
-              end
-              
-              subgraph Manifests [Manifest Layer]
-                M1[manifest-1.avro<br/>File: a.parquet]
-                M2[manifest-2.avro<br/>File: b.parquet]
-                M3[manifest-3.avro<br/>File: c.parquet]
-              end
-              
-              subgraph Data [Data Files]
-                D1[(a.parquet)]
-                D2[(b.parquet)]
-                D3[(c.parquet)]
-              end
-              
-              META --> S3
-              S1 --> ML1
-              S2 --> ML2
-              S3 --> ML3
-              ML1 --> M1
-              ML2 --> M2
-              ML3 --> M1
-              ML3 --> M3
-              M1 --> D1
-              M2 --> D2
-              M3 --> D3
-              
-              style META fill:#7c2d12,stroke:#f97316
-              style S3 fill:#1e3a8a,stroke:#3b82f6
-              style ML3 fill:#065f46,stroke:#10b981
-          `} />
+          <InteractiveDiagram 
+            initialNodes={layerNodes} 
+            initialEdges={layerEdges} 
+            title="Iceberg Architecture"
+            height="500px"
+          />
           
           <div className="mt-6 space-y-4">
             <div className="bg-gray-900 p-4 rounded border border-orange-900/50">
@@ -132,31 +139,12 @@ const IcebergDocs = () => {
 
         <div className="bg-gray-800 p-8 rounded-xl border border-gray-700 mb-8">
           <h3 className="text-xl font-semibold text-white mb-4">How Atomic Commits Work</h3>
-          <Mermaid chart={`
-            sequenceDiagram
-              participant W1 as Writer 1
-              participant W2 as Writer 2
-              participant C as Catalog
-              participant S as Storage (S3)
-              
-              W1->>C: 1. Read current metadata v1
-              W2->>C: 2. Read current metadata v1
-              
-              W1->>S: 3. Write new data files
-              W2->>S: 4. Write new data files
-              
-              W1->>S: 5. Write new manifest
-              W2->>S: 6. Write new manifest
-              
-              W1->>S: 7. Write new metadata v2
-              W2->>S: 8. Write new metadata v3
-              
-              W1->>C: 9. CAS: v1 → v2 (SUCCESS)
-              W2->>C: 10. CAS: v1 → v3 (CONFLICT!)
-              
-              W2->>W2: 11. Retry: merge changes
-              W2->>C: 12. CAS: v2 → v4 (SUCCESS)
-          `} />
+          <InteractiveDiagram 
+            initialNodes={commitNodes} 
+            initialEdges={commitEdges} 
+            title="Optimistic Concurrency Control"
+            height="400px"
+          />
           
           <div className="mt-6 bg-gray-900 p-4 rounded border border-gray-700">
             <p className="text-sm">
@@ -404,26 +392,12 @@ CALL system.rewrite_data_files(
         <div className="space-y-6">
           <div className="bg-gray-800 p-8 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">Multi-Level Pruning</h3>
-            <Mermaid chart={`
-              graph TD
-                Q[Query: WHERE date = '2024-01-15' AND user_id = 'alice']
-                
-                Q --> P1[1. Partition Pruning]
-                P1 --> P1R[Skip partitions != Jan 15]
-                
-                Q --> P2[2. Manifest Pruning]
-                P2 --> P2R[Skip manifests with date range outside Jan 15]
-                
-                Q --> P3[3. File Pruning]
-                P3 --> P3R[Skip files where user_id range excludes 'alice']
-                
-                P3R --> R[Read Only: file-42.parquet]
-                
-                style P1R fill:#065f46,stroke:#10b981
-                style P2R fill:#065f46,stroke:#10b981
-                style P3R fill:#065f46,stroke:#10b981
-                style R fill:#1e3a8a,stroke:#3b82f6
-            `} />
+            <InteractiveDiagram 
+              initialNodes={pruneNodes} 
+              initialEdges={pruneEdges} 
+              title="Query Pruning"
+              height="450px"
+            />
           </div>
 
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">

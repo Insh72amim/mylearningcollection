@@ -1,8 +1,97 @@
 import React from 'react';
-import Mermaid from '../common/Mermaid';
+import { MarkerType } from 'reactflow';
+import InteractiveDiagram from '../common/InteractiveDiagram';
 import CodeBlock from '../common/CodeBlock';
 
 const SparkDocs = () => {
+  // 1. Spark Architecture
+  const archNodes = [
+    { id: 'd', position: { x: 250, y: 0 }, data: { label: 'Driver Program (SparkContext)' }, style: { background: '#1e40af', color: 'white', border: '1px solid #3b82f6', width: 200 } },
+    { id: 'cm', position: { x: 250, y: 100 }, data: { label: 'Cluster Manager' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 200 } },
+    { id: 'e1', position: { x: 50, y: 250 }, data: { label: 'Executor 1' }, style: { background: '#166534', color: 'white', border: '1px solid #22c55e', width: 120 } },
+    { id: 'e2', position: { x: 290, y: 250 }, data: { label: 'Executor 2' }, style: { background: '#166534', color: 'white', border: '1px solid #22c55e', width: 120 } },
+    { id: 'e3', position: { x: 530, y: 250 }, data: { label: 'Executor 3' }, style: { background: '#166534', color: 'white', border: '1px solid #22c55e', width: 120 } },
+  ];
+  const archEdges = [
+    { id: 'e1-1', source: 'd', target: 'cm', label: 'Submit', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e1-2', source: 'cm', target: 'e1', label: 'Allocate', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e1-3', source: 'cm', target: 'e2', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e1-4', source: 'cm', target: 'e3', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e1-5', source: 'd', target: 'e1', label: 'Tasks', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed }, type: 'smoothstep' },
+    { id: 'e1-6', source: 'd', target: 'e2', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed }, type: 'smoothstep' },
+    { id: 'e1-7', source: 'd', target: 'e3', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed }, type: 'smoothstep' },
+  ];
+
+  // 2. Job Execution Flow (Sequence approximated as vertical flow)
+  const jobNodes = [
+    { id: 'user', position: { x: 150, y: 0 }, data: { label: 'User Code' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 150 } },
+    { id: 'dag', position: { x: 150, y: 80 }, data: { label: 'Driver: Build DAG' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 150 } },
+    { id: 'opt', position: { x: 150, y: 160 }, data: { label: 'Driver: Optimize' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 150 } },
+    { id: 'sched', position: { x: 150, y: 240 }, data: { label: 'Driver: Schedule' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 150 } },
+    { id: 'exec', position: { x: 150, y: 320 }, data: { label: 'Executors: Run' }, style: { background: '#166534', color: 'white', border: '1px solid #22c55e', width: 150 } },
+    { id: 'res', position: { x: 150, y: 400 }, data: { label: 'Return Results' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 150 } },
+  ];
+  const jobEdges = [
+    { id: 'j1', source: 'user', target: 'dag', label: 'Action', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'j2', source: 'dag', target: 'opt', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'j3', source: 'opt', target: 'sched', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'j4', source: 'sched', target: 'exec', label: 'Tasks', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'j5', source: 'exec', target: 'res', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
+  // 3. Catalyst Pipeline
+  const catNodes = [
+    { id: 'sql', position: { x: 0, y: 50 }, data: { label: 'SQL / DataFrame' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 120 } },
+    { id: 'lp', position: { x: 150, y: 50 }, data: { label: 'Logical Plan' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 100 } },
+    { id: 'olp', position: { x: 280, y: 50 }, data: { label: 'Optimized Plan' }, style: { background: '#7c3aed', color: 'white', border: '1px solid #8b5cf6', width: 120 } },
+    { id: 'pp', position: { x: 430, y: 50 }, data: { label: 'Physical Plans' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 120 } },
+    { id: 'cg', position: { x: 580, y: 50 }, data: { label: 'Code Gen' }, style: { background: '#ea580c', color: 'white', border: '1px solid #fb923c', width: 100 } },
+    { id: 'ex', position: { x: 710, y: 50 }, data: { label: 'Execute' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 100 } },
+  ];
+  const catEdges = [
+    { id: 'c1', source: 'sql', target: 'lp', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'c2', source: 'lp', target: 'olp', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'c3', source: 'olp', target: 'pp', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'c4', source: 'pp', target: 'cg', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'c5', source: 'cg', target: 'ex', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
+  // 4. Shuffle Internals
+  const shufNodes = [
+    { id: 's1', position: { x: 0, y: 0 }, data: { label: 'Stage 1' }, style: { background: 'rgba(31, 41, 55, 0.5)', color: 'white', border: '1px dashed #4b5563', width: 150, height: 200, zIndex: -1 } },
+    { id: 't1', position: { x: 25, y: 30 }, data: { label: 'Task 1' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 100 } },
+    { id: 't2', position: { x: 25, y: 130 }, data: { label: 'Task 2' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 100 } },
+    
+    { id: 'files', position: { x: 200, y: 0 }, data: { label: 'Shuffle Files (Disk)' }, style: { background: 'rgba(220, 38, 38, 0.1)', color: 'white', border: '1px dashed #ef4444', width: 150, height: 200, zIndex: -1 } },
+    { id: 'f1', position: { x: 225, y: 30 }, data: { label: 'File 1' }, style: { background: '#991b1b', color: 'white', border: '1px solid #f87171', width: 100 } },
+    { id: 'f2', position: { x: 225, y: 130 }, data: { label: 'File 2' }, style: { background: '#991b1b', color: 'white', border: '1px solid #f87171', width: 100 } },
+
+    { id: 's2', position: { x: 400, y: 0 }, data: { label: 'Stage 2' }, style: { background: 'rgba(31, 41, 55, 0.5)', color: 'white', border: '1px dashed #4b5563', width: 150, height: 200, zIndex: -1 } },
+    { id: 't3', position: { x: 425, y: 30 }, data: { label: 'Task 3' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 100 } },
+    { id: 't4', position: { x: 425, y: 130 }, data: { label: 'Task 4' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 100 } },
+  ];
+  const shufEdges = [
+    { id: 'sh1', source: 't1', target: 'f1', style: { stroke: '#f87171' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'sh2', source: 't2', target: 'f2', style: { stroke: '#f87171' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'sh3', source: 'f1', target: 't3', style: { stroke: '#f87171' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'sh4', source: 'f2', target: 't3', style: { stroke: '#f87171' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'sh5', source: 'f1', target: 't4', style: { stroke: '#f87171' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'sh6', source: 'f2', target: 't4', style: { stroke: '#f87171' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
+  // 5. Streaming Concepts
+  const streamNodes = [
+    { id: 'in', position: { x: 50, y: 50 }, data: { label: 'Input Stream' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 120 } },
+    { id: 'tbl', position: { x: 250, y: 50 }, data: { label: 'Unbounded Table' }, style: { background: '#7c3aed', color: 'white', border: '1px solid #8b5cf6', width: 150 } },
+    { id: 'res', position: { x: 450, y: 50 }, data: { label: 'Result Table' }, style: { background: '#059669', color: 'white', border: '1px solid #10b981', width: 120 } },
+    { id: 'out', position: { x: 650, y: 50 }, data: { label: 'Sink (Kafka/DB)' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 120 } },
+  ];
+  const streamEdges = [
+    { id: 'st1', source: 'in', target: 'tbl', label: 'Append', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'st2', source: 'tbl', target: 'res', label: 'Query', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'st3', source: 'res', target: 'out', label: 'Output', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
   return (
     <div className="max-w-5xl mx-auto text-gray-300 space-y-16 pb-20">
       
@@ -48,49 +137,23 @@ const SparkDocs = () => {
               </li>
             </ul>
           </div>
-          <div className="bg-gray-900 p-4 rounded-xl border border-gray-700 flex items-center justify-center">
-            <Mermaid chart={`
-              graph TB
-                D[Driver Program<br/>SparkContext] -->|Submit| CM[Cluster Manager]
-                CM -->|Allocate| E1[Executor 1]
-                CM -->|Allocate| E2[Executor 2]
-                CM -->|Allocate| E3[Executor 3]
-                D -->|Send Tasks| E1
-                D -->|Send Tasks| E2
-                D -->|Send Tasks| E3
-                E1 -.->|Results| D
-                E2 -.->|Results| D
-                E3 -.->|Results| D
-                
-                style D fill:#1e40af,stroke:#3b82f6
-                style E1 fill:#166534,stroke:#22c55e
-                style E2 fill:#166534,stroke:#22c55e
-                style E3 fill:#166534,stroke:#22c55e
-            `} />
+          <div className="bg-gray-900 p-4 rounded-xl border border-gray-700">
+            <InteractiveDiagram 
+              initialNodes={archNodes} 
+              initialEdges={archEdges} 
+              title="Spark Architecture" 
+            />
           </div>
         </div>
 
         <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
           <h3 className="text-xl font-semibold text-white mb-4">Job Execution Flow</h3>
-          <Mermaid chart={`
-            sequenceDiagram
-              participant U as User Code
-              participant D as Driver
-              participant CM as Cluster Manager
-              participant E as Executors
-              
-              U->>D: spark.read().filter().count()
-              D->>D: Build DAG (Logical Plan)
-              D->>D: Optimize (Catalyst)
-              D->>D: Create Physical Plan
-              D->>D: Split into Stages & Tasks
-              D->>CM: Request Resources
-              CM->>E: Launch Executors
-              D->>E: Send Tasks
-              E->>E: Execute Tasks
-              E->>D: Return Results
-              D->>U: Aggregate & Return
-          `} />
+          <InteractiveDiagram 
+            initialNodes={jobNodes} 
+            initialEdges={jobEdges} 
+            title="Job Execution Flow"
+            height="500px"
+          />
         </div>
       </section>
 
@@ -272,18 +335,11 @@ adults.show()`}
         <div className="space-y-8">
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">Catalyst Optimization Pipeline</h3>
-            <Mermaid chart={`
-              graph LR
-                SQL[SQL Query] --> LP[Logical Plan]
-                DF[DataFrame API] --> LP
-                LP --> OLP[Optimized Logical Plan]
-                OLP --> PP[Physical Plans]
-                PP --> CG[Code Generation]
-                CG --> EX[Execute]
-                
-                style OLP fill:#7c3aed,stroke:#a78bfa
-                style CG fill:#ea580c,stroke:#fb923c
-            `} />
+            <InteractiveDiagram 
+              initialNodes={catNodes} 
+              initialEdges={catEdges} 
+              title="Catalyst Optimization Pipeline" 
+            />
             <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
               <div className="bg-gray-900 p-3 rounded">
                 <strong className="text-purple-400 block mb-1">Rule-Based</strong>
@@ -374,23 +430,11 @@ LIMIT 10;
 
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">Shuffle Internals</h3>
-            <Mermaid chart={`
-              graph LR
-                subgraph Stage 1
-                  T1[Task 1] --> |Write| S1[Shuffle Files]
-                  T2[Task 2] --> |Write| S2[Shuffle Files]
-                end
-                
-                subgraph Stage 2
-                  S1 --> |Read| T3[Task 3]
-                  S2 --> |Read| T3
-                  S1 --> |Read| T4[Task 4]
-                  S2 --> |Read| T4
-                end
-                
-                style S1 fill:#dc2626,stroke:#f87171
-                style S2 fill:#dc2626,stroke:#f87171
-            `} />
+            <InteractiveDiagram 
+              initialNodes={shufNodes} 
+              initialEdges={shufEdges} 
+              title="Shuffle Internals" 
+            />
             <p className="text-sm text-gray-400 mt-4">
               Shuffle writes intermediate data to disk, then subsequent tasks read it over the network. 
               This is <strong>expensive</strong> (disk I/O + network transfer).
@@ -605,15 +649,11 @@ val result = largeDF.join(
         <div className="space-y-8">
           <div className="bg-gray-800 p-6 rounded-xl border border-gray-700">
             <h3 className="text-xl font-semibold text-white mb-4">Streaming Concepts</h3>
-            <Mermaid chart={`
-              graph LR
-                S[Input Stream] -->|Append| T[Unbounded Table]
-                T -->|Query| R[Result Table]
-                R -->|Output| O[Sink: Kafka/DB/Files]
-                
-                style T fill:#7c3aed,stroke:#a78bfa
-                style R fill:#059669,stroke:#10b981
-            `} />
+            <InteractiveDiagram 
+              initialNodes={streamNodes} 
+              initialEdges={streamEdges} 
+              title="Structured Streaming" 
+            />
             <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div className="bg-gray-900 p-4 rounded">
                 <strong className="text-indigo-400 block mb-1">Micro-Batch</strong>

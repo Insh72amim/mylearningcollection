@@ -61,9 +61,7 @@ const AirflowDocs = () => {
             Airflow is a distributed system consisting of several distinct components that work together to schedule and execute tasks. Understanding how these components interact is crucial for debugging and scaling.
           </p>
           
-          {/* Mermaid Diagram */}
 
-          <div className="mb-8">
             <InteractiveDiagram 
               initialNodes={airflowNodes} 
               initialEdges={airflowEdges} 
@@ -103,7 +101,6 @@ const AirflowDocs = () => {
               </p>
             </div>
           </div>
-        </div>
       </section>
 
       {/* 2. Core Concepts */}

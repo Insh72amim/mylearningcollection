@@ -1,8 +1,60 @@
 import React from 'react';
-import Mermaid from '../common/Mermaid';
+import { MarkerType } from 'reactflow';
+import InteractiveDiagram from '../common/InteractiveDiagram';
 import CodeBlock from '../common/CodeBlock';
 
 const KubernetesDocs = () => {
+  const clusterNodes = [
+    // Control Plane
+    { id: 'cp', position: { x: 300, y: 0 }, data: { label: 'Control Plane' }, style: { background: 'rgba(29, 78, 216, 0.1)', color: 'white', border: '1px dashed #3b82f6', width: 350, height: 200, zIndex: -1 } },
+    { id: 'api', position: { x: 400, y: 30 }, data: { label: 'API Server' }, style: { background: '#1d4ed8', color: 'white', border: '1px solid #3b82f6', width: 150 } },
+    { id: 'etcd', position: { x: 400, y: 130 }, data: { label: 'etcd' }, style: { background: '#7c3aed', color: 'white', border: '1px solid #8b5cf6', width: 150 } },
+    { id: 'sch', position: { x: 320, y: 80 }, data: { label: 'Scheduler' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 100, fontSize: '12px' } },
+    { id: 'cm', position: { x: 530, y: 80 }, data: { label: 'Controller Mgr' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 100, fontSize: '12px' } },
+
+    // Worker Node 1
+    { id: 'wn1', position: { x: 50, y: 250 }, data: { label: 'Worker Node 1' }, style: { background: 'rgba(5, 150, 105, 0.1)', color: 'white', border: '1px dashed #10b981', width: 250, height: 250, zIndex: -1 } },
+    { id: 'k1', position: { x: 100, y: 280 }, data: { label: 'Kubelet' }, style: { background: '#059669', color: 'white', border: '1px solid #10b981', width: 150 } },
+    { id: 'p1', position: { x: 100, y: 340 }, data: { label: 'Kube Proxy' }, style: { background: '#059669', color: 'white', border: '1px solid #10b981', width: 150 } },
+    { id: 'pod1', position: { x: 70, y: 420 }, data: { label: 'Pod 1' }, style: { background: '#374151', color: 'white', border: '1px solid #4b5563', width: 80 } },
+    { id: 'pod2', position: { x: 180, y: 420 }, data: { label: 'Pod 2' }, style: { background: '#374151', color: 'white', border: '1px solid #4b5563', width: 80 } },
+
+    // Worker Node 2
+    { id: 'wn2', position: { x: 650, y: 250 }, data: { label: 'Worker Node 2' }, style: { background: 'rgba(5, 150, 105, 0.1)', color: 'white', border: '1px dashed #10b981', width: 250, height: 250, zIndex: -1 } },
+    { id: 'k2', position: { x: 700, y: 280 }, data: { label: 'Kubelet' }, style: { background: '#059669', color: 'white', border: '1px solid #10b981', width: 150 } },
+    { id: 'p2', position: { x: 700, y: 340 }, data: { label: 'Kube Proxy' }, style: { background: '#059669', color: 'white', border: '1px solid #10b981', width: 150 } },
+    { id: 'pod3', position: { x: 735, y: 420 }, data: { label: 'Pod 3' }, style: { background: '#374151', color: 'white', border: '1px solid #4b5563', width: 80 } },
+  ];
+
+  const clusterEdges = [
+    { id: 'e1', source: 'api', target: 'etcd', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed }, markerStart: { type: MarkerType.ArrowClosed } },
+    { id: 'e2', source: 'api', target: 'sch', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e3', source: 'api', target: 'cm', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    
+    { id: 'e4', source: 'api', target: 'k1', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed }, markerStart: { type: MarkerType.ArrowClosed } },
+    { id: 'e5', source: 'api', target: 'k2', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed }, markerStart: { type: MarkerType.ArrowClosed } },
+  ];
+
+  const ingressNodes = [
+    { id: 'internet', position: { x: 50, y: 150 }, data: { label: 'Internet' }, style: { background: '#374151', color: 'white', border: '1px solid #4b5563', width: 100 } },
+    { id: 'ig', position: { x: 250, y: 150 }, data: { label: 'Ingress Controller' }, style: { background: '#db2777', color: 'white', border: '1px solid #be185d', width: 150 } },
+    
+    { id: 's1', position: { x: 500, y: 50 }, data: { label: 'API Service' }, style: { background: '#1d4ed8', color: 'white', border: '1px solid #3b82f6', width: 120 } },
+    { id: 's2', position: { x: 500, y: 250 }, data: { label: 'Web Service' }, style: { background: '#1d4ed8', color: 'white', border: '1px solid #3b82f6', width: 120 } },
+    
+    { id: 'p1', position: { x: 700, y: 50 }, data: { label: 'API Pods' }, style: { background: '#059669', color: 'white', border: '1px solid #10b981', width: 100 } },
+    { id: 'p2', position: { x: 700, y: 250 }, data: { label: 'Web Pods' }, style: { background: '#059669', color: 'white', border: '1px solid #10b981', width: 100 } },
+  ];
+
+  const ingressEdges = [
+    { id: 'e1', source: 'internet', target: 'ig', label: 'HTTP/S', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e2', source: 'ig', target: 's1', label: '/api', style: { stroke: '#db2777' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e3', source: 'ig', target: 's2', label: '/web', style: { stroke: '#db2777' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    
+    { id: 'e4', source: 's1', target: 'p1', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e5', source: 's2', target: 'p2', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
   return (
     <div className="max-w-5xl mx-auto text-gray-300 space-y-16 pb-20">
       
@@ -26,39 +78,11 @@ const KubernetesDocs = () => {
         
         <div className="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-8">
           <h3 className="text-xl font-semibold text-white mb-4">Control Plane vs Worker Nodes</h3>
-          <Mermaid chart={`
-            graph TD
-              subgraph Control Plane
-                API[API Server]
-                SCH[Scheduler]
-                CM[Controller Manager]
-                ETCD[(etcd)]
-              end
-              
-              subgraph Worker Node 1
-                K1[Kubelet]
-                P1[Kube Proxy]
-                POD1[Pod]
-                POD2[Pod]
-              end
-              
-              subgraph Worker Node 2
-                K2[Kubelet]
-                P2[Kube Proxy]
-                POD3[Pod]
-              end
-              
-              API <--> ETCD
-              API --> SCH
-              API --> CM
-              API <--> K1
-              API <--> K2
-              
-              style API fill:#1d4ed8,stroke:#3b82f6
-              style ETCD fill:#7c3aed,stroke:#8b5cf6
-              style K1 fill:#059669,stroke:#10b981
-              style K2 fill:#059669,stroke:#10b981
-          `} />
+          <InteractiveDiagram 
+            initialNodes={clusterNodes} 
+            initialEdges={clusterEdges} 
+            title="Kubernetes Cluster Architecture" 
+          />
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div className="bg-gray-900 p-3 rounded border border-gray-700">
               <strong className="text-blue-400 block mb-1">API Server</strong>
@@ -163,16 +187,11 @@ const KubernetesDocs = () => {
             <p className="text-sm text-gray-400 mb-4">
               Manages external access to services, typically HTTP/HTTPS. Provides load balancing, SSL termination, and name-based virtual hosting.
             </p>
-            <Mermaid chart={`
-              graph LR
-                Internet -->|HTTP/S| IG[Ingress Controller]
-                IG -->|/api| S1[API Service]
-                IG -->|/web| S2[Web Service]
-                S1 --> P1[API Pods]
-                S2 --> P2[Web Pods]
-                
-                style IG fill:#db2777,stroke:#be185d
-            `} />
+            <InteractiveDiagram 
+              initialNodes={ingressNodes} 
+              initialEdges={ingressEdges} 
+              title="Kubernetes Ingress Flow" 
+            />
           </div>
         </div>
       </section>

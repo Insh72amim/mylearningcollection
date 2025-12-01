@@ -58,7 +58,7 @@ const DbtDocs = () => {
             dbt sits on top of your data warehouse. It doesn't extract or load data (that's for tools like Fivetran/Airbyte). It focuses purely on the <strong>Transform</strong> step of ELT.
           </p>
           
-          {/* Mermaid Diagram */}
+
 
           <div className="mb-8">
             <InteractiveDiagram 

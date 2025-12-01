@@ -1,8 +1,40 @@
 import React from 'react';
-import Mermaid from '../common/Mermaid';
+import { MarkerType } from 'reactflow';
+import InteractiveDiagram from '../common/InteractiveDiagram';
 import CodeBlock from '../common/CodeBlock';
 
 const AvroDocs = () => {
+  // 1. Encoding Flow
+  const encNodes = [
+    { id: 'ws', position: { x: 50, y: 0 }, data: { label: 'Writer Schema' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 120 } },
+    { id: 'obj', position: { x: 50, y: 100 }, data: { label: 'Object Data' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 120 } },
+    { id: 'enc', position: { x: 250, y: 50 }, data: { label: 'Binary Encoding' }, style: { background: '#1e40af', color: 'white', border: '1px solid #3b82f6', width: 150 } },
+    { id: 'rs', position: { x: 450, y: 0 }, data: { label: 'Reader Schema' }, style: { background: '#064e3b', color: 'white', border: '1px solid #10b981', width: 120 } },
+    { id: 'out', position: { x: 450, y: 100 }, data: { label: 'Output Object' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 120 } },
+  ];
+  const encEdges = [
+    { id: 'e1', source: 'ws', target: 'enc', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e2', source: 'obj', target: 'enc', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e3', source: 'enc', target: 'rs', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e4', source: 'rs', target: 'out', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
+  // 2. Registry Flow
+  const regNodes = [
+    { id: 'p', position: { x: 50, y: 100 }, data: { label: 'Producer' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 120 } },
+    { id: 'sr', position: { x: 250, y: 0 }, data: { label: 'Schema Registry' }, style: { background: '#7c3aed', color: 'white', border: '1px solid #8b5cf6', width: 150 } },
+    { id: 'k', position: { x: 250, y: 200 }, data: { label: 'Kafka' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 120 } },
+    { id: 'c', position: { x: 450, y: 100 }, data: { label: 'Consumer' }, style: { background: '#1f2937', color: 'white', border: '1px solid #374151', width: 120 } },
+  ];
+  const regEdges = [
+    { id: 'r1', source: 'p', target: 'sr', label: '1. Register', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'r2', source: 'sr', target: 'p', label: 'ID', style: { stroke: '#9ca3af', strokeDasharray: '5,5' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'r3', source: 'p', target: 'k', label: '2. Send (ID+Data)', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'r4', source: 'k', target: 'c', label: '3. Read', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'r5', source: 'c', target: 'sr', label: '4. Fetch Schema', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'r6', source: 'sr', target: 'c', label: 'Schema', style: { stroke: '#9ca3af', strokeDasharray: '5,5' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
   return (
     <div className="max-w-5xl mx-auto text-gray-300 space-y-16 pb-20">
       
@@ -105,29 +137,11 @@ const AvroDocs = () => {
 
         <div className="bg-gray-800 p-8 rounded-xl border border-gray-700 mb-8">
           <h3 className="text-xl font-semibold text-white mb-4">How Avro Encodes Data</h3>
-          <Mermaid chart={`
-            graph LR
-              subgraph Writer
-                WS[Writer Schema]
-                OBJ[{"id:123, name:'Alice'"}]
-              end
-              
-              subgraph Binary Encoding
-                ENC["[0x7B][0x0A][A][l][i][c][e]"]
-              end
-              
-              subgraph Reader
-                RS[Reader Schema]
-                OUT[{"id:123, name:'Alice', email:null"}]
-              end
-              
-              WS --> ENC
-              OBJ --> ENC
-              ENC --> RS
-              RS --> OUT
-              
-              style ENC fill:#1e3a8a,stroke:#3b82f6
-          `} />
+          <InteractiveDiagram 
+            initialNodes={encNodes} 
+            initialEdges={encEdges} 
+            title="Avro Binary Encoding" 
+          />
           
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-gray-900 p-4 rounded border border-gray-600">
@@ -188,23 +202,11 @@ const AvroDocs = () => {
 
         <div className="bg-gray-800 p-8 rounded-xl border border-gray-700 mb-8">
           <h3 className="text-xl font-semibold text-white mb-4">Confluent Schema Registry Flow</h3>
-          <Mermaid chart={`
-            sequenceDiagram
-              participant P as Producer
-              participant SR as Schema Registry
-              participant K as Kafka
-              participant C as Consumer
-              
-              P->>SR: 1. Register Schema v1
-              SR->>P: Schema ID = 42
-              P->>K: 2. Send [ID:42][Binary Data]
-              
-              C->>K: 3. Read Message
-              K->>C: [ID:42][Binary Data]
-              C->>SR: 4. Fetch Schema ID=42
-              SR->>C: Schema v1
-              C->>C: 5. Deserialize with schema
-          `} />
+          <InteractiveDiagram 
+            initialNodes={regNodes} 
+            initialEdges={regEdges} 
+            title="Schema Registry Flow" 
+          />
         </div>
 
         <div className="space-y-6">

@@ -1,8 +1,57 @@
 import React from 'react';
-import Mermaid from '../common/Mermaid';
+import { MarkerType } from 'reactflow';
+import InteractiveDiagram from '../common/InteractiveDiagram';
 import CodeBlock from '../common/CodeBlock';
 
 const RedisDocs = () => {
+  const eventLoopNodes = [
+    { id: 'c1', position: { x: 50, y: 50 }, data: { label: 'Client 1' }, style: { background: '#374151', color: 'white', border: '1px solid #4b5563', width: 100 } },
+    { id: 'c2', position: { x: 50, y: 150 }, data: { label: 'Client 2' }, style: { background: '#374151', color: 'white', border: '1px solid #4b5563', width: 100 } },
+    { id: 'c3', position: { x: 50, y: 250 }, data: { label: 'Client 3' }, style: { background: '#374151', color: 'white', border: '1px solid #4b5563', width: 100 } },
+    
+    { id: 'el', position: { x: 300, y: 150 }, data: { label: 'Event Loop\n(Single Thread)' }, style: { background: '#b91c1c', color: 'white', border: '1px solid #ef4444', width: 150, height: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' } },
+    
+    { id: 'mem', position: { x: 550, y: 150 }, data: { label: 'In-Memory Data' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 150, height: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' } },
+  ];
+
+  const eventLoopEdges = [
+    { id: 'e1', source: 'c1', target: 'el', label: 'Command', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e2', source: 'c2', target: 'el', label: 'Command', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e3', source: 'c3', target: 'el', label: 'Command', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    
+    { id: 'e4', source: 'el', target: 'mem', label: 'Exec', style: { stroke: '#ef4444' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e5', source: 'mem', target: 'el', label: 'Result', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    
+    { id: 'e6', source: 'el', target: 'c1', label: 'Resp', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e7', source: 'el', target: 'c2', label: 'Resp', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'e8', source: 'el', target: 'c3', label: 'Resp', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
+  const sentinelNodes = [
+    { id: 'client', position: { x: 350, y: 0 }, data: { label: 'Client' }, style: { background: '#374151', color: 'white', border: '1px solid #4b5563', width: 100 } },
+    
+    // Sentinels
+    { id: 's1', position: { x: 150, y: 150 }, data: { label: 'Sentinel 1' }, style: { background: '#4b5563', color: 'white', border: '1px solid #374151', width: 100 } },
+    { id: 's2', position: { x: 350, y: 150 }, data: { label: 'Sentinel 2' }, style: { background: '#4b5563', color: 'white', border: '1px solid #374151', width: 100 } },
+    { id: 's3', position: { x: 550, y: 150 }, data: { label: 'Sentinel 3' }, style: { background: '#4b5563', color: 'white', border: '1px solid #374151', width: 100 } },
+    
+    // Redis Cluster
+    { id: 'm', position: { x: 350, y: 300 }, data: { label: 'Master' }, style: { background: '#b91c1c', color: 'white', border: '1px solid #ef4444', width: 120 } },
+    { id: 'r1', position: { x: 200, y: 450 }, data: { label: 'Replica 1' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 120 } },
+    { id: 'r2', position: { x: 500, y: 450 }, data: { label: 'Replica 2' }, style: { background: '#1e3a8a', color: 'white', border: '1px solid #3b82f6', width: 120 } },
+  ];
+
+  const sentinelEdges = [
+    { id: 'e1', source: 'client', target: 's1', label: 'Ask Master?', style: { stroke: '#9ca3af' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    
+    { id: 'mon1', source: 's1', target: 'm', label: 'Monitor', style: { stroke: '#10b981', strokeDasharray: '5,5' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'mon2', source: 's2', target: 'm', label: 'Monitor', style: { stroke: '#10b981', strokeDasharray: '5,5' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'mon3', source: 's3', target: 'm', label: 'Monitor', style: { stroke: '#10b981', strokeDasharray: '5,5' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    
+    { id: 'rep1', source: 'm', target: 'r1', label: 'Replicate', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+    { id: 'rep2', source: 'm', target: 'r2', label: 'Replicate', style: { stroke: '#3b82f6' }, markerEnd: { type: MarkerType.ArrowClosed } },
+  ];
+
   return (
     <div className="max-w-5xl mx-auto text-gray-300 space-y-16 pb-20">
       
@@ -48,21 +97,11 @@ const RedisDocs = () => {
             </ul>
           </div>
           <div className="bg-gray-900 p-4 rounded-xl border border-gray-700 flex items-center justify-center">
-            <Mermaid chart={`
-              graph TD
-                C1[Client 1] -->|Command| EL{Event Loop}
-                C2[Client 2] -->|Command| EL
-                C3[Client 3] -->|Command| EL
-                
-                EL -->|Sequential Execution| MEM[(In-Memory Data)]
-                MEM -->|Result| EL
-                EL -->|Response| C1
-                EL -->|Response| C2
-                EL -->|Response| C3
-                
-                style EL fill:#b91c1c,stroke:#ef4444
-                style MEM fill:#1e3a8a,stroke:#3b82f6
-            `} />
+            <InteractiveDiagram 
+              initialNodes={eventLoopNodes} 
+              initialEdges={eventLoopEdges} 
+              title="Redis Event Loop" 
+            />
           </div>
         </div>
       </section>
@@ -163,30 +202,11 @@ const RedisDocs = () => {
             <p className="mb-4 text-gray-400">
               Provides high availability. Monitors master/replicas and performs automatic failover.
             </p>
-            <Mermaid chart={`
-              graph TD
-                C[Client] -->|Ask Master?| S1
-                subgraph Sentinels
-                  S1[Sentinel 1]
-                  S2[Sentinel 2]
-                  S3[Sentinel 3]
-                end
-                
-                subgraph Redis Cluster
-                  M[Master]
-                  R1[Replica 1]
-                  R2[Replica 2]
-                end
-                
-                S1 -.->|Monitor| M
-                S2 -.->|Monitor| M
-                S3 -.->|Monitor| M
-                
-                M -->|Replicate| R1
-                M -->|Replicate| R2
-                
-                style M fill:#b91c1c,stroke:#ef4444
-            `} />
+            <InteractiveDiagram 
+              initialNodes={sentinelNodes} 
+              initialEdges={sentinelEdges} 
+              title="Redis Sentinel Architecture" 
+            />
           </div>
         </div>
       </section>
