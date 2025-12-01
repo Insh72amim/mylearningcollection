@@ -1,7 +1,32 @@
 import React, { useState } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/light';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Check, Copy } from 'lucide-react';
+
+// Register only languages we actually use (11 total vs 100+ in full Prism)
+import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
+import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
+import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
+import protobuf from 'react-syntax-highlighter/dist/esm/languages/prism/protobuf';
+import java from 'react-syntax-highlighter/dist/esm/languages/prism/java';
+import javascript from 'react-syntax-highlighter/dist/esm/languages/prism/javascript';
+import scala from 'react-syntax-highlighter/dist/esm/languages/prism/scala';
+import yaml from 'react-syntax-highlighter/dist/esm/languages/prism/yaml';
+import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
+import cpp from 'react-syntax-highlighter/dist/esm/languages/prism/cpp';
+import markup from 'react-syntax-highlighter/dist/esm/languages/prism/markup'; // for text/plain
+
+SyntaxHighlighter.registerLanguage('python', python);
+SyntaxHighlighter.registerLanguage('sql', sql);
+SyntaxHighlighter.registerLanguage('json', json);
+SyntaxHighlighter.registerLanguage('protobuf', protobuf);
+SyntaxHighlighter.registerLanguage('java', java);
+SyntaxHighlighter.registerLanguage('javascript', javascript);
+SyntaxHighlighter.registerLanguage('scala', scala);
+SyntaxHighlighter.registerLanguage('yaml', yaml);
+SyntaxHighlighter.registerLanguage('bash', bash);
+SyntaxHighlighter.registerLanguage('cpp', cpp);
+SyntaxHighlighter.registerLanguage('text', markup); // Use markup for plain text
 
 const CodeBlock = ({ code, language = 'python', title }) => {
   const [copied, setCopied] = useState(false);
