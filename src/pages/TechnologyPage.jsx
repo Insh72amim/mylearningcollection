@@ -151,64 +151,64 @@ const TechnologyPage = () => {
   const VisualizerComponent = getVisualizerComponent();
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900">
+    <>
       {/* Header & Tabs */}
-      <div className="bg-gray-800 border-b border-gray-700 px-4 sm:px-6 h-[73px] flex items-center">
-        <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between w-full">
-          <div className="flex items-center gap-4 flex-wrap">
-            <h1 className="text-xl font-bold text-white flex items-center gap-2">
+      <div className="bg-gradient-to-r from-gray-800/70 to-gray-800/60 border border-gray-700/40 min-h-[48px] md:h-[48px] flex items-center z-10 px-3 sm:px-4 md:pr-6 py-2 md:py-0 rounded-2xl shadow-lg backdrop-blur-md mt-2 mx-2 md:mx-0">
+        <div className="flex flex-col gap-3 md:gap-2 md:flex-row md:items-center md:justify-between w-full md:pl-6">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-sm font-bold text-white flex items-center gap-2">
               {tech.name}
               <span
-                className={`text-xs px-2 py-0.5 rounded border bg-${tech.category.color}-900 text-${tech.category.color}-300 border-${tech.category.color}-700`}>
+                className={`text-[9px] px-1.5 py-0.5 rounded-md border bg-${tech.category.color}-900/70 text-${tech.category.color}-300 border-${tech.category.color}-700/40 backdrop-blur-sm whitespace-nowrap`}>
                 {tech.category.name}
               </span>
             </h1>
           </div>
           {tech.hasVisualizer ? (
-            <div className="flex gap-2 bg-gray-900 rounded-lg p-1 border border-gray-700">
+            <div className="flex gap-1.5 bg-gray-900/40 rounded-xl p-0.5 border border-gray-700/40 backdrop-blur-sm shadow-inner w-full md:w-auto">
               <button
                 onClick={() => setActiveTab("docs")}
                 disabled={!tech.hasDoc}
-                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                className={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-2.5 py-1.5 md:py-1 rounded-lg text-xs font-medium transition-all ${
                   activeTab === "docs"
-                    ? `bg-${tech.category.color}-600 text-white shadow-lg`
-                    : "text-gray-400 hover:text-white hover:bg-gray-800"
+                    ? `bg-${tech.category.color}-600/90 text-white shadow-md`
+                    : "text-gray-400 hover:text-white hover:bg-gray-800/40"
                 } ${!tech.hasDoc ? "opacity-50 cursor-not-allowed" : ""}`}>
-                <BookOpen size={16} />
-                Deep Dive & Docs
+                <BookOpen size={12} />
+                <span>Docs</span>
               </button>
               <button
                 onClick={() => setActiveTab("playground")}
                 disabled={!tech.hasVisualizer}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                className={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-2.5 py-1.5 md:py-1 rounded-lg text-xs font-medium transition-all ${
                   activeTab === "playground"
-                    ? `bg-${tech.category.color}-600 text-white shadow-lg`
-                    : "text-gray-400 hover:text-white hover:bg-gray-800"
+                    ? `bg-${tech.category.color}-600/90 text-white shadow-md`
+                    : "text-gray-400 hover:text-white hover:bg-gray-800/40"
                 } ${
                   !tech.hasVisualizer ? "opacity-50 cursor-not-allowed" : ""
                 }`}>
-                <Code size={16} />
-                Interactive Visualizer
+                <Code size={12} />
+                <span>Visualizer</span>
               </button>
             </div>
           ) : (
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border border-gray-700 bg-gray-900 text-gray-100">
-              <BookOpen size={16} />
-              Deep Dive & Docs
+            <span className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 md:py-1 rounded-lg text-xs font-medium border border-gray-700/40 bg-gray-900/40 text-gray-100 backdrop-blur-sm w-full md:w-auto">
+              <BookOpen size={12} />
+              <span>Deep Dive & Docs</span>
             </span>
           )}
         </div>
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-hidden bg-gray-900 relative">
+      <div className="flex-1 bg-gray-900">
         <Suspense
           fallback={
             <div className="p-6 text-gray-400">Loading content...</div>
           }>
           {activeTab === "docs" ? (
             DocComponent ? (
-              <div className="h-full overflow-y-auto px-4 sm:px-8 pb-8">
+              <div className="h-full overflow-y-auto px-4 sm:px-8 pt-6 pb-8">
                 <DocComponent />
               </div>
             ) : (
@@ -238,7 +238,7 @@ const TechnologyPage = () => {
           )}
         </Suspense>
       </div>
-    </div>
+    </>
   );
 };
 

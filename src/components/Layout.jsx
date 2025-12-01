@@ -236,7 +236,7 @@ const Layout = () => {
     <div className="flex flex-col h-full bg-gray-800 border-r border-gray-700 overflow-hidden">
       {/* Sidebar Header */}
       <div className="flex-shrink-0 bg-gray-800 z-10">
-        <div className="px-4 border-b border-gray-700 relative flex items-center h-[73px]">
+        <div className="px-4 border-b border-gray-700 relative flex items-center h-[52px]">
           <Link
             to="/"
             className="flex items-center gap-2 hover:opacity-80 transition-opacity">
