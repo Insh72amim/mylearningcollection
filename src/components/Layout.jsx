@@ -273,8 +273,7 @@ const Layout = () => {
           <button
             onClick={() => setSidebarHidden(false)}
             className="absolute top-16 left-6 z-20 p-3 bg-gray-800/90 border border-gray-700 rounded-full text-gray-200 shadow-lg hover:bg-gray-700 transition"
-            aria-label="Show sidebar"
-          >
+            aria-label="Show sidebar">
             <PanelLeftOpen size={18} />
           </button>
         )}
