@@ -159,6 +159,7 @@ const Layout = () => {
           const techPath = `/${category.id}/${firstTech.id}`;
           const active = isActive(techPath);
           const disabled = firstTech.comingSoon;
+          const Icon = category.icon;
 
           return (
             <Link
@@ -172,7 +173,10 @@ const Layout = () => {
                   : "text-gray-300 hover:text-white hover:bg-gray-700"
               }`}
               onClick={(e) => disabled && e.preventDefault()}>
-              <span>{category.name}</span>
+              <span className="flex items-center gap-2">
+                {Icon && <Icon size={14} />}
+                {category.name}
+              </span>
               {disabled && (
                 <span className="text-[10px] bg-gray-700 text-gray-400 px-2 py-0.5 rounded">
                   Soon

@@ -679,7 +679,6 @@ export const superCategories = [
       "devops-engineering",
       "frontend-engineering",
       "programming-languages",
-      "books",
     ],
   },
   {
@@ -687,7 +686,7 @@ export const superCategories = [
     name: "Interviews",
     icon: Briefcase,
     color: "orange",
-    categoryIds: ["dsa", "system-design", "low-level-design"],
+    categoryIds: ["dsa", "system-design", "low-level-design", "books"],
   },
   {
     id: "interests",
