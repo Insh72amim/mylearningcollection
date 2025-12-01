@@ -200,5 +200,274 @@ export const categoryData = {
         description: 'Model serving, monitoring, A/B testing, continuous training'
       }
     ]
+  },
+  'philosophy': {
+    name: 'Philosophy',
+    description: 'Classic and contemporary philosophical works: ethics, metaphysics, epistemology, and logic',
+    color: 'violet',
+    books: [
+      {
+        id: 'meditations-aurelius',
+        title: 'Meditations',
+        author: 'Marcus Aurelius',
+        year: '180 AD',
+        description: 'Personal writings of the Roman Emperor on Stoic philosophy and self-improvement.',
+        topics: ['Stoicism', 'Ethics', 'Self-Discipline', 'Rationality']
+      },
+      {
+        id: 'republic-plato',
+        title: 'The Republic',
+        author: 'Plato',
+        year: '380 BC',
+        description: 'Socratic dialogue on justice, the ideal state, and the nature of reality.',
+        topics: ['Political Philosophy', 'Theory of Forms', 'Justice', 'Education']
+      },
+      {
+        id: 'critique-pure-reason',
+        title: 'Critique of Pure Reason',
+        author: 'Immanuel Kant',
+        year: '1781',
+        description: 'Foundational work in epistemology examining the limits of human knowledge.',
+        topics: ['Epistemology', 'Metaphysics', 'A Priori Knowledge', 'Transcendental Idealism']
+      },
+      {
+        id: 'being-and-time',
+        title: 'Being and Time',
+        author: 'Martin Heidegger',
+        year: '1927',
+        description: 'Phenomenological analysis of human existence and the question of Being.',
+        topics: ['Phenomenology', 'Existentialism', 'Dasein', 'Ontology']
+      }
+    ],
+    topics: [
+      {
+        id: 'epistemology',
+        title: 'Epistemology',
+        description: 'Theory of knowledge: what can we know and how do we know it?'
+      },
+      {
+        id: 'ethics-moral-philosophy',
+        title: 'Ethics and Moral Philosophy',
+        description: 'Utilitarianism, deontology, virtue ethics, moral realism'
+      },
+      {
+        id: 'metaphysics-ontology',
+        title: 'Metaphysics and Ontology',
+        description: 'Nature of reality, existence, causation, free will'
+      },
+      {
+        id: 'logic-argumentation',
+        title: 'Logic and Argumentation',
+        description: 'Formal logic, informal fallacies, valid reasoning'
+      },
+      {
+        id: 'existentialism-phenomenology',
+        title: 'Existentialism and Phenomenology',
+        description: 'Meaning, authenticity, consciousness, lived experience'
+      }
+    ]
+  },
+  'psychology': {
+    name: 'Psychology',
+    description: 'Human behavior, cognition, development, and mental processes',
+    color: 'pink',
+    books: [
+      {
+        id: 'thinking-fast-slow',
+        title: 'Thinking, Fast and Slow',
+        author: 'Daniel Kahneman',
+        year: '2011',
+        description: 'Nobel Prize winner\'s exploration of two systems of thinking and cognitive biases.',
+        topics: ['Cognitive Biases', 'Heuristics', 'Behavioral Economics', 'Decision Making']
+      },
+      {
+        id: 'influence-cialdini',
+        title: 'Influence: The Psychology of Persuasion',
+        author: 'Robert Cialdini',
+        year: '1984',
+        edition: '7th Edition',
+        description: 'Six principles of persuasion and how they shape our decisions.',
+        topics: ['Persuasion', 'Social Proof', 'Authority', 'Reciprocity', 'Commitment']
+      },
+      {
+        id: 'mans-search-meaning',
+        title: 'Man\'s Search for Meaning',
+        author: 'Viktor Frankl',
+        year: '1946',
+        description: 'Holocaust survivor\'s account and the therapy of finding meaning in life.',
+        topics: ['Logotherapy', 'Existential Psychology', 'Resilience', 'Purpose']
+      },
+      {
+        id: 'interpretation-dreams',
+        title: 'The Interpretation of Dreams',
+        author: 'Sigmund Freud',
+        year: '1899',
+        description: 'Foundational text of psychoanalysis exploring the unconscious mind.',
+        topics: ['Psychoanalysis', 'Unconscious Mind', 'Dream Analysis', 'Id/Ego/Superego']
+      }
+    ],
+    topics: [
+      {
+        id: 'cognitive-biases',
+        title: 'Cognitive Biases',
+        description: 'Confirmation bias, anchoring, availability heuristic, dunning-kruger'
+      },
+      {
+        id: 'behavioral-economics',
+        title: 'Behavioral Economics',
+        description: 'Prospect theory, loss aversion, mental accounting, nudges'
+      },
+      {
+        id: 'developmental-psychology',
+        title: 'Developmental Psychology',
+        description: 'Piaget, Erikson, attachment theory, moral development'
+      },
+      {
+        id: 'clinical-psychology',
+        title: 'Clinical Psychology',
+        description: 'Cognitive behavioral therapy, psychotherapy approaches, mental disorders'
+      },
+      {
+        id: 'social-psychology',
+        title: 'Social Psychology',
+        description: 'Attribution theory, group dynamics, conformity, obedience'
+      }
+    ]
+  },
+  'poetry': {
+    name: 'Poetry',
+    description: 'Classic and contemporary poetry: epic, lyric, narrative, and experimental forms',
+    color: 'rose',
+    books: [
+      {
+        id: 'odyssey-homer',
+        title: 'The Odyssey',
+        author: 'Homer',
+        year: '8th Century BC',
+        description: 'Epic poem recounting Odysseus\'s ten-year journey home after the Trojan War.',
+        topics: ['Epic Poetry', 'Greek Mythology', 'Heroic Journey', 'Oral Tradition']
+      },
+      {
+        id: 'paradise-lost',
+        title: 'Paradise Lost',
+        author: 'John Milton',
+        year: '1667',
+        description: 'Epic poem depicting the fall of man and Satan\'s rebellion against God.',
+        topics: ['Epic Poetry', 'Blank Verse', 'Biblical Themes', 'Theodicy']
+      },
+      {
+        id: 'leaves-of-grass',
+        title: 'Leaves of Grass',
+        author: 'Walt Whitman',
+        year: '1855',
+        edition: 'Deathbed Edition (1891-92)',
+        description: 'Revolutionary collection celebrating democracy, nature, and the self.',
+        topics: ['Free Verse', 'American Poetry', 'Transcendentalism', 'Democratic Spirit']
+      },
+      {
+        id: 'waste-land',
+        title: 'The Waste Land',
+        author: 'T.S. Eliot',
+        year: '1922',
+        description: 'Modernist masterpiece depicting post-WWI disillusionment and cultural fragmentation.',
+        topics: ['Modernism', 'Literary Allusion', 'Fragmentation', 'Myth']
+      }
+    ],
+    topics: [
+      {
+        id: 'meter-prosody',
+        title: 'Meter and Prosody',
+        description: 'Iambic pentameter, dactylic hexameter, rhythm, scansion'
+      },
+      {
+        id: 'poetic-forms',
+        title: 'Poetic Forms',
+        description: 'Sonnet, haiku, ghazal, villanelle, sestina, free verse'
+      },
+      {
+        id: 'literary-devices',
+        title: 'Literary Devices',
+        description: 'Metaphor, simile, imagery, enjambment, caesura, alliteration'
+      },
+      {
+        id: 'poetry-movements',
+        title: 'Major Poetry Movements',
+        description: 'Romanticism, Modernism, Confessionalism, Beat poetry, Language poetry'
+      },
+      {
+        id: 'contemporary-poetry',
+        title: 'Contemporary Poetry',
+        description: 'Spoken word, slam poetry, digital poetry, experimental forms'
+      }
+    ]
+  },
+  'physics': {
+    name: 'Physics',
+    description: 'Classical mechanics, quantum physics, relativity, and modern physics',
+    color: 'cyan',
+    books: [
+      {
+        id: 'feynman-lectures',
+        title: 'The Feynman Lectures on Physics',
+        author: 'Richard Feynman, Robert Leighton, Matthew Sands',
+        year: '1964',
+        description: 'Legendary series covering the entirety of undergraduate physics with clarity and insight.',
+        topics: ['Mechanics', 'Electromagnetism', 'Quantum Mechanics', 'Statistical Mechanics']
+      },
+      {
+        id: 'griffiths-quantum',
+        title: 'Introduction to Quantum Mechanics',
+        author: 'David J. Griffiths',
+        year: '2017',
+        edition: '3rd Edition',
+        description: 'The standard undergraduate text for quantum mechanics with clear explanations.',
+        topics: ['Wave Functions', 'Schrödinger Equation', 'Quantum Harmonic Oscillator', 'Angular Momentum']
+      },
+      {
+        id: 'spacetime-physics',
+        title: 'Spacetime Physics',
+        author: 'Edwin F. Taylor and John Archibald Wheeler',
+        year: '1992',
+        edition: '2nd Edition',
+        description: 'Introduction to special relativity emphasizing geometric approach to spacetime.',
+        topics: ['Special Relativity', 'Lorentz Transformations', 'Spacetime Diagrams', 'Energy-Momentum']
+      },
+      {
+        id: 'goldstein-mechanics',
+        title: 'Classical Mechanics',
+        author: 'Herbert Goldstein',
+        year: '2001',
+        edition: '3rd Edition',
+        description: 'Graduate-level classical mechanics covering advanced topics and mathematical methods.',
+        topics: ['Lagrangian Mechanics', 'Hamiltonian Mechanics', 'Central Forces', 'Rigid Body Dynamics']
+      }
+    ],
+    topics: [
+      {
+        id: 'classical-mechanics',
+        title: 'Classical Mechanics',
+        description: 'Newton\'s laws, Lagrangian/Hamiltonian formulations, conservation laws'
+      },
+      {
+        id: 'electromagnetism',
+        title: 'Electromagnetism',
+        description: 'Maxwell\'s equations, electromagnetic waves, gauge theory'
+      },
+      {
+        id: 'quantum-mechanics',
+        title: 'Quantum Mechanics',
+        description: 'Wave-particle duality, uncertainty principle, Schrödinger equation, quantum states'
+      },
+      {
+        id: 'relativity',
+        title: 'Relativity',
+        description: 'Special relativity, general relativity, spacetime curvature, black holes'
+      },
+      {
+        id: 'statistical-mechanics',
+        title: 'Statistical Mechanics',
+        description: 'Thermodynamics, partition functions, phase transitions, entropy'
+      }
+    ]
   }
 };

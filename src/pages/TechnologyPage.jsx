@@ -16,6 +16,11 @@ const AirflowDocs = React.lazy(() =>
 );
 const FlinkDocs = React.lazy(() => import("../components/flink/FlinkDocs"));
 const DbtDocs = React.lazy(() => import("../components/dbt/DbtDocs"));
+const ParquetDocs = React.lazy(() => import("../components/parquet/ParquetDocs"));
+const AvroDocs = React.lazy(() => import("../components/avro/AvroDocs"));
+const ProtobufDocs = React.lazy(() => import("../components/protobuf/ProtobufDocs"));
+const IcebergDocs = React.lazy(() => import("../components/iceberg/IcebergDocs"));
+const SnowflakeDocs = React.lazy(() => import("../components/snowflake/SnowflakeDocs"));
 
 // Lazy load book components
 const DDIABook = React.lazy(() => import("../components/books/DDIABook"));
@@ -80,6 +85,16 @@ const TechnologyPage = () => {
         return FlinkDocs;
       case "DbtDocs":
         return DbtDocs;
+      case "ParquetDocs":
+        return ParquetDocs;
+      case "AvroDocs":
+        return AvroDocs;
+      case "ProtobufDocs":
+        return ProtobufDocs;
+      case "IcebergDocs":
+        return IcebergDocs;
+      case "SnowflakeDocs":
+        return SnowflakeDocs;
       case "DDIABook":
         return DDIABook;
       case "DatabaseInternalsBook":
