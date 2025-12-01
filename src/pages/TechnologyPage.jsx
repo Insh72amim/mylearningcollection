@@ -26,6 +26,9 @@ const CassandraDocs = React.lazy(() => import("../components/cassandra/Cassandra
 const DynamoDBDocs = React.lazy(() => import("../components/dynamodb/DynamoDBDocs"));
 const ElasticsearchDocs = React.lazy(() => import("../components/elasticsearch/ElasticsearchDocs"));
 const Neo4jDocs = React.lazy(() => import("../components/neo4j/Neo4jDocs"));
+const NodeJSDocs = React.lazy(() => import("../components/nodejs/NodeJSDocs"));
+const FastAPIDocs = React.lazy(() => import("../components/fastapi/FastAPIDocs"));
+const SpringBootDocs = React.lazy(() => import("../components/springboot/SpringBootDocs"));
 
 // Lazy load book components
 const DDIABook = React.lazy(() => import("../components/books/DDIABook"));
@@ -110,6 +113,12 @@ const TechnologyPage = () => {
         return ElasticsearchDocs;
       case "Neo4jDocs":
         return Neo4jDocs;
+      case "NodeJSDocs":
+        return NodeJSDocs;
+      case "FastAPIDocs":
+        return FastAPIDocs;
+      case "SpringBootDocs":
+        return SpringBootDocs;
       case "DDIABook":
         return DDIABook;
       case "DatabaseInternalsBook":

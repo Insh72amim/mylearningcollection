@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/light';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Check, Copy } from 'lucide-react';
+import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { Check, Copy, Terminal } from 'lucide-react';
 
 // Register only languages we actually use (11 total vs 100+ in full Prism)
 import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
@@ -38,16 +38,23 @@ const CodeBlock = ({ code, language = 'python', title }) => {
   };
 
   return (
-    <div className="rounded-xl overflow-hidden border border-gray-700 shadow-2xl bg-[#1e1e1e] my-6">
+    <div className="rounded-xl overflow-hidden border border-gray-700/50 shadow-2xl bg-[#1e1e1e] my-8 group/code transition-all duration-300 hover:border-blue-500/30 hover:shadow-blue-900/10">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[#2d2d2d] border-b border-gray-700">
+      <div className="flex items-center justify-between px-4 py-3 bg-[#282c34] border-b border-gray-700/50">
         <div className="flex items-center gap-2">
           <div className="flex gap-1.5">
             <div className="w-3 h-3 rounded-full bg-red-500/80" />
             <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
             <div className="w-3 h-3 rounded-full bg-green-500/80" />
           </div>
-          {title && <span className="ml-3 text-xs text-gray-400 font-mono">{title}</span>}
+          {title ? (
+            <span className="ml-3 text-xs text-gray-400 font-mono flex items-center gap-2">
+              <Terminal className="w-3 h-3" />
+              {title}
+            </span>
+          ) : (
+            <span className="ml-3 text-xs text-gray-500 font-mono uppercase tracking-wider">{language}</span>
+          )}
         </div>
         <button
           onClick={handleCopy}
@@ -62,13 +69,14 @@ const CodeBlock = ({ code, language = 'python', title }) => {
       <div className="relative group">
         <SyntaxHighlighter
           language={language}
-          style={vscDarkPlus}
+          style={atomOneDark}
           customStyle={{
             margin: 0,
             padding: '1.5rem',
             background: 'transparent',
-            fontSize: '0.9rem',
-            lineHeight: '1.5',
+            fontSize: '0.95rem',
+            lineHeight: '1.6',
+            fontFamily: '"JetBrains Mono", "Fira Code", monospace',
           }}
           showLineNumbers={true}
           wrapLines={true}

@@ -8,6 +8,11 @@ import ReactFlow, {
   MarkerType
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import CustomNode from './CustomNode';
+
+const nodeTypes = {
+  custom: CustomNode,
+};
 
 const InteractiveDiagram = ({ initialNodes, initialEdges, title = "Architecture Diagram", height = "500px" }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -27,6 +32,7 @@ const InteractiveDiagram = ({ initialNodes, initialEdges, title = "Architecture 
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
