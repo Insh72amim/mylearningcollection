@@ -112,25 +112,30 @@ const TechnologyPage = () => {
   const VisualizerComponent = getVisualizerComponent();
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col min-h-screen bg-gray-900">
       {/* Header & Tabs */}
-      <div className="bg-gray-800 border-b border-gray-700 px-6 py-4">
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+      <div className="bg-gray-800 border-b border-gray-700 px-4 py-4 sm:px-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold text-white flex flex-wrap items-center gap-2">
               {tech.name}
               <span
                 className={`text-xs px-2 py-0.5 rounded border bg-${tech.category.color}-900 text-${tech.category.color}-300 border-${tech.category.color}-700`}>
                 {tech.category.name}
               </span>
             </h1>
+            {tech.description && (
+              <p className="text-sm text-gray-400 max-w-2xl">
+                {tech.description}
+              </p>
+            )}
           </div>
           {tech.hasVisualizer ? (
-            <div className="flex bg-gray-900 rounded-lg p-1 border border-gray-700">
+            <div className="flex flex-col gap-2 sm:flex-row bg-gray-900 rounded-lg p-1 border border-gray-700 w-full sm:w-auto">
               <button
                 onClick={() => setActiveTab("docs")}
                 disabled={!tech.hasDoc}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                   activeTab === "docs"
                     ? `bg-${tech.category.color}-600 text-white shadow-lg`
                     : "text-gray-400 hover:text-white hover:bg-gray-800"
@@ -165,11 +170,11 @@ const TechnologyPage = () => {
       <div className="flex-1 overflow-hidden bg-gray-900 relative">
         <Suspense
           fallback={
-            <div className="p-8 text-gray-400">Loading content...</div>
+            <div className="p-6 text-gray-400">Loading content...</div>
           }>
           {activeTab === "docs" ? (
             DocComponent ? (
-              <div className="h-full overflow-y-auto p-8">
+              <div className="h-full overflow-y-auto p-4 sm:p-8">
                 <DocComponent />
               </div>
             ) : (
@@ -181,7 +186,7 @@ const TechnologyPage = () => {
               </div>
             )
           ) : VisualizerComponent ? (
-            <div className="h-full w-full">
+            <div className="h-full w-full overflow-auto">
               <VisualizerComponent />
             </div>
           ) : (

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import {
   BookOpen,
@@ -13,6 +13,8 @@ import { categories, superCategories } from "../config/technologies";
 const Layout = () => {
   const location = useLocation();
   const [sidebarHidden, setSidebarHidden] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [expandedSuperCategories, setExpandedSuperCategories] = useState(() =>
     superCategories.map((group) => group.id)
   );
@@ -192,136 +194,185 @@ const Layout = () => {
   const hasAnyExpanded =
     expandedCategories.length > 0 || expandedSuperCategories.length > 0;
 
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+      if (!mobile) {
+        setMobileSidebarOpen(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const sidebarContent = (
+    <div className="flex flex-col h-full bg-gray-800 border-r border-gray-700 overflow-hidden">
+      {/* Static Header Section */}
+      <div className="flex-shrink-0 bg-gray-800 z-10">
+        <div className="p-6 border-b border-gray-700 relative">
+          <Link
+            to="/"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-lg" />
+            <h1 className="text-xl font-bold">LearnWithAI</h1>
+          </Link>
+          <p className="text-xs text-gray-400 mt-1">
+            Master Backend & Data Engineering
+          </p>
+
+          {isMobile && (
+            <button
+              onClick={() => setMobileSidebarOpen(false)}
+              className="absolute top-6 right-6 text-gray-400 hover:text-white"
+              aria-label="Close sidebar">
+              <PanelLeftClose size={16} />
+            </button>
+          )}
+        </div>
+
+        <div className="px-4 pt-4 pb-2 space-y-2 border-b border-gray-700/50">
+          {/* Home Link */}
+          <Link
+            to="/"
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+              isActive("/")
+                ? "bg-gray-700 text-white"
+                : "text-gray-300 hover:bg-gray-700"
+            }`}>
+            <BookOpen size={20} />
+            <span>Home</span>
+          </Link>
+
+          {/* Collapse All Option */}
+          {hasAnyExpanded && (
+            <button
+              onClick={() => {
+                setExpandedCategories([]);
+                setExpandedSuperCategories([]);
+              }}
+              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-lg transition-colors group">
+              <ChevronsUp
+                size={16}
+                className="group-hover:-translate-y-0.5 transition-transform"
+              />
+              <span>Collapse All</span>
+            </button>
+          )}
+
+          {!isMobile && (
+            <button
+              onClick={() => setSidebarHidden(true)}
+              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-lg transition-colors">
+              <PanelLeftClose size={16} />
+              <span>Hide Sidebar</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Scrollable Navigation */}
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
+        {superCategories.map((group) => {
+          const GroupIcon = group.icon;
+          const isGroupExpanded = expandedSuperCategories.includes(group.id);
+          const colorClasses = getColorClasses(group.color, isGroupExpanded);
+          const layoutMode = group.layout || "nested";
+          const resolvedCategories = group.categoryIds
+            .map((categoryId) => categoryMap.get(categoryId))
+            .filter(Boolean);
+          const contentWrapperClasses =
+            layoutMode === "direct"
+              ? "ml-3 mt-2 space-y-2"
+              : "ml-3 mt-2 space-y-3 border-l-2 border-gray-700/60 pl-3";
+
+          return (
+            <div key={group.id} className="mb-4">
+              <button
+                onClick={() => toggleSuperCategory(group.id)}
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all ${
+                  colorClasses.hover
+                } ${
+                  isGroupExpanded
+                    ? `${colorClasses.bg} border ${colorClasses.border}`
+                    : "text-gray-300"
+                }`}>
+                <div className="flex items-center gap-3">
+                  <GroupIcon
+                    size={20}
+                    className={isGroupExpanded ? colorClasses.text : ""}
+                  />
+                  <span className="font-semibold text-sm">{group.name}</span>
+                </div>
+                {isGroupExpanded ? (
+                  <ChevronDown size={16} />
+                ) : (
+                  <ChevronRight size={16} />
+                )}
+              </button>
+
+              {isGroupExpanded && (
+                <div className={contentWrapperClasses}>
+                  {layoutMode === "direct"
+                    ? renderDirectCategoryLinks(
+                        resolvedCategories,
+                        colorClasses
+                      )
+                    : resolvedCategories.map((category) =>
+                        renderCategoryBlock(category)
+                      )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </nav>
+    </div>
+  );
+
   return (
     <div className="flex h-screen bg-gray-900 text-white">
       {/* Sidebar */}
-      {!sidebarHidden && (
-        <div className="w-80 bg-gray-800 border-r border-gray-700 flex flex-col overflow-hidden">
-          {/* Static Header Section */}
-          <div className="flex-shrink-0 bg-gray-800 z-10">
-            <div className="p-6 border-b border-gray-700">
-              <Link
-                to="/"
-                className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                <img
-                  src="/logo.png"
-                  alt="Logo"
-                  className="w-8 h-8 rounded-lg"
-                />
-                <h1 className="text-xl font-bold">LearnWithAI</h1>
-              </Link>
-              <p className="text-xs text-gray-400 mt-1">
-                Master Backend & Data Engineering
-              </p>
-            </div>
-
-            <div className="px-4 pt-4 pb-2 space-y-2 border-b border-gray-700/50">
-              {/* Home Link */}
-              <Link
-                to="/"
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  isActive("/")
-                    ? "bg-gray-700 text-white"
-                    : "text-gray-300 hover:bg-gray-700"
-                }`}>
-                <BookOpen size={20} />
-                <span>Home</span>
-              </Link>
-
-              {/* Collapse All Option */}
-              {hasAnyExpanded && (
-                <button
-                  onClick={() => {
-                    setExpandedCategories([]);
-                    setExpandedSuperCategories([]);
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-lg transition-colors group">
-                  <ChevronsUp
-                    size={16}
-                    className="group-hover:-translate-y-0.5 transition-transform"
-                  />
-                  <span>Collapse All</span>
-                </button>
-              )}
-
-              <button
-                onClick={() => setSidebarHidden(true)}
-                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-lg transition-colors">
-                <PanelLeftClose size={16} />
-                <span>Hide Sidebar</span>
-              </button>
-            </div>
+      {isMobile ? (
+        <>
+          <div
+            className={`fixed inset-0 z-30 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
+              mobileSidebarOpen
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 pointer-events-none"
+            }`}
+            onClick={() => setMobileSidebarOpen(false)}
+          />
+          <div
+            className={`fixed inset-y-0 left-0 z-40 w-72 max-w-[85%] transform transition-transform duration-300 ${
+              mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
+            }`}>
+            {sidebarContent}
           </div>
-
-          {/* Scrollable Navigation */}
-          <nav className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
-            {superCategories.map((group) => {
-              const GroupIcon = group.icon;
-              const isGroupExpanded = expandedSuperCategories.includes(
-                group.id
-              );
-              const colorClasses = getColorClasses(
-                group.color,
-                isGroupExpanded
-              );
-              const layoutMode = group.layout || "nested";
-              const resolvedCategories = group.categoryIds
-                .map((categoryId) => categoryMap.get(categoryId))
-                .filter(Boolean);
-              const contentWrapperClasses =
-                layoutMode === "direct"
-                  ? "ml-3 mt-2 space-y-2"
-                  : "ml-3 mt-2 space-y-3 border-l-2 border-gray-700/60 pl-3";
-
-              return (
-                <div key={group.id} className="mb-4">
-                  <button
-                    onClick={() => toggleSuperCategory(group.id)}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all ${
-                      colorClasses.hover
-                    } ${
-                      isGroupExpanded
-                        ? `${colorClasses.bg} border ${colorClasses.border}`
-                        : "text-gray-300"
-                    }`}>
-                    <div className="flex items-center gap-3">
-                      <GroupIcon
-                        size={20}
-                        className={isGroupExpanded ? colorClasses.text : ""}
-                      />
-                      <span className="font-semibold text-sm">
-                        {group.name}
-                      </span>
-                    </div>
-                    {isGroupExpanded ? (
-                      <ChevronDown size={16} />
-                    ) : (
-                      <ChevronRight size={16} />
-                    )}
-                  </button>
-
-                  {isGroupExpanded && (
-                    <div className={contentWrapperClasses}>
-                      {layoutMode === "direct"
-                        ? renderDirectCategoryLinks(
-                            resolvedCategories,
-                            colorClasses
-                          )
-                        : resolvedCategories.map((category) =>
-                            renderCategoryBlock(category)
-                          )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </nav>
-        </div>
+        </>
+      ) : (
+        !sidebarHidden && (
+          <div className="hidden lg:flex w-80">{sidebarContent}</div>
+        )
       )}
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto bg-gray-900 relative">
-        {sidebarHidden && (
+        <div className="lg:hidden sticky top-0 z-20 flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-gray-900/95 backdrop-blur">
+          <button
+            onClick={() => setMobileSidebarOpen(true)}
+            className="flex items-center gap-2 text-sm font-medium text-gray-100">
+            <PanelLeftOpen size={18} />
+            <span>Menu</span>
+          </button>
+          <Link to="/" className="text-base font-semibold">
+            LearnWithAI
+          </Link>
+        </div>
+
+        {!isMobile && sidebarHidden && (
           <button
             onClick={() => setSidebarHidden(false)}
             className="absolute top-16 left-6 z-20 p-3 bg-gray-800/90 border border-gray-700 rounded-full text-gray-200 shadow-lg hover:bg-gray-700 transition"

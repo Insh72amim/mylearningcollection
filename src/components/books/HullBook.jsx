@@ -41,28 +41,28 @@ const HullBook = ({ onBack }) => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto text-gray-300 space-y-8 pb-20">
+    <div className="w-full max-w-4xl lg:max-w-5xl mx-auto px-4 sm:px-6 lg:px-0 text-gray-300 space-y-8 pb-16 sm:pb-20">
       {/* Header */}
       <div className="border-b border-gray-700 pb-8">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-6 transition-colors">
+          className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-6 transition-colors">
           <ArrowLeft size={20} />
           Back to Finance
         </button>
 
-        <div className="flex items-start gap-6">
-          <div className="w-24 h-32 bg-gradient-to-br from-green-700 to-emerald-900 rounded-lg shadow-xl flex items-center justify-center shrink-0 border border-green-600">
+        <div className="flex flex-col gap-4 sm:gap-6 sm:flex-row sm:items-start">
+          <div className="w-full sm:w-24 h-24 sm:h-32 bg-gradient-to-br from-green-700 to-emerald-900 rounded-lg shadow-xl flex items-center justify-center shrink-0 border border-green-600">
             <BookOpen size={40} className="text-green-100" />
           </div>
-          <div>
-            <h1 className="text-4xl font-bold text-white mb-2">
+          <div className="text-center sm:text-left">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
               Options, Futures, and Other Derivatives
             </h1>
-            <p className="text-xl text-gray-400 mb-4">
+            <p className="text-lg sm:text-xl text-gray-400 mb-4">
               John C. Hull • 10th Edition
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap justify-center sm:justify-start gap-3">
               <span className="px-3 py-1 rounded-full bg-green-900/50 text-green-300 text-sm border border-green-700">
                 Derivatives
               </span>
@@ -86,13 +86,13 @@ const HullBook = ({ onBack }) => {
             className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden transition-all duration-200 hover:border-gray-600">
             <button
               onClick={() => toggleChapter(chapter.id)}
-              className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-700/50 transition-colors">
-              <div className="flex items-center gap-4 flex-1">
+              className="w-full px-4 sm:px-6 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-left hover:bg-gray-700/50 transition-colors">
+              <div className="flex items-start sm:items-center gap-3 sm:gap-4 flex-1">
                 <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-green-900/50 text-green-400 font-bold text-sm border border-green-800">
                   {chapter.id}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-white mb-1">
+                  <h3 className="text-base sm:text-lg font-semibold text-white mb-1">
                     {chapter.title}
                   </h3>
                 </div>
@@ -105,7 +105,7 @@ const HullBook = ({ onBack }) => {
             </button>
 
             {expandedChapters[chapter.id] && (
-              <div className="px-6 pb-6 pt-2 border-t border-gray-700 bg-gray-800/50">
+              <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-gray-700 bg-gray-800/50">
                 {/* Summary */}
                 <div className="mb-6">
                   <h4 className="text-sm font-semibold text-green-400 mb-2 uppercase tracking-wider">
@@ -122,7 +122,7 @@ const HullBook = ({ onBack }) => {
                     {chapter.sections.map((section, idx) => (
                       <div
                         key={idx}
-                        className="bg-gray-900/50 rounded-lg p-5 border border-gray-700/50">
+                        className="bg-gray-900/50 rounded-lg p-4 sm:p-5 border border-gray-700/50">
                         <h4 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
                           {section.title}
@@ -168,7 +168,11 @@ const HullBook = ({ onBack }) => {
                     </h4>
                     <div className="space-y-6">
                       {chapter.diagrams.map((diagram, idx) => (
-                        <div key={idx}>{renderDiagram(diagram)}</div>
+                        <div
+                          key={idx}
+                          className="rounded-xl border border-gray-800 bg-gray-900/30 p-3 sm:p-4 overflow-x-auto">
+                          {renderDiagram(diagram)}
+                        </div>
                       ))}
                     </div>
                   </div>

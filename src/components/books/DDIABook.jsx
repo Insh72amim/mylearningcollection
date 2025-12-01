@@ -696,18 +696,18 @@ def get_user_with_timestamp(user_id, min_timestamp):
   const allChapters = [...chapters, ...chapters6to12];
 
   return (
-    <div className="max-w-5xl mx-auto text-gray-300 space-y-8 pb-20">
+    <div className="w-full max-w-4xl lg:max-w-5xl mx-auto px-4 sm:px-6 lg:px-0 text-gray-300 space-y-8 pb-16 sm:pb-20">
       {/* Book Header */}
       <div className="border-b border-gray-700 pb-8">
-        <div className="flex items-start gap-6">
-          <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-8 rounded-xl shadow-2xl">
+        <div className="flex flex-col gap-4 sm:gap-6 sm:flex-row sm:items-start">
+          <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-6 sm:p-8 rounded-xl shadow-2xl self-start">
             <BookOpen className="w-16 h-16 text-white" />
           </div>
-          <div className="flex-1">
-            <h1 className="text-4xl font-bold text-white mb-3">
+          <div className="flex-1 text-center sm:text-left">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
               Designing Data-Intensive Applications
             </h1>
-            <div className="flex items-center gap-4 text-gray-400 mb-4">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-gray-400 text-sm sm:text-base mb-4">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4" />
                 <span>Martin Kleppmann</span>
@@ -721,7 +721,7 @@ def get_user_with_timestamp(user_id, min_timestamp):
                 <span>12 Chapters</span>
               </div>
             </div>
-            <p className="text-lg text-gray-300 leading-relaxed">
+            <p className="text-base sm:text-lg text-gray-300 leading-relaxed">
               The essential guide to building reliable, scalable, and
               maintainable data systems. This book explores the fundamental
               concepts and trade-offs in modern data architecture, from storage
@@ -741,16 +741,16 @@ def get_user_with_timestamp(user_id, min_timestamp):
             {/* Chapter Header */}
             <button
               onClick={() => toggleChapter(chapter.id)}
-              className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-800/50 transition-colors">
-              <div className="flex items-center gap-4 flex-1">
+              className="w-full px-4 sm:px-6 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-left hover:bg-gray-800/50 transition-colors">
+              <div className="flex items-start sm:items-center gap-3 sm:gap-4 flex-1">
                 <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-600 text-white font-bold text-sm">
                   {chapter.id}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-white mb-1">
+                  <h3 className="text-base sm:text-lg font-semibold text-white mb-1">
                     {chapter.title}
                   </h3>
-                  <p className="text-sm text-gray-400 line-clamp-1">
+                  <p className="text-sm text-gray-400 line-clamp-2 sm:line-clamp-1">
                     {chapter.summary}
                   </p>
                 </div>
@@ -764,7 +764,7 @@ def get_user_with_timestamp(user_id, min_timestamp):
 
             {/* Chapter Content */}
             {expandedChapters[chapter.id] && (
-              <div className="px-6 pb-6 pt-2 border-t border-gray-700 space-y-6">
+              <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-gray-700 space-y-6">
                 {/* Summary */}
                 <div className="bg-blue-900/20 p-4 rounded-lg border-l-4 border-blue-500">
                   <h4 className="text-md font-semibold text-white mb-2 flex items-center gap-2">
@@ -802,7 +802,7 @@ def get_user_with_timestamp(user_id, min_timestamp):
                   chapter.sections.map((section, idx) => (
                     <div
                       key={idx}
-                      className="bg-gray-900/50 p-5 rounded-lg border border-gray-700">
+                      className="bg-gray-900/50 p-4 sm:p-5 rounded-lg border border-gray-700">
                       <h5 className="text-lg font-semibold text-white mb-3">
                         {section.title}
                       </h5>
@@ -833,7 +833,7 @@ def get_user_with_timestamp(user_id, min_timestamp):
 
                 {/* Diagram */}
                 {chapter.diagram && (
-                  <div>
+                  <div className="rounded-xl border border-gray-800 bg-gray-900/30 p-3 sm:p-4 overflow-x-auto">
                     <h4 className="text-md font-semibold text-white mb-3">
                       Architecture Diagram
                     </h4>
