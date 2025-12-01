@@ -616,74 +616,74 @@ export const categories = [
       },
     ],
   },
-  {
-    id: "philosophy",
-    name: "Philosophy",
-    icon: BookOpen,
-    color: "purple",
-    technologies: [
-      {
-        id: "philosophy-overview",
-        name: "Philosophy",
-        hasVisualizer: false,
-        hasDoc: true,
-        docComponent: "CategoryPage",
-        categoryData: "philosophy",
-        badge: "Wisdom",
-      },
-    ],
-  },
-  {
-    id: "psychology",
-    name: "Psychology",
-    icon: Brain,
-    color: "amber",
-    technologies: [
-      {
-        id: "psychology-overview",
-        name: "Psychology",
-        hasVisualizer: false,
-        hasDoc: true,
-        docComponent: "CategoryPage",
-        categoryData: "psychology",
-        badge: "Mind",
-      },
-    ],
-  },
-  {
-    id: "poetry",
-    name: "Poetry",
-    icon: Star,
-    color: "red",
-    technologies: [
-      {
-        id: "poetry-overview",
-        name: "Poetry",
-        hasVisualizer: false,
-        hasDoc: true,
-        docComponent: "CategoryPage",
-        categoryData: "poetry",
-        badge: "Arts",
-      },
-    ],
-  },
-  {
-    id: "physics",
-    name: "Physics",
-    icon: Activity,
-    color: "sky",
-    technologies: [
-      {
-        id: "physics-overview",
-        name: "Physics",
-        hasVisualizer: false,
-        hasDoc: true,
-        docComponent: "CategoryPage",
-        categoryData: "physics",
-        badge: "Science",
-      },
-    ],
-  },
+  // {
+  //   id: "philosophy",
+  //   name: "Philosophy",
+  //   icon: BookOpen,
+  //   color: "purple",
+  //   technologies: [
+  //     {
+  //       id: "philosophy-overview",
+  //       name: "Philosophy",
+  //       hasVisualizer: false,
+  //       hasDoc: true,
+  //       docComponent: "CategoryPage",
+  //       categoryData: "philosophy",
+  //       badge: "Wisdom",
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: "psychology",
+  //   name: "Psychology",
+  //   icon: Brain,
+  //   color: "amber",
+  //   technologies: [
+  //     {
+  //       id: "psychology-overview",
+  //       name: "Psychology",
+  //       hasVisualizer: false,
+  //       hasDoc: true,
+  //       docComponent: "CategoryPage",
+  //       categoryData: "psychology",
+  //       badge: "Mind",
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: "poetry",
+  //   name: "Poetry",
+  //   icon: Star,
+  //   color: "red",
+  //   technologies: [
+  //     {
+  //       id: "poetry-overview",
+  //       name: "Poetry",
+  //       hasVisualizer: false,
+  //       hasDoc: true,
+  //       docComponent: "CategoryPage",
+  //       categoryData: "poetry",
+  //       badge: "Arts",
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: "physics",
+  //   name: "Physics",
+  //   icon: Activity,
+  //   color: "sky",
+  //   technologies: [
+  //     {
+  //       id: "physics-overview",
+  //       name: "Physics",
+  //       hasVisualizer: false,
+  //       hasDoc: true,
+  //       docComponent: "CategoryPage",
+  //       categoryData: "physics",
+  //       badge: "Science",
+  //     },
+  //   ],
+  // },
 ];
 
 export const superCategories = [

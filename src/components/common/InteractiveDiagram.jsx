@@ -27,7 +27,7 @@ const InteractiveDiagram = ({ initialNodes, initialEdges, title = "Architecture 
     <div className={`h-[${height}] w-full bg-gray-900 rounded-xl border border-gray-700 overflow-hidden shadow-2xl`} style={{ height }}>
       <div className="bg-gray-800 px-4 py-2 border-b border-gray-700 flex justify-between items-center">
         <span className="text-sm font-medium text-gray-300">{title}</span>
-        <span className="text-xs text-gray-500">Interactive • Scroll to Zoom • Drag to Pan</span>
+        <span className="text-xs text-gray-500">Interactive • Drag to Pan • Use Controls to Zoom</span>
       </div>
       <ReactFlow
         nodes={nodes}
@@ -40,6 +40,7 @@ const InteractiveDiagram = ({ initialNodes, initialEdges, title = "Architecture 
         fitViewOptions={{ padding: 0.15, minZoom: 0.5, maxZoom: 1.5 }}
         minZoom={0.3}
         maxZoom={2}
+        zoomOnScroll={false}
         attributionPosition="bottom-right"
         className="bg-gray-900"
       >

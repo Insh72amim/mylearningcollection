@@ -234,30 +234,27 @@ const Layout = () => {
 
   const sidebarContent = (
     <div className="flex flex-col h-full bg-gray-800 border-r border-gray-700 overflow-hidden">
-      {/* Static Header Section */}
+      {/* Sidebar Header */}
       <div className="flex-shrink-0 bg-gray-800 z-10">
-        <div className="p-6 border-b border-gray-700 relative">
+        <div className="px-4 border-b border-gray-700 relative flex items-center h-[73px]">
           <Link
             to="/"
             className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-lg" />
-            <h1 className="text-xl font-bold">LearnWithAI</h1>
+            <h1 className="text-xl font-bold">KnowledgeShelf</h1>
           </Link>
-          <p className="text-xs text-gray-400 mt-1">
-            Master Backend & Data Engineering
-          </p>
 
           {isMobile && (
             <button
               onClick={() => setMobileSidebarOpen(false)}
-              className="absolute top-6 right-6 text-gray-400 hover:text-white"
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
               aria-label="Close sidebar">
               <PanelLeftClose size={16} />
             </button>
           )}
         </div>
 
-        <div className="px-4 pt-4 pb-2 space-y-2 border-b border-gray-700/50">
+        <div className="px-4 pt-2 pb-2 space-y-2 border-b border-gray-700/50">
           {/* Home Link */}
           <Link
             to="/"
@@ -298,7 +295,7 @@ const Layout = () => {
       </div>
 
       {/* Scrollable Navigation */}
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
+      <nav className="flex-1 px-4 py-2 space-y-2 overflow-y-auto custom-scrollbar">
         {superCategories.map((group) => {
           const GroupIcon = group.icon;
           const isGroupExpanded = expandedSuperCategories.includes(group.id);
@@ -392,14 +389,14 @@ const Layout = () => {
             <span>Menu</span>
           </button>
           <Link to="/" className="text-base font-semibold">
-            LearnWithAI
+            KnowledgeShelf
           </Link>
         </div>
 
         {!isMobile && sidebarHidden && (
           <button
             onClick={() => setSidebarHidden(false)}
-            className="absolute top-16 left-6 z-20 p-3 bg-gray-800/90 border border-gray-700 rounded-full text-gray-200 shadow-lg hover:bg-gray-700 transition"
+            className="absolute top-4 left-6 z-20 p-3 bg-gray-800/90 border border-gray-700 rounded-full text-gray-200 shadow-lg hover:bg-gray-700 transition"
             aria-label="Show sidebar">
             <PanelLeftOpen size={18} />
           </button>

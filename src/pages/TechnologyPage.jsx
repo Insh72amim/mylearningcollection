@@ -153,24 +153,19 @@ const TechnologyPage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-900">
       {/* Header & Tabs */}
-      <div className="bg-gray-800 border-b border-gray-700 px-4 py-4 sm:px-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-white flex flex-wrap items-center gap-2">
+      <div className="bg-gray-800 border-b border-gray-700 px-4 sm:px-6 h-[73px] flex items-center">
+        <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between w-full">
+          <div className="flex items-center gap-4 flex-wrap">
+            <h1 className="text-xl font-bold text-white flex items-center gap-2">
               {tech.name}
               <span
                 className={`text-xs px-2 py-0.5 rounded border bg-${tech.category.color}-900 text-${tech.category.color}-300 border-${tech.category.color}-700`}>
                 {tech.category.name}
               </span>
             </h1>
-            {tech.description && (
-              <p className="text-sm text-gray-400 max-w-2xl">
-                {tech.description}
-              </p>
-            )}
           </div>
           {tech.hasVisualizer ? (
-            <div className="flex flex-col gap-2 sm:flex-row bg-gray-900 rounded-lg p-1 border border-gray-700 w-full sm:w-auto">
+            <div className="flex gap-2 bg-gray-900 rounded-lg p-1 border border-gray-700">
               <button
                 onClick={() => setActiveTab("docs")}
                 disabled={!tech.hasDoc}
@@ -213,7 +208,7 @@ const TechnologyPage = () => {
           }>
           {activeTab === "docs" ? (
             DocComponent ? (
-              <div className="h-full overflow-y-auto p-4 sm:p-8">
+              <div className="h-full overflow-y-auto px-4 sm:px-8 pb-8">
                 <DocComponent />
               </div>
             ) : (
