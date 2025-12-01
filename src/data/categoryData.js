@@ -16,6 +16,16 @@ export const categoryData = {
         topics: ['Black-Scholes Model', 'Greeks', 'Hedging Strategies', 'Interest Rate Derivatives']
       },
       {
+        id: 'security-analysis',
+        title: 'Security Analysis',
+        author: 'Benjamin Graham & David Dodd',
+        year: '1934',
+        edition: '6th Edition',
+        component: 'SecurityAnalysisBook',
+        description: 'The bible of value investing. Teaches the fundamental principles of analyzing stocks and bonds.',
+        topics: ['Value Investing', 'Margin of Safety', 'Fundamental Analysis', 'Bond Analysis']
+      },
+      {
         id: 'stochastic-calculus-finance',
         title: 'Stochastic Calculus for Finance',
         author: 'Steven Shreve',

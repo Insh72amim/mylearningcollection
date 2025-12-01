@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, BookOpen, ArrowLeft } from 'lucide-react';
+import { ChevronDown, ChevronRight, BookOpen, ArrowLeft, TrendingUp, Activity, GitBranch } from 'lucide-react';
+import CodeBlock from '../common/CodeBlock';
+import InteractiveDiagram from '../common/InteractiveDiagram';
+import { hullChaptersDetailed } from './hull-chapters-data';
 
 const HullBook = ({ onBack }) => {
   const [expandedChapters, setExpandedChapters] = useState({});
@@ -11,108 +14,23 @@ const HullBook = ({ onBack }) => {
     }));
   };
 
-  const chapters = [
-    {
-      id: 1,
-      title: 'Introduction',
-      summary: 'Overview of derivatives markets, including exchange-traded and over-the-counter markets. Introduces forward contracts, futures contracts, options, and the types of traders (hedgers, speculators, arbitrageurs).',
-    },
-    {
-      id: 2,
-      title: 'Futures Markets and Central Counterparties',
-      summary: 'Mechanics of futures markets: opening and closing positions, specification of contracts, convergence of futures price to spot price, daily settlement and margins, and the role of central counterparties (CCPs).',
-    },
-    {
-      id: 3,
-      title: 'Hedging Strategies Using Futures',
-      summary: 'Principles of hedging: short hedges, long hedges, basis risk, cross hedging, and computing the optimal hedge ratio. Discusses rolling the hedge forward.',
-    },
-    {
-      id: 4,
-      title: 'Interest Rates',
-      summary: 'Types of interest rates (Treasury, LIBOR/SOFR, Repo). Continuous compounding, zero rates, bond pricing, bond yield, par yield, and forward rates. Duration and convexity.',
-    },
-    {
-      id: 5,
-      title: 'Determination of Forward and Futures Prices',
-      summary: 'Arbitrage arguments to determine forward prices for investment assets (stocks, currencies) and consumption assets (commodities). Cost of carry model.',
-    },
-    {
-      id: 6,
-      title: 'Interest Rate Futures',
-      summary: 'Day count conventions, quotation of Treasury bond and Eurodollar futures. Duration-based hedging strategies using interest rate futures.',
-    },
-    {
-      id: 7,
-      title: 'Swaps',
-      summary: 'Mechanics of interest rate swaps and currency swaps. Comparative advantage argument. Valuation of swaps using bonds or forward rate agreements (FRAs).',
-    },
-    {
-      id: 8,
-      title: 'Securitization and the Credit Crisis of 2007',
-      summary: 'The process of securitization, ABS, MBS, and CDOs. The role of the U.S. housing market and subprime lending in the 2007 crisis.',
-    },
-    {
-      id: 9,
-      title: 'Mechanics of Options Markets',
-      summary: 'Types of options (calls, puts), positions, underlying assets, specification of stock options, trading, commissions, margins, and the Options Clearing Corporation.',
-    },
-    {
-      id: 10,
-      title: 'Properties of Stock Options',
-      summary: 'Factors affecting option prices. Upper and lower bounds for option prices. Put-call parity relationship for European options. Early exercise of American options.',
-    },
-    {
-      id: 11,
-      title: 'Trading Strategies Involving Options',
-      summary: 'Strategies such as covered calls, protective puts, spreads (bull, bear, box, butterfly, calendar, diagonal), and combinations (straddles, strips, straps, strangles).',
-    },
-    {
-      id: 12,
-      title: 'Binomial Trees',
-      summary: 'Introduction to the one-step and two-step binomial model. Risk-neutral valuation principle. Delta hedging in a binomial context. Matching volatility with u and d parameters.',
-    },
-    {
-      id: 13,
-      title: 'Wiener Processes and Ito\'s Lemma',
-      summary: 'Stochastic processes, Markov property, Brownian motion (Wiener process). Generalized Wiener process. Ito process. Derivation and application of Ito\'s Lemma.',
-    },
-    {
-      id: 14,
-      title: 'The Black-Scholes-Merton Model',
-      summary: 'Lognormal property of stock prices. The Black-Scholes-Merton differential equation and pricing formulas for European calls and puts. Implied volatility.',
-    },
-    {
-      id: 15,
-      title: 'Employee Stock Options',
-      summary: 'Nature of ESOs, vesting periods, and dilution. Accounting standards (FAS 123, IFRS 2). Valuation challenges and backdating scandals.',
-    },
-    {
-      id: 16,
-      title: 'Options on Stock Indices and Currencies',
-      summary: 'Modifying BSM for assets paying a continuous dividend yield. Pricing index options and currency options (Garman-Kohlhagen).',
-    },
-    {
-      id: 17,
-      title: 'Options on Futures',
-      summary: 'Black\'s model for valuing options on futures. American futures options vs. American spot options.',
-    },
-    {
-      id: 18,
-      title: 'The Greek Letters',
-      summary: 'Delta, Gamma, Theta, Vega, and Rho. Hedging portfolios using Greeks. Scenario analysis and stress testing.',
-    },
-    {
-      id: 19,
-      title: 'Volatility Smiles',
-      summary: 'Put-call parity and implied volatility. Volatility smiles for currencies vs. equities (skew). Term structure of volatility.',
-    },
-    {
-      id: 20,
-      title: 'Basic Numerical Procedures',
-      summary: 'Finite difference methods (implicit, explicit, Crank-Nicolson) for solving differential equations. Monte Carlo simulation basics.',
+  // Use the detailed data
+  const chapters = hullChaptersDetailed;
+
+  const renderDiagram = (diagram) => {
+    if (diagram.type === 'interactive') {
+      return (
+        <div className="my-6">
+          <InteractiveDiagram 
+            type={diagram.component} 
+            title={diagram.title}
+            description={diagram.description}
+          />
+        </div>
+      );
     }
-  ];
+    return null;
+  };
 
   return (
     <div className="max-w-5xl mx-auto text-gray-300 space-y-8 pb-20">
@@ -173,10 +91,87 @@ const HullBook = ({ onBack }) => {
 
             {expandedChapters[chapter.id] && (
               <div className="px-6 pb-6 pt-2 border-t border-gray-700 bg-gray-800/50">
-                <h4 className="text-sm font-semibold text-green-400 mb-2 uppercase tracking-wider">Summary</h4>
-                <p className="text-gray-300 leading-relaxed">
-                  {chapter.summary}
-                </p>
+                {/* Summary */}
+                <div className="mb-6">
+                  <h4 className="text-sm font-semibold text-green-400 mb-2 uppercase tracking-wider">Summary</h4>
+                  <p className="text-gray-300 leading-relaxed italic">
+                    {chapter.summary}
+                  </p>
+                </div>
+
+                {/* Detailed Sections */}
+                {chapter.sections && (
+                  <div className="space-y-8">
+                    {chapter.sections.map((section, idx) => (
+                      <div key={idx} className="bg-gray-900/50 rounded-lg p-5 border border-gray-700/50">
+                        <h4 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                          {section.title}
+                        </h4>
+                        <p className="text-gray-300 mb-4 leading-relaxed">
+                          {section.content}
+                        </p>
+                        
+                        {/* Bullet Points */}
+                        {section.points && (
+                          <ul className="space-y-2 mb-4">
+                            {section.points.map((point, pIdx) => (
+                              <li key={pIdx} className="flex items-start gap-2 text-sm text-gray-400">
+                                <span className="mt-1.5 w-1 h-1 rounded-full bg-gray-500 shrink-0"></span>
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+
+                        {/* Code Example */}
+                        {section.example && (
+                          <div className="mt-4">
+                            <CodeBlock 
+                              language={section.example.language}
+                              code={section.example.code}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Diagrams */}
+                {chapter.diagrams && (
+                  <div className="mt-8">
+                    <h4 className="text-sm font-semibold text-purple-400 mb-4 uppercase tracking-wider flex items-center gap-2">
+                      <Activity size={16} />
+                      Interactive Diagrams
+                    </h4>
+                    <div className="space-y-6">
+                      {chapter.diagrams.map((diagram, idx) => (
+                        <div key={idx}>
+                          {renderDiagram(diagram)}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Key Points */}
+                {chapter.keyPoints && (
+                  <div className="mt-8 bg-blue-900/20 border border-blue-800/50 rounded-lg p-4">
+                    <h4 className="text-sm font-semibold text-blue-400 mb-3 uppercase tracking-wider flex items-center gap-2">
+                      <TrendingUp size={16} />
+                      Key Takeaways
+                    </h4>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {chapter.keyPoints.map((point, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-sm text-gray-300">
+                          <span className="mt-1.5 w-1 h-1 rounded-full bg-blue-500 shrink-0"></span>
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             )}
           </div>

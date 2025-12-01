@@ -6,6 +6,7 @@ import { getTechnologyById } from '../../config/technologies';
 
 // Lazy load book components
 const HullBook = React.lazy(() => import('../books/HullBook'));
+const SecurityAnalysisBook = React.lazy(() => import('../books/SecurityAnalysisBook'));
 
 const CategoryPage = () => {
   const { technologyId } = useParams();
@@ -28,6 +29,7 @@ const CategoryPage = () => {
       <div className="h-full overflow-y-auto bg-gray-900 p-8">
         <Suspense fallback={<div>Loading book...</div>}>
           {selectedBook === 'HullBook' && <HullBook onBack={() => setSelectedBook(null)} />}
+          {selectedBook === 'SecurityAnalysisBook' && <SecurityAnalysisBook onBack={() => setSelectedBook(null)} />}
           {/* Add other books here as needed */}
         </Suspense>
       </div>

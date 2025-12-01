@@ -503,6 +503,14 @@ export const categories = [
         badge: 'Paxos/Raft',
         comingSoon: true,
       },
+      {
+        id: 'system-design-resources',
+        name: 'System Design Resources',
+        hasVisualizer: false,
+        hasDoc: true,
+        docComponent: 'SystemDesignResources',
+        badge: 'Resources',
+      },
     ],
   },
   {
@@ -555,9 +563,9 @@ export const categories = [
         id: 'dp',
         name: 'Dynamic Programming',
         hasVisualizer: false,
-        hasDoc: false,
+        hasDoc: true,
+        docComponent: 'DynamicProgramming',
         badge: 'Optimization',
-        comingSoon: true,
       },
       {
         id: 'sorting',

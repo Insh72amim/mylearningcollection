@@ -23,6 +23,8 @@ const CategoryPage = React.lazy(() => import('../components/common/CategoryPage'
 // Lazy load LLD components
 const DesignPatterns = React.lazy(() => import('../components/lld/DesignPatterns'));
 const LLDExamples = React.lazy(() => import('../components/lld/LLDExamples'));
+const DynamicProgramming = React.lazy(() => import('../components/dsa/DynamicProgramming'));
+const SystemDesignResources = React.lazy(() => import('../components/system-design/SystemDesignResources'));
 
 // Lazy load visualizer components
 const KafkaArchitecture = React.lazy(() => import('../components/kafka/KafkaArchitecture'));
@@ -53,6 +55,8 @@ const TechnologyPage = () => {
       case 'CategoryPage': return CategoryPage;
       case 'DesignPatterns': return DesignPatterns;
       case 'LLDExamples': return LLDExamples;
+      case 'DynamicProgramming': return DynamicProgramming;
+      case 'SystemDesignResources': return SystemDesignResources;
       default: return null;
     }
   };
