@@ -694,6 +694,7 @@ export const superCategories = [
     name: "Interests",
     icon: Star,
     color: "green",
+    layout: "direct",
     categoryIds: ["finance", "mathematics", "ai-engineering"],
   },
 ];

@@ -147,6 +147,44 @@ const Layout = () => {
     );
   };
 
+  const renderDirectCategoryLinks = (categoryList, colorClasses) => {
+    return (
+      <div className="space-y-1">
+        {categoryList.map((category) => {
+          const firstTech = category?.technologies?.[0];
+          if (!category || !firstTech) {
+            return null;
+          }
+
+          const techPath = `/${category.id}/${firstTech.id}`;
+          const active = isActive(techPath);
+          const disabled = firstTech.comingSoon;
+
+          return (
+            <Link
+              key={category.id}
+              to={disabled ? "#" : techPath}
+              className={`flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
+                active
+                  ? `${colorClasses.bg} ${colorClasses.text} font-medium`
+                  : disabled
+                  ? "text-gray-500 cursor-not-allowed"
+                  : "text-gray-300 hover:text-white hover:bg-gray-700"
+              }`}
+              onClick={(e) => disabled && e.preventDefault()}>
+              <span>{category.name}</span>
+              {disabled && (
+                <span className="text-[10px] bg-gray-700 text-gray-400 px-2 py-0.5 rounded">
+                  Soon
+                </span>
+              )}
+            </Link>
+          );
+        })}
+      </div>
+    );
+  };
+
   const hasAnyExpanded =
     expandedCategories.length > 0 || expandedSuperCategories.length > 0;
 
@@ -222,9 +260,14 @@ const Layout = () => {
                 group.color,
                 isGroupExpanded
               );
+              const layoutMode = group.layout || "nested";
               const resolvedCategories = group.categoryIds
                 .map((categoryId) => categoryMap.get(categoryId))
                 .filter(Boolean);
+              const contentWrapperClasses =
+                layoutMode === "direct"
+                  ? "ml-3 mt-2 space-y-2"
+                  : "ml-3 mt-2 space-y-3 border-l-2 border-gray-700/60 pl-3";
 
               return (
                 <div key={group.id} className="mb-4">
@@ -254,10 +297,15 @@ const Layout = () => {
                   </button>
 
                   {isGroupExpanded && (
-                    <div className="ml-3 mt-2 space-y-3 border-l-2 border-gray-700/60 pl-3">
-                      {resolvedCategories.map((category) =>
-                        renderCategoryBlock(category)
-                      )}
+                    <div className={contentWrapperClasses}>
+                      {layoutMode === "direct"
+                        ? renderDirectCategoryLinks(
+                            resolvedCategories,
+                            colorClasses
+                          )
+                        : resolvedCategories.map((category) =>
+                            renderCategoryBlock(category)
+                          )}
                     </div>
                   )}
                 </div>
