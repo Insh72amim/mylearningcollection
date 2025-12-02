@@ -29,6 +29,10 @@ const Neo4jDocs = React.lazy(() => import("../components/neo4j/Neo4jDocs"));
 const NodeJSDocs = React.lazy(() => import("../components/nodejs/NodeJSDocs"));
 const FastAPIDocs = React.lazy(() => import("../components/fastapi/FastAPIDocs"));
 const SpringBootDocs = React.lazy(() => import("../components/springboot/SpringBootDocs"));
+const GraphQLDocs = React.lazy(() => import("../components/graphql/GraphQLDocs"));
+const GrpcDocs = React.lazy(() => import("../components/grpc/GrpcDocs"));
+const RabbitMQDocs = React.lazy(() => import("../components/rabbitmq/RabbitMQDocs"));
+const WebSocketsDocs = React.lazy(() => import("../components/websockets/WebSocketsDocs"));
 
 // Lazy load book components
 const DDIABook = React.lazy(() => import("../components/books/DDIABook"));
@@ -119,6 +123,14 @@ const TechnologyPage = () => {
         return FastAPIDocs;
       case "SpringBootDocs":
         return SpringBootDocs;
+      case "GraphQLDocs":
+        return GraphQLDocs;
+      case "GrpcDocs":
+        return GrpcDocs;
+      case "RabbitMQDocs":
+        return RabbitMQDocs;
+      case "WebSocketsDocs":
+       return WebSocketsDocs;
       case "DDIABook":
         return DDIABook;
       case "DatabaseInternalsBook":

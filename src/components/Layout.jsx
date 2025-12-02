@@ -381,7 +381,7 @@ const Layout = () => {
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto bg-gray-900 relative">
-        <div className="lg:hidden sticky top-0 z-20 flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-gray-900/95 backdrop-blur">
+        <div className="lg:hidden sticky top-0 z-20 flex items-center justify-between px-4 min-h-[78px] py-3 border-b border-gray-800 bg-gray-900/95 backdrop-blur">
           <button
             onClick={() => setMobileSidebarOpen(true)}
             className="flex items-center gap-2 text-sm font-medium text-gray-100">
