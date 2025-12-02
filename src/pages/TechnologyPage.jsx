@@ -16,23 +16,54 @@ const AirflowDocs = React.lazy(() =>
 );
 const FlinkDocs = React.lazy(() => import("../components/flink/FlinkDocs"));
 const DbtDocs = React.lazy(() => import("../components/dbt/DbtDocs"));
-const ParquetDocs = React.lazy(() => import("../components/parquet/ParquetDocs"));
+const ParquetDocs = React.lazy(() =>
+  import("../components/parquet/ParquetDocs")
+);
 const AvroDocs = React.lazy(() => import("../components/avro/AvroDocs"));
-const ProtobufDocs = React.lazy(() => import("../components/protobuf/ProtobufDocs"));
-const IcebergDocs = React.lazy(() => import("../components/iceberg/IcebergDocs"));
-const SnowflakeDocs = React.lazy(() => import("../components/snowflake/SnowflakeDocs"));
-const MongoDBDocs = React.lazy(() => import("../components/mongodb/MongoDBDocs"));
-const CassandraDocs = React.lazy(() => import("../components/cassandra/CassandraDocs"));
-const DynamoDBDocs = React.lazy(() => import("../components/dynamodb/DynamoDBDocs"));
-const ElasticsearchDocs = React.lazy(() => import("../components/elasticsearch/ElasticsearchDocs"));
+const ProtobufDocs = React.lazy(() =>
+  import("../components/protobuf/ProtobufDocs")
+);
+const IcebergDocs = React.lazy(() =>
+  import("../components/iceberg/IcebergDocs")
+);
+const SnowflakeDocs = React.lazy(() =>
+  import("../components/snowflake/SnowflakeDocs")
+);
+const MongoDBDocs = React.lazy(() =>
+  import("../components/mongodb/MongoDBDocs")
+);
+const CassandraDocs = React.lazy(() =>
+  import("../components/cassandra/CassandraDocs")
+);
+const DynamoDBDocs = React.lazy(() =>
+  import("../components/dynamodb/DynamoDBDocs")
+);
+const ElasticsearchDocs = React.lazy(() =>
+  import("../components/elasticsearch/ElasticsearchDocs")
+);
 const Neo4jDocs = React.lazy(() => import("../components/neo4j/Neo4jDocs"));
 const NodeJSDocs = React.lazy(() => import("../components/nodejs/NodeJSDocs"));
-const FastAPIDocs = React.lazy(() => import("../components/fastapi/FastAPIDocs"));
-const SpringBootDocs = React.lazy(() => import("../components/springboot/SpringBootDocs"));
-const GraphQLDocs = React.lazy(() => import("../components/graphql/GraphQLDocs"));
+const FastAPIDocs = React.lazy(() =>
+  import("../components/fastapi/FastAPIDocs")
+);
+const SpringBootDocs = React.lazy(() =>
+  import("../components/springboot/SpringBootDocs")
+);
+const GraphQLDocs = React.lazy(() =>
+  import("../components/graphql/GraphQLDocs")
+);
 const GrpcDocs = React.lazy(() => import("../components/grpc/GrpcDocs"));
-const RabbitMQDocs = React.lazy(() => import("../components/rabbitmq/RabbitMQDocs"));
-const WebSocketsDocs = React.lazy(() => import("../components/websockets/WebSocketsDocs"));
+const RabbitMQDocs = React.lazy(() =>
+  import("../components/rabbitmq/RabbitMQDocs")
+);
+const WebSocketsDocs = React.lazy(() =>
+  import("../components/websockets/WebSocketsDocs")
+);
+const DockerDocs = React.lazy(() => import("../components/devops/DockerDocs"));
+const HelmDocs = React.lazy(() => import("../components/devops/HelmDocs"));
+const TerraformDocs = React.lazy(() =>
+  import("../components/devops/TerraformDocs")
+);
 
 // Lazy load book components
 const DDIABook = React.lazy(() => import("../components/books/DDIABook"));
@@ -130,7 +161,13 @@ const TechnologyPage = () => {
       case "RabbitMQDocs":
         return RabbitMQDocs;
       case "WebSocketsDocs":
-       return WebSocketsDocs;
+        return WebSocketsDocs;
+      case "DockerDocs":
+        return DockerDocs;
+      case "HelmDocs":
+        return HelmDocs;
+      case "TerraformDocs":
+        return TerraformDocs;
       case "DDIABook":
         return DDIABook;
       case "DatabaseInternalsBook":
