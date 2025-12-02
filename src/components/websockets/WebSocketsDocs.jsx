@@ -1,40 +1,261 @@
-import React from 'react';
-import CodeBlock from '../common/CodeBlock';
+import React from "react";
+import { MarkerType } from "reactflow";
+import InteractiveDiagram from "../common/InteractiveDiagram";
+import CodeBlock from "../common/CodeBlock";
 
 const WebSocketsDocs = () => {
+  const overviewNodes = [
+    {
+      id: "clientA",
+      position: { x: 40, y: 150 },
+      data: { label: "Client A (Browser)" },
+      style: {
+        width: 160,
+        background: "#1f2937",
+        color: "white",
+        border: "1px solid #374151",
+      },
+    },
+    {
+      id: "clientB",
+      position: { x: 40, y: 260 },
+      data: { label: "Client B (Mobile)" },
+      style: {
+        width: 160,
+        background: "#1f2937",
+        color: "white",
+        border: "1px solid #374151",
+      },
+    },
+    {
+      id: "edge",
+      position: { x: 250, y: 200 },
+      data: { label: "Edge / CDN" },
+      style: {
+        width: 150,
+        background: "#7c3aed",
+        color: "white",
+        border: "1px solid #a855f7",
+      },
+    },
+    {
+      id: "gateway",
+      position: { x: 430, y: 200 },
+      data: { label: "WS Gateway" },
+      style: {
+        width: 150,
+        background: "#1e3a8a",
+        color: "white",
+        border: "1px solid #3b82f6",
+      },
+    },
+    {
+      id: "server",
+      position: { x: 610, y: 200 },
+      data: { label: "Realtime Service" },
+      style: {
+        width: 170,
+        background: "#064e3b",
+        color: "white",
+        border: "1px solid #10b981",
+      },
+    },
+    {
+      id: "pubsub",
+      position: { x: 610, y: 60 },
+      data: { label: "Pub/Sub Bus" },
+      style: {
+        width: 170,
+        background: "#78350f",
+        color: "white",
+        border: "1px solid #f59e0b",
+      },
+    },
+    {
+      id: "clientC",
+      position: { x: 820, y: 150 },
+      data: { label: "Client C" },
+      style: {
+        width: 140,
+        background: "#1f2937",
+        color: "white",
+        border: "1px solid #374151",
+      },
+    },
+  ];
+
+  const overviewEdges = [
+    {
+      id: "ca-edge",
+      source: "clientA",
+      target: "edge",
+      label: "HTTP upgrade",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#a855f7" },
+    },
+    {
+      id: "cb-edge",
+      source: "clientB",
+      target: "edge",
+      label: "TLS tunnel",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#a855f7" },
+    },
+    {
+      id: "edge-gw",
+      source: "edge",
+      target: "gateway",
+      label: "Sticky connection",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#60a5fa" },
+    },
+    {
+      id: "gw-server",
+      source: "gateway",
+      target: "server",
+      label: "Frames (JSON/Binary)",
+      animated: true,
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#34d399" },
+    },
+    {
+      id: "server-bus",
+      source: "server",
+      target: "pubsub",
+      label: "Broadcast events",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#fbbf24" },
+    },
+    {
+      id: "server-clientC",
+      source: "server",
+      target: "clientC",
+      label: "Push updates",
+      animated: true,
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#34d399" },
+    },
+    {
+      id: "bus-gw",
+      source: "pubsub",
+      target: "gateway",
+      label: "Fan-out to shards",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#fbbf24", strokeDasharray: "6 4" },
+    },
+  ];
+
   return (
     <div className="max-w-4xl">
-      <h1 className="text-4xl font-bold mb-4 text-white">WebSockets: The Deep Dive</h1>
+      <h1 className="text-4xl font-bold mb-4 text-white">
+        WebSockets: The Deep Dive
+      </h1>
       <p className="text-xl text-gray-300 mb-8">
-        A communication protocol providing full-duplex, bidirectional communication channels over a single TCP connection. WebSockets enable real-time data exchange between clients and servers with minimal overhead.
+        A communication protocol providing full-duplex, bidirectional
+        communication channels over a single TCP connection. WebSockets enable
+        real-time data exchange between clients and servers with minimal
+        overhead.
       </p>
 
       {/* What are WebSockets */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">What are WebSockets?</h2>
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          What are WebSockets?
+        </h2>
         <p className="text-gray-300 mb-4">
-          WebSockets provide a persistent connection between a client and server, allowing both parties to send data at any time. Unlike HTTP's request-response model, WebSockets support true bidirectional communication.
+          WebSockets provide a persistent connection between a client and
+          server, allowing both parties to send data at any time. Unlike HTTP's
+          request-response model, WebSockets support true bidirectional
+          communication.
         </p>
         <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6 mb-4">
-          <h3 className="text-xl font-semibold mb-3 text-green-400">Key Benefits</h3>
+          <h3 className="text-xl font-semibold mb-3 text-green-400">
+            Key Benefits
+          </h3>
           <ul className="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Real-time Communication:</strong> Instant bidirectional data transfer</li>
-            <li><strong>Low Latency:</strong> No overhead of HTTP headers on every message</li>
-            <li><strong>Persistent Connection:</strong> Single TCP connection stays open</li>
-            <li><strong>Efficient:</strong> Reduced bandwidth compared to polling</li>
-            <li><strong>Browser Support:</strong> Native support in all modern browsers</li>
-            <li><strong>Firewall Friendly:</strong> Works over standard HTTP ports (80/443)</li>
+            <li>
+              <strong>Real-time Communication:</strong> Instant bidirectional
+              data transfer
+            </li>
+            <li>
+              <strong>Low Latency:</strong> No overhead of HTTP headers on every
+              message
+            </li>
+            <li>
+              <strong>Persistent Connection:</strong> Single TCP connection
+              stays open
+            </li>
+            <li>
+              <strong>Efficient:</strong> Reduced bandwidth compared to polling
+            </li>
+            <li>
+              <strong>Browser Support:</strong> Native support in all modern
+              browsers
+            </li>
+            <li>
+              <strong>Firewall Friendly:</strong> Works over standard HTTP ports
+              (80/443)
+            </li>
           </ul>
+        </div>
+      </section>
+
+      {/* High-Level Flow */}
+      <section className="mb-12">
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          High-Level Flow
+        </h2>
+        <div className="space-y-6">
+          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6 space-y-4">
+            <p className="text-gray-300">
+              Real-time stacks pin WebSocket connections at the edge, then route
+              them to gateway shards that maintain session state and publish
+              events to backend workers. The same service pushes updates out to
+              all subscribed clients without renegotiating connections.
+            </p>
+            <ul className="space-y-2 text-sm text-gray-300">
+              <li className="flex gap-2">
+                <span className="text-purple-400">•</span>
+                <span>
+                  Clients perform a single HTTP upgrade and stay connected for
+                  hours.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="text-purple-400">•</span>
+                <span>
+                  Gateways handle heartbeats, auth refresh, and backpressure.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="text-purple-400">•</span>
+                <span>
+                  Backend services publish domain events through a pub/sub bus
+                  for broadcast.
+                </span>
+              </li>
+            </ul>
+          </div>
+          <InteractiveDiagram
+            initialNodes={overviewNodes}
+            initialEdges={overviewEdges}
+            title="WebSocket Delivery Path"
+            height="360px"
+          />
         </div>
       </section>
 
       {/* How WebSockets Work */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">How WebSockets Work</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          How WebSockets Work
+        </h2>
+
         <div className="space-y-6">
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">1. Handshake</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              1. Handshake
+            </h3>
             <p className="text-gray-300 mb-3">
               WebSocket connection starts with an HTTP upgrade request.
             </p>
@@ -55,16 +276,23 @@ Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=`}
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">2. Data Frames</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              2. Data Frames
+            </h3>
             <p className="text-gray-300">
-              After handshake, data is sent in frames (text or binary). Each frame has minimal overhead, making WebSockets very efficient for frequent messages.
+              After handshake, data is sent in frames (text or binary). Each
+              frame has minimal overhead, making WebSockets very efficient for
+              frequent messages.
             </p>
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">3. Connection Close</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              3. Connection Close
+            </h3>
             <p className="text-gray-300">
-              Either party can initiate connection closure. A close frame is sent, followed by TCP connection termination.
+              Either party can initiate connection closure. A close frame is
+              sent, followed by TCP connection termination.
             </p>
           </div>
         </div>
@@ -72,8 +300,10 @@ Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=`}
 
       {/* Client Implementation */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">Client Implementation</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Client Implementation
+        </h2>
+
         <CodeBlock
           language="javascript"
           title="Browser WebSocket Client"
@@ -155,8 +385,10 @@ console.log('ReadyState:', {
 
       {/* Server Implementation */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">Server Implementation</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Server Implementation
+        </h2>
+
         <CodeBlock
           language="javascript"
           title="Node.js WebSocket Server (ws library)"
@@ -273,11 +505,15 @@ function generateId() {
 
       {/* Socket.IO */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">Socket.IO - Enhanced WebSockets</h2>
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Socket.IO - Enhanced WebSockets
+        </h2>
         <p className="text-gray-300 mb-4">
-          Socket.IO is a popular library that provides additional features on top of WebSockets, including automatic reconnection, rooms, and fallback to HTTP long polling.
+          Socket.IO is a popular library that provides additional features on
+          top of WebSockets, including automatic reconnection, rooms, and
+          fallback to HTTP long polling.
         </p>
-        
+
         <CodeBlock
           language="javascript"
           title="Socket.IO Server"
@@ -355,7 +591,7 @@ server.listen(3000, () => {
   console.log('Server running on port 3000');
 });`}
         />
-        
+
         <CodeBlock
           language="javascript"
           title="Socket.IO Client"
@@ -426,39 +662,72 @@ function disconnect() {
 
       {/* Common Use Cases */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">Common Use Cases</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Common Use Cases
+        </h2>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2 text-green-400">Chat Applications</h3>
-            <p className="text-gray-300">Real-time messaging between users with instant delivery and typing indicators</p>
+            <h3 className="text-xl font-semibold mb-2 text-green-400">
+              Chat Applications
+            </h3>
+            <p className="text-gray-300">
+              Real-time messaging between users with instant delivery and typing
+              indicators
+            </p>
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2 text-green-400">Live Notifications</h3>
-            <p className="text-gray-300">Push notifications to users without polling</p>
+            <h3 className="text-xl font-semibold mb-2 text-green-400">
+              Live Notifications
+            </h3>
+            <p className="text-gray-300">
+              Push notifications to users without polling
+            </p>
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2 text-green-400">Collaborative Editing</h3>
-            <p className="text-gray-300">Multiple users editing same document simultaneously</p>
+            <h3 className="text-xl font-semibold mb-2 text-green-400">
+              Collaborative Editing
+            </h3>
+            <p className="text-gray-300">
+              Multiple users editing same document simultaneously
+            </p>
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2 text-green-400">Live Sports Updates</h3>
-            <p className="text-gray-300">Real-time scoreboards and game statistics</p>
+            <h3 className="text-xl font-semibold mb-2 text-green-400">
+              Live Sports Updates
+            </h3>
+            <p className="text-gray-300">
+              Real-time scoreboards and game statistics
+            </p>
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2 text-green-400">Trading Platforms</h3>
-            <p className="text-gray-300">Live stock prices and order book updates</p>
+            <h3 className="text-xl font-semibold mb-2 text-green-400">
+              Trading Platforms
+            </h3>
+            <p className="text-gray-300">
+              Live stock prices and order book updates
+            </p>
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2 text-green-400">Multiplayer Games</h3>
-            <p className="text-gray-300">Real-time game state synchronization</p>
+            <h3 className="text-xl font-semibold mb-2 text-green-400">
+              Multiplayer Games
+            </h3>
+            <p className="text-gray-300">
+              Real-time game state synchronization
+            </p>
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2 text-green-400">Live Dashboards</h3>
-            <p className="text-gray-300">Real-time analytics and monitoring displays</p>
+            <h3 className="text-xl font-semibold mb-2 text-green-400">
+              Live Dashboards
+            </h3>
+            <p className="text-gray-300">
+              Real-time analytics and monitoring displays
+            </p>
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2 text-green-400">IoT Data Streams</h3>
+            <h3 className="text-xl font-semibold mb-2 text-green-400">
+              IoT Data Streams
+            </h3>
             <p className="text-gray-300">Continuous sensor data transmission</p>
           </div>
         </div>
@@ -466,11 +735,15 @@ function disconnect() {
 
       {/* Best Practices */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">Best Practices</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Best Practices
+        </h2>
+
         <div className="space-y-6">
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">1. Implement Reconnection Logic</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              1. Implement Reconnection Logic
+            </h3>
             <CodeBlock
               language="javascript"
               code={`class WebSocketClient {
@@ -505,7 +778,9 @@ function disconnect() {
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">2. Implement Heartbeat/Ping-Pong</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              2. Implement Heartbeat/Ping-Pong
+            </h3>
             <CodeBlock
               language="javascript"
               code={`// Client
@@ -541,7 +816,9 @@ ws.on('message', (data) => {
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">3. Handle Message Ordering</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              3. Handle Message Ordering
+            </h3>
             <CodeBlock
               language="javascript"
               code={`// Add sequence numbers to messages
@@ -587,7 +864,9 @@ socket.onmessage = (event) => {
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">4. Implement Rate Limiting</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              4. Implement Rate Limiting
+            </h3>
             <CodeBlock
               language="javascript"
               code={`// Server-side rate limiting
@@ -626,11 +905,15 @@ ws.on('message', (data) => {
 
       {/* Security */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">Security Considerations</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Security Considerations
+        </h2>
+
         <div className="space-y-6">
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">Use WSS (WebSocket Secure)</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              Use WSS (WebSocket Secure)
+            </h3>
             <CodeBlock
               language="javascript"
               code={`// Always use wss:// in production
@@ -650,7 +933,9 @@ const wss = new WebSocket.Server({ server });`}
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">Validate Origin</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              Validate Origin
+            </h3>
             <CodeBlock
               language="javascript"
               code={`wss.on('connection', (ws, req) => {
@@ -668,7 +953,9 @@ const wss = new WebSocket.Server({ server });`}
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">Authenticate Connections</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              Authenticate Connections
+            </h3>
             <CodeBlock
               language="javascript"
               code={`// Client sends token
@@ -694,8 +981,10 @@ wss.on('connection', (ws, req) => {
 
       {/* Scaling */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">Scaling WebSocket Applications</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Scaling WebSocket Applications
+        </h2>
+
         <CodeBlock
           language="javascript"
           title="Using Redis for Multi-Server Setup"
@@ -734,52 +1023,96 @@ io.on('connection', (socket) => {
 
       {/* WebSockets vs Polling */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">WebSockets vs HTTP Polling</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          WebSockets vs HTTP Polling
+        </h2>
+
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-800">
-                <th className="border border-gray-700 px-4 py-3 text-left text-white">Aspect</th>
-                <th className="border border-gray-700 px-4 py-3 text-left text-white">WebSockets</th>
-                <th className="border border-gray-700 px-4 py-3 text-left text-white">HTTP Polling</th>
+                <th className="border border-gray-700 px-4 py-3 text-left text-white">
+                  Aspect
+                </th>
+                <th className="border border-gray-700 px-4 py-3 text-left text-white">
+                  WebSockets
+                </th>
+                <th className="border border-gray-700 px-4 py-3 text-left text-white">
+                  HTTP Polling
+                </th>
               </tr>
             </thead>
             <tbody className="text-gray-300">
               <tr>
-                <td className="border border-gray-700 px-4 py-3 font-semibold">Connection</td>
-                <td className="border border-gray-700 px-4 py-3">Persistent (one TCP connection)</td>
-                <td className="border border-gray-700 px-4 py-3">New connection per request</td>
+                <td className="border border-gray-700 px-4 py-3 font-semibold">
+                  Connection
+                </td>
+                <td className="border border-gray-700 px-4 py-3">
+                  Persistent (one TCP connection)
+                </td>
+                <td className="border border-gray-700 px-4 py-3">
+                  New connection per request
+                </td>
               </tr>
               <tr>
-                <td className="border border-gray-700 px-4 py-3 font-semibold">Latency</td>
-                <td className="border border-gray-700 px-4 py-3">Very low (milliseconds)</td>
-                <td className="border border-gray-700 px-4 py-3">Higher (poll interval + RTT)</td>
+                <td className="border border-gray-700 px-4 py-3 font-semibold">
+                  Latency
+                </td>
+                <td className="border border-gray-700 px-4 py-3">
+                  Very low (milliseconds)
+                </td>
+                <td className="border border-gray-700 px-4 py-3">
+                  Higher (poll interval + RTT)
+                </td>
               </tr>
               <tr>
-                <td className="border border-gray-700 px-4 py-3 font-semibold">Overhead</td>
-                <td className="border border-gray-700 px-4 py-3">Minimal (small frame headers)</td>
-                <td className="border border-gray-700 px-4 py-3">High (full HTTP headers)</td>
+                <td className="border border-gray-700 px-4 py-3 font-semibold">
+                  Overhead
+                </td>
+                <td className="border border-gray-700 px-4 py-3">
+                  Minimal (small frame headers)
+                </td>
+                <td className="border border-gray-700 px-4 py-3">
+                  High (full HTTP headers)
+                </td>
               </tr>
               <tr>
-                <td className="border border-gray-700 px-4 py-3 font-semibold">Server Push</td>
-                <td className="border border-gray-700 px-4 py-3">Native support</td>
-                <td className="border border-gray-700 px-4 py-3">Not supported</td>
+                <td className="border border-gray-700 px-4 py-3 font-semibold">
+                  Server Push
+                </td>
+                <td className="border border-gray-700 px-4 py-3">
+                  Native support
+                </td>
+                <td className="border border-gray-700 px-4 py-3">
+                  Not supported
+                </td>
               </tr>
               <tr>
-                <td className="border border-gray-700 px-4 py-3 font-semibold">Bandwidth</td>
+                <td className="border border-gray-700 px-4 py-3 font-semibold">
+                  Bandwidth
+                </td>
                 <td className="border border-gray-700 px-4 py-3">Efficient</td>
-                <td className="border border-gray-700 px-4 py-3">Wasteful (empty responses)</td>
+                <td className="border border-gray-700 px-4 py-3">
+                  Wasteful (empty responses)
+                </td>
               </tr>
               <tr>
-                <td className="border border-gray-700 px-4 py-3 font-semibold">Complexity</td>
+                <td className="border border-gray-700 px-4 py-3 font-semibold">
+                  Complexity
+                </td>
                 <td className="border border-gray-700 px-4 py-3">Moderate</td>
                 <td className="border border-gray-700 px-4 py-3">Simple</td>
               </tr>
               <tr>
-                <td className="border border-gray-700 px-4 py-3 font-semibold">Use Case</td>
-                <td className="border border-gray-700 px-4 py-3">Real-time applications</td>
-                <td className="border border-gray-700 px-4 py-3">Occasional updates</td>
+                <td className="border border-gray-700 px-4 py-3 font-semibold">
+                  Use Case
+                </td>
+                <td className="border border-gray-700 px-4 py-3">
+                  Real-time applications
+                </td>
+                <td className="border border-gray-700 px-4 py-3">
+                  Occasional updates
+                </td>
               </tr>
             </tbody>
           </table>
@@ -788,32 +1121,58 @@ io.on('connection', (socket) => {
 
       {/* Libraries and Tools */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">Popular WebSocket Libraries</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Popular WebSocket Libraries
+        </h2>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2 text-green-400">Socket.IO</h3>
-            <p className="text-gray-300">Feature-rich library with rooms, namespaces, and auto-reconnection</p>
+            <h3 className="text-xl font-semibold mb-2 text-green-400">
+              Socket.IO
+            </h3>
+            <p className="text-gray-300">
+              Feature-rich library with rooms, namespaces, and auto-reconnection
+            </p>
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2 text-green-400">ws (Node.js)</h3>
-            <p className="text-gray-300">Fast and lightweight WebSocket implementation</p>
+            <h3 className="text-xl font-semibold mb-2 text-green-400">
+              ws (Node.js)
+            </h3>
+            <p className="text-gray-300">
+              Fast and lightweight WebSocket implementation
+            </p>
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2 text-green-400">uWebSockets.js</h3>
-            <p className="text-gray-300">Ultra-fast WebSocket server for high performance</p>
+            <h3 className="text-xl font-semibold mb-2 text-green-400">
+              uWebSockets.js
+            </h3>
+            <p className="text-gray-300">
+              Ultra-fast WebSocket server for high performance
+            </p>
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2 text-green-400">Primus</h3>
-            <p className="text-gray-300">Abstraction layer supporting multiple real-time frameworks</p>
+            <h3 className="text-xl font-semibold mb-2 text-green-400">
+              Primus
+            </h3>
+            <p className="text-gray-300">
+              Abstraction layer supporting multiple real-time frameworks
+            </p>
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2 text-green-400">SockJS</h3>
-            <p className="text-gray-300">WebSocket emulation with fallback options</p>
+            <h3 className="text-xl font-semibold mb-2 text-green-400">
+              SockJS
+            </h3>
+            <p className="text-gray-300">
+              WebSocket emulation with fallback options
+            </p>
           </div>
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-2 text-green-400">SignalR (.NET)</h3>
-            <p className="text-gray-300">Real-time web functionality for .NET applications</p>
+            <h3 className="text-xl font-semibold mb-2 text-green-400">
+              SignalR (.NET)
+            </h3>
+            <p className="text-gray-300">
+              Real-time web functionality for .NET applications
+            </p>
           </div>
         </div>
       </section>

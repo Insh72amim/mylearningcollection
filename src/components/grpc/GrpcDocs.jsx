@@ -1,7 +1,142 @@
 import React from "react";
+import { MarkerType } from "reactflow";
+import InteractiveDiagram from "../common/InteractiveDiagram";
 import CodeBlock from "../common/CodeBlock";
 
 const GrpcDocs = () => {
+  const overviewNodes = [
+    {
+      id: "clientA",
+      position: { x: 50, y: 80 },
+      data: { label: "Mobile Client" },
+      style: {
+        width: 140,
+        background: "#1f2937",
+        color: "white",
+        border: "1px solid #374151",
+      },
+    },
+    {
+      id: "clientB",
+      position: { x: 50, y: 220 },
+      data: { label: "Backend Job" },
+      style: {
+        width: 140,
+        background: "#1f2937",
+        color: "white",
+        border: "1px solid #374151",
+      },
+    },
+    {
+      id: "gateway",
+      position: { x: 260, y: 150 },
+      data: { label: "API Gateway" },
+      style: {
+        width: 150,
+        background: "#312e81",
+        color: "white",
+        border: "1px solid #6366f1",
+      },
+    },
+    {
+      id: "grpcServer",
+      position: { x: 470, y: 150 },
+      data: { label: "gRPC Service" },
+      style: {
+        width: 160,
+        background: "#1e40af",
+        color: "white",
+        border: "1px solid #3b82f6",
+      },
+    },
+    {
+      id: "serviceA",
+      position: { x: 690, y: 60 },
+      data: { label: "User Service" },
+      style: {
+        width: 150,
+        background: "#064e3b",
+        color: "white",
+        border: "1px solid #10b981",
+      },
+    },
+    {
+      id: "serviceB",
+      position: { x: 690, y: 160 },
+      data: { label: "Billing Service" },
+      style: {
+        width: 150,
+        background: "#064e3b",
+        color: "white",
+        border: "1px solid #10b981",
+      },
+    },
+    {
+      id: "datastore",
+      position: { x: 690, y: 260 },
+      data: { label: "Data Store" },
+      style: {
+        width: 150,
+        background: "#78350f",
+        color: "white",
+        border: "1px solid #f59e0b",
+      },
+    },
+  ];
+
+  const overviewEdges = [
+    {
+      id: "c1",
+      source: "clientA",
+      target: "gateway",
+      label: "HTTP/2 + TLS",
+      animated: true,
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#818cf8" },
+    },
+    {
+      id: "c2",
+      source: "clientB",
+      target: "gateway",
+      label: "mTLS",
+      animated: true,
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#818cf8" },
+    },
+    {
+      id: "g1",
+      source: "gateway",
+      target: "grpcServer",
+      label: "Proto Contracts",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#34d399" },
+    },
+    {
+      id: "s1",
+      source: "grpcServer",
+      target: "serviceA",
+      label: "Unary / Streaming",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#fb7185" },
+    },
+    {
+      id: "s2",
+      source: "grpcServer",
+      target: "serviceB",
+      label: "Observability",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#fb7185" },
+    },
+    {
+      id: "s3",
+      source: "serviceB",
+      target: "datastore",
+      label: "Persist",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#f59e0b" },
+    },
+  ];
+
   return (
     <div className="max-w-4xl">
       <h1 className="text-4xl font-bold mb-4 text-white">
@@ -52,6 +187,52 @@ const GrpcDocs = () => {
               request deadlines
             </li>
           </ul>
+        </div>
+      </section>
+
+      {/* High-Level Architecture */}
+      <section className="mb-12">
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          High-Level Architecture
+        </h2>
+        <div className="space-y-6">
+          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6 space-y-4">
+            <p className="text-gray-300">
+              A typical gRPC deployment terminates TLS at an API gateway,
+              funnels requests to shared service runtimes, and fans out into
+              domain microservices. Protocol Buffers contract enforcement keeps
+              the boundary strongly typed while HTTP/2 provides multiplexed
+              streaming.
+            </p>
+            <ul className="space-y-2 text-gray-300 text-sm">
+              <li className="flex gap-2">
+                <span className="text-blue-400">•</span>
+                <span>
+                  Clients negotiate HTTP/2 upgrade, sending metadata such as
+                  deadlines.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="text-blue-400">•</span>
+                <span>
+                  Gateway performs auth, routing, retries, and circuit breaking.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="text-blue-400">•</span>
+                <span>
+                  Services expose unary or streaming RPCs backed by storage
+                  layers.
+                </span>
+              </li>
+            </ul>
+          </div>
+          <InteractiveDiagram
+            initialNodes={overviewNodes}
+            initialEdges={overviewEdges}
+            title="gRPC Request Flow"
+            height="360px"
+          />
         </div>
       </section>
 

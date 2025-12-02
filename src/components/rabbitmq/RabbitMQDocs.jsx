@@ -1,70 +1,308 @@
-import React from 'react';
-import CodeBlock from '../common/CodeBlock';
+import React from "react";
+import { MarkerType } from "reactflow";
+import InteractiveDiagram from "../common/InteractiveDiagram";
+import CodeBlock from "../common/CodeBlock";
 
 const RabbitMQDocs = () => {
+  const topologyNodes = [
+    {
+      id: "producer",
+      position: { x: 50, y: 160 },
+      data: { label: "Producer App" },
+      style: {
+        width: 140,
+        background: "#1f2937",
+        color: "white",
+        border: "1px solid #374151",
+      },
+    },
+    {
+      id: "exchange",
+      position: { x: 250, y: 160 },
+      data: { label: "Topic Exchange" },
+      style: {
+        width: 150,
+        background: "#7c2d12",
+        color: "white",
+        border: "1px solid #fb923c",
+      },
+    },
+    {
+      id: "queueA",
+      position: { x: 470, y: 80 },
+      data: { label: "Queue: email" },
+      style: {
+        width: 140,
+        background: "#064e3b",
+        color: "white",
+        border: "1px solid #10b981",
+      },
+    },
+    {
+      id: "queueB",
+      position: { x: 470, y: 240 },
+      data: { label: "Queue: sms" },
+      style: {
+        width: 140,
+        background: "#064e3b",
+        color: "white",
+        border: "1px solid #10b981",
+      },
+    },
+    {
+      id: "consumerA",
+      position: { x: 660, y: 60 },
+      data: { label: "Email Worker" },
+      style: {
+        width: 140,
+        background: "#1e3a8a",
+        color: "white",
+        border: "1px solid #3b82f6",
+      },
+    },
+    {
+      id: "consumerB",
+      position: { x: 660, y: 220 },
+      data: { label: "SMS Worker" },
+      style: {
+        width: 140,
+        background: "#1e3a8a",
+        color: "white",
+        border: "1px solid #3b82f6",
+      },
+    },
+    {
+      id: "dlx",
+      position: { x: 470, y: 360 },
+      data: { label: "DLX + DLQ" },
+      style: {
+        width: 140,
+        background: "#4c1d95",
+        color: "white",
+        border: "1px solid #a855f7",
+      },
+    },
+    {
+      id: "monitor",
+      position: { x: 260, y: 20 },
+      data: { label: "Management UI" },
+      style: {
+        width: 160,
+        background: "#1f2937",
+        color: "white",
+        border: "1px dashed #4b5563",
+        fontSize: 12,
+      },
+    },
+  ];
+
+  const topologyEdges = [
+    {
+      id: "p-ex",
+      source: "producer",
+      target: "exchange",
+      label: "Publish with routing key",
+      animated: true,
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#fb923c" },
+    },
+    {
+      id: "ex-a",
+      source: "exchange",
+      target: "queueA",
+      label: "user.*",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#34d399" },
+    },
+    {
+      id: "ex-b",
+      source: "exchange",
+      target: "queueB",
+      label: "alerts.#",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#34d399" },
+    },
+    {
+      id: "qa-ca",
+      source: "queueA",
+      target: "consumerA",
+      label: "prefetch=10",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#60a5fa" },
+    },
+    {
+      id: "qb-cb",
+      source: "queueB",
+      target: "consumerB",
+      label: "ack/nack",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#60a5fa" },
+    },
+    {
+      id: "queue-dlx",
+      source: "queueB",
+      target: "dlx",
+      label: "Dead-letter on retry",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#c084fc", strokeDasharray: "6 4" },
+    },
+    {
+      id: "mon-ex",
+      source: "monitor",
+      target: "exchange",
+      label: "Metrics & bindings",
+      markerEnd: { type: MarkerType.ArrowClosed },
+      style: { stroke: "#9ca3af", strokeDasharray: "4 4" },
+    },
+  ];
+
   return (
     <div className="max-w-4xl">
-      <h1 className="text-4xl font-bold mb-4 text-white">RabbitMQ: The Deep Dive</h1>
+      <h1 className="text-4xl font-bold mb-4 text-white">
+        RabbitMQ: The Deep Dive
+      </h1>
       <p className="text-xl text-gray-300 mb-8">
-        A robust, open-source message broker that implements the Advanced Message Queuing Protocol (AMQP). RabbitMQ enables asynchronous communication between distributed systems through reliable message delivery.
+        A robust, open-source message broker that implements the Advanced
+        Message Queuing Protocol (AMQP). RabbitMQ enables asynchronous
+        communication between distributed systems through reliable message
+        delivery.
       </p>
 
       {/* What is RabbitMQ */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">What is RabbitMQ?</h2>
-       <p className="text-gray-300 mb-4">
-          RabbitMQ is a message broker that acts as an intermediary for messages between producers (senders) and consumers (receivers). It provides a reliable way to decouple services, handle asynchronous processing, and implement various messaging patterns.
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          What is RabbitMQ?
+        </h2>
+        <p className="text-gray-300 mb-4">
+          RabbitMQ is a message broker that acts as an intermediary for messages
+          between producers (senders) and consumers (receivers). It provides a
+          reliable way to decouple services, handle asynchronous processing, and
+          implement various messaging patterns.
         </p>
         <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6 mb-4">
-          <h3 className="text-xl font-semibold mb-3 text-green-400">Key Benefits</h3>
+          <h3 className="text-xl font-semibold mb-3 text-green-400">
+            Key Benefits
+          </h3>
           <ul className="list-disc list-inside space-y-2 text-gray-300">
-            <li><strong>Reliability:</strong> Message persistence, acknowledgments, and delivery guarantees</li>
-            <li><strong>Flexible Routing:</strong> Multiple exchange types for different routing patterns</li>
-            <li><strong>Clustering:</strong> High availability through mirrored queues</li>
-            <li><strong>Multi-Protocol:</strong> AMQP, MQTT, STOMP support</li>
-            <li><strong>Management UI:</strong> Web-based interface for monitoring and administration</li>
-            <li><strong>Language Agnostic:</strong> Client libraries for all major programming languages</li>
+            <li>
+              <strong>Reliability:</strong> Message persistence,
+              acknowledgments, and delivery guarantees
+            </li>
+            <li>
+              <strong>Flexible Routing:</strong> Multiple exchange types for
+              different routing patterns
+            </li>
+            <li>
+              <strong>Clustering:</strong> High availability through mirrored
+              queues
+            </li>
+            <li>
+              <strong>Multi-Protocol:</strong> AMQP, MQTT, STOMP support
+            </li>
+            <li>
+              <strong>Management UI:</strong> Web-based interface for monitoring
+              and administration
+            </li>
+            <li>
+              <strong>Language Agnostic:</strong> Client libraries for all major
+              programming languages
+            </li>
           </ul>
+        </div>
+      </section>
+
+      {/* Messaging Topology */}
+      <section className="mb-12">
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Messaging Topology
+        </h2>
+        <div className="space-y-6">
+          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6 space-y-4">
+            <p className="text-gray-300">
+              Producers publish to exchanges, which fan out into queues based on
+              bindings. Consumers apply backpressure via acknowledgments, while
+              dead-letter exchanges capture failed messages for later analysis.
+            </p>
+            <ul className="space-y-2 text-sm text-gray-300">
+              <li className="flex gap-2">
+                <span className="text-green-400">•</span>
+                <span>
+                  Bindings map routing keys to queues for fine-grained delivery.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="text-green-400">•</span>
+                <span>
+                  Prefetch limits combined with ACK/NACK keep consumers stable.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="text-green-400">•</span>
+                <span>
+                  DLX routes poison messages into quarantine queues for replay.
+                </span>
+              </li>
+            </ul>
+          </div>
+          <InteractiveDiagram
+            initialNodes={topologyNodes}
+            initialEdges={topologyEdges}
+            title="RabbitMQ Routing Overview"
+            height="360px"
+          />
         </div>
       </section>
 
       {/* Core Concepts */}
       <section className="mb-12">
         <h2 className="text-3xl font-bold mb-4 text-blue-400">Core Concepts</h2>
-        
+
         <div className="space-y-6">
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">Producer</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              Producer
+            </h3>
             <p className="text-gray-300">
-              Application that sends messages. Producers never send messages directly to queues; they always go through an exchange.
+              Application that sends messages. Producers never send messages
+              directly to queues; they always go through an exchange.
             </p>
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">Exchange</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              Exchange
+            </h3>
             <p className="text-gray-300">
-              Routes messages to queues based on routing rules. Different exchange types provide different routing behaviors.
+              Routes messages to queues based on routing rules. Different
+              exchange types provide different routing behaviors.
             </p>
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
             <h3 className="text-xl font-semibold mb-3 text-green-400">Queue</h3>
             <p className="text-gray-300">
-              Buffer that stores messages until they are consumed. Queues are bound to exchanges with binding keys.
+              Buffer that stores messages until they are consumed. Queues are
+              bound to exchanges with binding keys.
             </p>
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">Consumer</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              Consumer
+            </h3>
             <p className="text-gray-300">
-              Application that receives messages from queues. Consumers can acknowledge messages to confirm processing.
+              Application that receives messages from queues. Consumers can
+              acknowledge messages to confirm processing.
             </p>
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">Binding</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              Binding
+            </h3>
             <p className="text-gray-300">
-              Link between an exchange and a queue that defines routing rules using a routing key.
+              Link between an exchange and a queue that defines routing rules
+              using a routing key.
             </p>
           </div>
         </div>
@@ -72,11 +310,15 @@ const RabbitMQDocs = () => {
 
       {/* Exchange Types */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">Exchange Types</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Exchange Types
+        </h2>
+
         <div className="space-y-6">
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">1. Direct Exchange</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              1. Direct Exchange
+            </h3>
             <p className="text-gray-300 mb-3">
               Routes messages to queues based on exact match of routing key.
             </p>
@@ -101,12 +343,15 @@ channel.consume('error_queue', (msg) => {
 });`}
             />
             <p className="text-gray-300 mt-3">
-              <strong>Use case:</strong> Log routing, task distribution based on priority
+              <strong>Use case:</strong> Log routing, task distribution based on
+              priority
             </p>
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">2. Fanout Exchange</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              2. Fanout Exchange
+            </h3>
             <p className="text-gray-300 mb-3">
               Broadcasts messagesfor to all bound queues (ignores routing key).
             </p>
@@ -132,14 +377,18 @@ await channel.assertQueue('push_queue');
 await channel.bindQueue('push_queue', 'notifications', '');`}
             />
             <p className="text-gray-300 mt-3">
-              <strong>Use case:</strong> Broadcasting notifications, real-time updates to multiple services
+              <strong>Use case:</strong> Broadcasting notifications, real-time
+              updates to multiple services
             </p>
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">3. Topic Exchange</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              3. Topic Exchange
+            </h3>
             <p className="text-gray-300 mb-3">
-              Routes based on pattern matching with routing keys (supports wildcards: * and #).
+              Routes based on pattern matching with routing keys (supports
+              wildcards: * and #).
             </p>
             <CodeBlock
               language="javascript"
@@ -164,12 +413,17 @@ await channel.assertQueue('signup_events');
 await channel.bindQueue('signup_events', 'logs', '*.signup');`}
             />
             <p className="text-gray-300 mt-3">
-              <strong>Wildcards:</strong> <code className="text-blue-300">*</code> matches one word, <code className="text-blue-300">#</code> matches zero or more words
+              <strong>Wildcards:</strong>{" "}
+              <code className="text-blue-300">*</code> matches one word,{" "}
+              <code className="text-blue-300">#</code> matches zero or more
+              words
             </p>
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">4. Headers Exchange</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              4. Headers Exchange
+            </h3>
             <p className="text-gray-300 mb-3">
               Routes based on message headers instead of routing key.
             </p>
@@ -199,8 +453,10 @@ await channel.bindQueue('pdf_reports', 'headers_exchange', '', {
 
       {/* Basic Producer and Consumer */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">Producer & Consumer Implementation</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Producer & Consumer Implementation
+        </h2>
+
         <CodeBlock
           language="javascript"
           title="Producer (Node.js with amqplib)"
@@ -254,7 +510,7 @@ async function sendMessage() {
 
 sendMessage();`}
         />
-        
+
         <CodeBlock
           language="javascript"
           title="Consumer (Node.js)"
@@ -323,11 +579,14 @@ consumeMessages();`}
 
       {/* Dead Letter Exchange */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">Dead Letter Exchange (DLX)</h2>
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Dead Letter Exchange (DLX)
+        </h2>
         <p className="text-gray-300 mb-4">
-          A DLX captures messages that are rejected, expired, or exceed queue length limits.
+          A DLX captures messages that are rejected, expired, or exceed queue
+          length limits.
         </p>
-        
+
         <CodeBlock
           language="javascript"
           title="Dead Letter Exchange Setup"
@@ -362,8 +621,10 @@ channel.consume('dead_letter_queue', (msg) => {
 
       {/* Message Priority */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">Message Priority</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Message Priority
+        </h2>
+
         <CodeBlock
           language="javascript"
           title="Priority Queue"
@@ -403,8 +664,10 @@ channel.consume('priority_queue', (msg) => {
 
       {/* Message TTL and Expiration */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">TTL & Message Expiration</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          TTL & Message Expiration
+        </h2>
+
         <CodeBlock
           language="javascript"
           title="Time-To-Live Configuration"
@@ -444,11 +707,15 @@ await channel.sendToQueue('delay_queue', Buffer.from('Delayed message'));`}
 
       {/* Best Practices */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">Best Practices</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Best Practices
+        </h2>
+
         <div className="space-y-6">
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">1. Always Use Acknowledgments</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              1. Always Use Acknowledgments
+            </h3>
             <p className="text-gray-300 mb-3">
               Enable manual acknowledgments to prevent message loss.
             </p>
@@ -469,7 +736,9 @@ channel.consume('queue', (msg) => {
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">2. Implement Idempotency</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              2. Implement Idempotency
+            </h3>
             <p className="text-gray-300 mb-3">
               Handle duplicate messages gracefully.
             </p>
@@ -495,7 +764,9 @@ channel.consume('queue', async (msg) => {
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">3. Use Connection Pooling</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              3. Use Connection Pooling
+            </h3>
             <CodeBlock
               language="javascript"
               code={`class RabbitMQConnection {
@@ -531,7 +802,9 @@ module.exports = rabbitMQ;`}
           </div>
 
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-3 text-green-400">4. Monitor Queue Depth</h3>
+            <h3 className="text-xl font-semibold mb-3 text-green-400">
+              4. Monitor Queue Depth
+            </h3>
             <p className="text-gray-300 mb-3">
               Set alarms for queue depth to detect consumer failures.
             </p>
@@ -553,8 +826,10 @@ if (queueInfo.messageCount > 1000 && queueInfo.consumerCount === 0) {
 
       {/* Clustering */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">High Availability & Clustering</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          High Availability & Clustering
+        </h2>
+
         <CodeBlock
           language="bash"
           title="Setting Up a Cluster"
@@ -572,7 +847,7 @@ rabbitmqctl start_app
 # Create mirrored queue policy
 rabbitmqctl set_policy ha-all "^" '{"ha-mode":"all"}' --apply-to queues`}
         />
-        
+
         <CodeBlock
           language="javascript"
           title="Connect to Cluster"
@@ -589,10 +864,14 @@ rabbitmqctl set_policy ha-all "^" '{"ha-mode":"all"}' --apply-to queues`}
 
       {/* Monitoring */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold mb-4 text-blue-400">Monitoring & Management</h2>
-        
+        <h2 className="text-3xl font-bold mb-4 text-blue-400">
+          Monitoring & Management
+        </h2>
+
         <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
-          <h3 className="text-xl font-semibold mb-3 text-green-400">Management UI</h3>
+          <h3 className="text-xl font-semibold mb-3 text-green-400">
+            Management UI
+          </h3>
           <p className="text-gray-300 mb-3">
             RabbitMQ provides a web-based UI for monitoring and management:
           </p>
