@@ -59,6 +59,14 @@ const RabbitMQDocs = React.lazy(() =>
 const WebSocketsDocs = React.lazy(() =>
   import("../components/websockets/WebSocketsDocs")
 );
+const ReactDocs = React.lazy(() => import("../components/frontend/ReactDocs"));
+const NextJSDocs = React.lazy(() =>
+  import("../components/frontend/NextJSDocs")
+);
+const TailwindDocs = React.lazy(() =>
+  import("../components/frontend/TailwindDocs")
+);
+const ReduxDocs = React.lazy(() => import("../components/frontend/ReduxDocs"));
 const DockerDocs = React.lazy(() => import("../components/devops/DockerDocs"));
 const HelmDocs = React.lazy(() => import("../components/devops/HelmDocs"));
 const TerraformDocs = React.lazy(() =>
@@ -162,6 +170,14 @@ const TechnologyPage = () => {
         return RabbitMQDocs;
       case "WebSocketsDocs":
         return WebSocketsDocs;
+      case "ReactDocs":
+        return ReactDocs;
+      case "NextJSDocs":
+        return NextJSDocs;
+      case "TailwindDocs":
+        return TailwindDocs;
+      case "ReduxDocs":
+        return ReduxDocs;
       case "DockerDocs":
         return DockerDocs;
       case "HelmDocs":
