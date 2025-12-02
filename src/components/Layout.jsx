@@ -18,10 +18,7 @@ const Layout = () => {
   const [expandedSuperCategories, setExpandedSuperCategories] = useState(() =>
     superCategories.map((group) => group.id)
   );
-  const [expandedCategories, setExpandedCategories] = useState([
-    "data-engineering",
-    "databases",
-  ]);
+  const [expandedCategories, setExpandedCategories] = useState([]);
 
   const categoryMap = useMemo(() => {
     const map = new Map();
