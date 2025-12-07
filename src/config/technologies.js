@@ -719,7 +719,6 @@ export const superCategories = [
     categoryIds: [
       "finance",
       "mathematics",
-      "programming-languages",
       "ai-engineering",
       "philosophy",
       "psychology",
