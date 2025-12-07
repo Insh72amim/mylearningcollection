@@ -19,119 +19,151 @@ const CppOOP = ({ onBack, section = "oop" }) => {
 
   // Helper function to render markdown content
   const renderContent = (content) => {
-    const parts = content.split(/```cpp\n([\s\S]*?)```/);
-    const elements = [];
+    // Split content by code blocks (cpp, java, python)
+    const codeBlockRegex = /```(cpp|java|python)\n([\s\S]*?)```/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
 
-    for (let i = 0; i < parts.length; i++) {
-      if (i % 2 === 0) {
-        // Regular markdown content
-        const textContent = parts[i]
-          .split("\n")
-          .filter((line) => line.trim())
-          .map((line, index) => {
-            if (line.startsWith("### ")) {
-              return (
-                <h3
-                  key={index}
-                  className="text-2xl font-bold text-white mt-8 mb-4">
-                  {line.replace("### ", "")}
-                </h3>
-              );
-            } else if (line.startsWith("## ")) {
-              return (
-                <h2
-                  key={index}
-                  className="text-3xl font-bold text-white mt-10 mb-6">
-                  {line.replace("## ", "")}
-                </h2>
-              );
-            } else if (line.startsWith("# ")) {
-              return (
-                <h1
-                  key={index}
-                  className="text-4xl font-bold text-white mt-12 mb-8">
-                  {line.replace("# ", "")}
-                </h1>
-              );
-            } else if (line.startsWith("- ")) {
-              return (
-                <li key={index} className="text-gray-300 mb-2 ml-4">
-                  {line.replace("- ", "• ")}
-                </li>
-              );
-            } else if (line.match(/^\d+\. /)) {
-              return (
-                <li key={index} className="text-gray-300 mb-2 ml-4">
-                  {line}
-                </li>
-              );
-            } else {
-              // Handle bold text and inline code
-              const processedLine = line
-                .replace(
-                  /\*\*(.*?)\*\*/g,
-                  '<strong class="text-white font-bold">$1</strong>'
-                )
-                .replace(
-                  /`([^`]+)`/g,
-                  '<code class="bg-gray-700 text-green-400 px-2 py-1 rounded text-sm">$1</code>'
-                );
-
-              return (
-                <p
-                  key={index}
-                  className="text-gray-300 mb-4 leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: processedLine }}
-                />
-              );
-            }
-          });
-
-        elements.push(...textContent);
-      } else {
-        // Code block
-        const code = parts[i];
-        elements.push(
-          <div
-            key={i}
-            className="my-8 bg-gray-900 rounded-lg border border-gray-600 overflow-hidden">
-            <div className="flex justify-between items-center bg-gray-800 px-4 py-3 border-b border-gray-600">
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              </div>
-              <button
-                onClick={() => copyCode(code)}
-                className="text-gray-400 hover:text-gray-200 transition-colors"
-                title="Copy code">
-                {copiedCode === code ? (
-                  <Check className="w-5 h-5 text-green-400" />
-                ) : (
-                  <Copy className="w-5 h-5" />
-                )}
-              </button>
-            </div>
-            <SyntaxHighlighter
-              language="cpp"
-              style={vscDarkPlus}
-              customStyle={{
-                background: "rgb(3, 7, 18)",
-                padding: "1.5rem",
-                fontSize: "0.875rem",
-                margin: 0,
-                borderRadius: 0,
-              }}
-              wrapLines={true}
-              wrapLongLines={true}>
-              {code}
-            </SyntaxHighlighter>
-          </div>
-        );
+    // Split content into text and code parts
+    while ((match = codeBlockRegex.exec(content)) !== null) {
+      // Add text before code block
+      if (match.index > lastIndex) {
+        parts.push({
+          type: "text",
+          content: content.slice(lastIndex, match.index),
+        });
       }
+
+      // Add code block
+      parts.push({
+        type: "code",
+        language: match[1],
+        content: match[2],
+      });
+
+      lastIndex = match.index + match[0].length;
     }
 
-    return elements;
+    // Add remaining text
+    if (lastIndex < content.length) {
+      parts.push({
+        type: "text",
+        content: content.slice(lastIndex),
+      });
+    }
+
+    return parts
+      .map((part, index) => {
+        if (part.type === "code") {
+          return (
+            <div
+              key={index}
+              className="my-8 bg-gray-900 rounded-lg border border-gray-600 overflow-hidden">
+              <div className="flex justify-between items-center bg-gray-800 px-4 py-3 border-b border-gray-600">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <span className="text-sm text-gray-400 ml-3 uppercase font-medium">
+                    {part.language}
+                  </span>
+                </div>
+                <button
+                  onClick={() => copyCode(part.content)}
+                  className="text-gray-400 hover:text-gray-200 transition-colors"
+                  title="Copy code">
+                  {copiedCode === part.content ? (
+                    <Check className="w-5 h-5 text-green-400" />
+                  ) : (
+                    <Copy className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+              <SyntaxHighlighter
+                language={part.language}
+                style={vscDarkPlus}
+                customStyle={{
+                  background: "rgb(3, 7, 18)",
+                  padding: "1.5rem",
+                  fontSize: "0.875rem",
+                  margin: 0,
+                  borderRadius: 0,
+                }}
+                wrapLines={true}
+                wrapLongLines={true}>
+                {part.content}
+              </SyntaxHighlighter>
+            </div>
+          );
+        } else {
+          // Render text content
+          return part.content
+            .split("\n")
+            .filter((line) => line.trim())
+            .map((line, lineIndex) => {
+              const key = `${index}-${lineIndex}`;
+
+              if (line.startsWith("### ")) {
+                return (
+                  <h3
+                    key={key}
+                    className="text-2xl font-bold text-white mt-8 mb-4">
+                    {line.replace("### ", "")}
+                  </h3>
+                );
+              } else if (line.startsWith("## ")) {
+                return (
+                  <h2
+                    key={key}
+                    className="text-3xl font-bold text-white mt-10 mb-6">
+                    {line.replace("## ", "")}
+                  </h2>
+                );
+              } else if (line.startsWith("# ")) {
+                return (
+                  <h1
+                    key={key}
+                    className="text-4xl font-bold text-white mt-12 mb-8">
+                    {line.replace("# ", "")}
+                  </h1>
+                );
+              } else if (line.startsWith("- ")) {
+                return (
+                  <li key={key} className="text-gray-300 mb-2 ml-4">
+                    {line.replace("- ", "• ")}
+                  </li>
+                );
+              } else if (line.match(/^\d+\. /)) {
+                return (
+                  <li key={key} className="text-gray-300 mb-2 ml-4">
+                    {line}
+                  </li>
+                );
+              } else {
+                // Handle bold text and inline code
+                const processedLine = line
+                  .replace(
+                    /\*\*(.*?)\*\*/g,
+                    '<strong class="text-white font-bold">$1</strong>'
+                  )
+                  .replace(
+                    /`([^`]+)`/g,
+                    '<code class="bg-gray-700 text-green-400 px-2 py-1 rounded text-sm">$1</code>'
+                  );
+
+                return (
+                  <p
+                    key={key}
+                    className="text-gray-300 mb-4 leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: processedLine }}
+                  />
+                );
+              }
+            });
+        }
+      })
+      .flat();
   };
 
   // If a specific topic is selected, show its content

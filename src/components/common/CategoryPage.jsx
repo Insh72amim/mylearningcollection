@@ -61,6 +61,9 @@ const CategoryPage = () => {
           {selectedTopic === "cpp-vs-languages" && (
             <CppOOP onBack={() => setSelectedTopic(null)} section="compare" />
           )}
+          {selectedTopic === "cpp-comparison" && (
+            <CppOOP onBack={() => setSelectedTopic(null)} section="compare" />
+          )}
         </Suspense>
       </div>
     );
