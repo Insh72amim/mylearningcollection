@@ -72,6 +72,7 @@ const HelmDocs = React.lazy(() => import("../components/devops/HelmDocs"));
 const TerraformDocs = React.lazy(() =>
   import("../components/devops/TerraformDocs")
 );
+const CPPDocs = React.lazy(() => import("../components/languages/CPPDocs"));
 
 // Lazy load book components
 const DDIABook = React.lazy(() => import("../components/books/DDIABook"));
@@ -184,6 +185,8 @@ const TechnologyPage = () => {
         return HelmDocs;
       case "TerraformDocs":
         return TerraformDocs;
+      case "CPPDocs":
+        return CPPDocs;
       case "DDIABook":
         return DDIABook;
       case "DatabaseInternalsBook":

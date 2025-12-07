@@ -375,9 +375,11 @@ export const categories = [
         id: "cpp-lang",
         name: "C++",
         hasVisualizer: false,
-        hasDoc: false,
+        hasDoc: true,
+        docComponent: "CategoryPage",
+        categoryData: "programming-languages",
         badge: "Systems",
-        comingSoon: true,
+        comingSoon: false,
       },
       {
         id: "java-lang",
@@ -717,6 +719,7 @@ export const superCategories = [
     categoryIds: [
       "finance",
       "mathematics",
+      "programming-languages",
       "ai-engineering",
       "philosophy",
       "psychology",
