@@ -5970,8 +5970,342 @@ public:
 \`\`\`
           `,
         },
+          
+      // ... previous topics ...
       ],
     },
+    stl: {
+      title: "Standard Template Library",
+      description:
+        "The STL is a set of C++ template classes to provide common programming data structures and functions.",
+      color: "cyan",
+      topics: [
+        {
+          id: "containers",
+          title: "Containers",
+          content: `
+# STL Containers
+
+Containers store collections of objects. They are divided into sequence containers, associative containers, and unordered associative containers.
+
+## Sequence Containers
+
+### std::vector
+Dynamic array. Fast random access O(1). Fast push_back O(1) amortized. Slow insert/erase in middle O(n).
+
+\`\`\`cpp
+#include <vector>
+#include <iostream>
+
+int main() {
+    std::vector<int> numbers = {1, 2, 3};
+    
+    // O(1) Push back
+    numbers.push_back(4);
+    
+    // O(1) Random Access
+    std::cout << numbers[0] << std::endl; // 1
+    
+    // Iterating
+    for (int n : numbers) {
+        std::cout << n << " ";
+    }
+    return 0;
+}
+\`\`\`
+
+### std::deque
+Double-Ended Queue. Fast insert/erase at both front and back O(1). Random access O(1).
+\`\`\`cpp
+#include <deque>
+std::deque<int> d = {1, 2, 3};
+d.push_front(0); // O(1)
+d.push_back(4);  // O(1)
+\`\`\`
+
+### std::list (Doubly Linked List)
+Optimized for insertion/deletion anywhere O(1). No random access.
+
+\`\`\`cpp
+#include <list>
+#include <iostream>
+#include <algorithm> // For std::advance
+
+int main() {
+    std::list<int> l1 = {10, 20, 30};
+
+    // 1. Insertion at Iterator (Pointer) position
+    auto it = l1.begin(); 
+    std::advance(it, 1); // Move iterator to 2nd position (O(n))
+    l1.insert(it, 15);   // Insert 15 before 20: {10, 15, 20, 30}
+    
+    // 2. Splicing (Transferring elements efficiently O(1))
+    std::list<int> l2 = {40, 50};
+    // Move ALL of l2 to the end of l1. No copying involved!
+    l1.splice(l1.end(), l2); 
+    // l1: {10, 15, 20, 30, 40, 50}, l2 is now empty.
+
+    // 3. Member Functions (std::sort doesn't work on list!)
+    l1.push_back(15);    // {..., 50, 15}
+    l1.sort();           // {10, 15, 15, 20, 30, 40, 50}
+    l1.unique();         // Removes consecutive duplicates: {10, 15, 20, 30, 40, 50}
+    
+    // 4. Removing with Predicate
+    l1.remove_if([](int n){ return n > 30; }); // {10, 15, 20, 30}
+    
+    return 0;
+}
+\`\`\`
+
+## Container Adapters
+Restricted interfaces built on top of other containers (usually deque or vector).
+
+### std::stack (LIFO)
+\`\`\`cpp
+#include <stack>
+std::stack<int> s;
+s.push(1); // Push
+s.pop();   // Pop
+int top = s.top(); // Peek
+\`\`\`
+
+### std::queue (FIFO)
+\`\`\`cpp
+#include <queue>
+std::queue<int> q;
+q.push(1);
+q.pop();
+int front = q.front();
+\`\`\`
+
+### std::priority_queue (Max Heap)
+\`\`\`cpp
+#include <queue>
+std::priority_queue<int> pq;
+pq.push(10);
+pq.push(30); 
+pq.push(20);
+// pq.top() is now 30 (largest element)
+\`\`\`
+
+## Associative Containers (Sorted)
+Implemented as Red-Black Trees. Keys are sorted. Search is O(log n).
+
+### std::set & std::map
+\`\`\`cpp
+#include <set>
+#include <map>
+#include <string>
+
+// Set: Unique, sorted elements
+std::set<int> unique_nums = {3, 1, 2, 1}; // {1, 2, 3}
+
+// Map: Key-Value pairs, sorted by key
+std::map<std::string, int> ages;
+ages["Alice"] = 30; // O(log n)
+ages["Bob"] = 25;   // O(log n)
+
+if (ages.find("Alice") != ages.end()) {
+    std::cout << "Alice found!" << std::endl;
+}
+\`\`\`
+
+## Unordered Associative Containers (Hash Tables)
+Keys are hashed. Search is O(1) on average. Order is random.
+
+### std::unordered_map
+\`\`\`cpp
+#include <unordered_map>
+std::unordered_map<std::string, int> cache;
+cache["key"] = 123; // O(1) avg
+\`\`\`
+          `,
+        },
+        {
+          id: "algorithms",
+          title: "Algorithms",
+          content: `
+# STL Algorithms
+
+The \`<algorithm>\` and \`<numeric>\` headers provide a collection of functions acting on ranges.
+
+## Common Algorithms
+
+### Sorting
+\`\`\`cpp
+#include <algorithm>
+#include <vector>
+
+std::vector<int> v = {4, 2, 5, 1, 3};
+
+// Sort descending
+std::sort(v.begin(), v.end(), std::greater<int>());
+\`\`\`
+
+### Searching & Counting
+\`\`\`cpp
+// Binary Search (container must be sorted)
+bool exists = std::binary_search(v.begin(), v.end(), 3);
+
+// Find (Linear scan)
+auto it = std::find(v.begin(), v.end(), 5);
+
+// Counting occurrences
+int twos = std::count(v.begin(), v.end(), 2);
+
+// Counting with predicate (e.g., even numbers)
+int evens = std::count_if(v.begin(), v.end(), [](int n){ return n % 2 == 0; });
+\`\`\`
+
+### Logical Predicates
+\`\`\`cpp
+// Are all elements positive?
+bool all_pos = std::all_of(v.begin(), v.end(), [](int n){ return n > 0; });
+
+// Is there any negative element?
+bool any_neg = std::any_of(v.begin(), v.end(), [](int n){ return n < 0; });
+\`\`\`
+
+### Numeric Operations (std::accumulate)
+\`\`\`cpp
+#include <numeric>
+
+std::vector<int> nums = {1, 2, 3, 4};
+
+// Sum all elements (Starts with initial value 0)
+int sum = std::accumulate(nums.begin(), nums.end(), 0); 
+// sum = 10;
+
+// Reduce/Fold (e.g., product)
+int product = std::accumulate(nums.begin(), nums.end(), 1, std::multiplies<int>());
+// product = 24
+\`\`\`
+
+### Transformations
+\`\`\`cpp
+std::vector<int> squared;
+// Apply function to each element
+std::transform(nums.begin(), nums.end(), 
+               std::back_inserter(squared), 
+               [](int x) { return x * x; });
+// squared is now {1, 4, 9, 16}
+\`\`\`
+          `,
+        },
+        {
+          id: "iterators",
+          title: "Iterators",
+          content: `
+# Iterators
+
+Iterators are objects that point to elements in a container. They provide a common interface to traverse different types of containers.
+
+## Iterator Types
+
+1.  **Input Iterator**: Read only, forward moving (e.g., \`istream_iterator\`).
+2.  **Output Iterator**: Write only, forward moving (e.g., \`ostream_iterator\`).
+3.  **Forward Iterator**: Read/Write, forward moving (\`forward_list\`).
+4.  **Bidirectional Iterator**: Can move backward (\`list\`, \`map\`, \`set\`).
+5.  **Random Access Iterator**: Jump to any element, arithmetic operators (\`vector\`, \`deque\`, \`array\`).
+
+## Usage Pattern
+
+\`\`\`cpp
+#include <vector>
+#include <iostream>
+
+int main() {
+    std::vector<int> data = {10, 20, 30};
+    
+    // Explicit iterator type
+    std::vector<int>::iterator it;
+    
+    for (it = data.begin(); it != data.end(); ++it) {
+        std::cout << *it << " "; // Dereference to get value
+    }
+    
+    // Constant iterator (read-only)
+    std::vector<int>::const_iterator cit = data.cbegin();
+    
+    return 0;
+}
+\`\`\`
+          `,
+        },
+        {
+            id: "modern-utilities",
+            title: "Modern Utilities",
+            content: `
+# Modern C++ Utilities
+
+C++11, C++17, and C++20 introduced powerful types to handle common scenarios safely.
+
+## std::optional (C++17)
+Represents a value that may or may not be present (better than nullptr or references).
+
+\`\`\`cpp
+#include <optional>
+
+std::optional<int> findUserAge(int id) {
+    if (id == 99) return std::nullopt; // Found nothing
+    return 25; // Found 25
+}
+
+int main() {
+    auto age = findUserAge(99);
+    if (age.has_value()) {
+        std::cout << "Age: " << age.value() << std::endl;
+    }
+    
+    // Or safely default
+    int safeAge = age.value_or(0); 
+}
+\`\`\`
+
+## std::variant (C++17)
+Type-safe unions. Can hold one of several specified types.
+
+\`\`\`cpp
+#include <variant>
+
+std::variant<int, float, std::string> value;
+
+value = 10;
+value = 3.14f;
+value = "Hello";
+
+// Accessing (throws if wrong type)
+try {
+    std::string s = std::get<std::string>(value);
+} catch (const std::bad_variant_access& e) {
+    std::cout << e.what() << std::endl;
+}
+
+// Assessing with visitor
+std::visit([](auto&& arg){ std::cout << arg; }, value);
+\`\`\`
+
+## std::pair & std::tuple
+Hold heterogeneous collection of values.
+
+\`\`\`cpp
+#include <utility>
+#include <tuple>
+
+// Pair
+std::pair<std::string, int> user = {"Alice", 30};
+std::cout << user.first << ": " << user.second << std::endl;
+
+// Tuple (C++11)
+std::tuple<int, double, std::string> t(1, 4.5, "test");
+// Structured Binding (C++17) - Very useful!
+auto [id, weight, name] = t;
+\`\`\`
+            `,
+        },
+      ],
+    },
+    // End of sections
   },
 };
 

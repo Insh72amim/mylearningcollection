@@ -70,6 +70,9 @@ const CategoryPage = () => {
               section="multithreading"
             />
           )}
+          {selectedTopic === "cpp-stl" && (
+            <CppOOP onBack={() => setSelectedTopic(null)} section="stl" />
+          )}
         </Suspense>
       </div>
     );

@@ -664,6 +664,11 @@ export const categoryData = {
         title: "Multithreading",
         description: "Concurrency, threads, mutexes, and async operations",
       },
+      {
+        id: "cpp-stl",
+        title: "STL",
+        description: "Standard Template Library: Containers, Algorithms, and Iterators",
+      },
     ],
   },
 };
