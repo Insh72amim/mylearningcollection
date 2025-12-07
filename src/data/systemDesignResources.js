@@ -37,7 +37,7 @@ export const systemDesignResources = [
   },
   {
     title: "SOLID Principles (Clean Coder)",
-    url: "http://cleancoder.com/files/solid.md",
+    url: "https://cleancoder.com/files/solid.md",
     category: "OOP : Solid Principles",
     description: "Original explanation of SOLID principles by Robert C. Martin."
   },
