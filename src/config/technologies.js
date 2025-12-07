@@ -395,9 +395,11 @@ export const categories = [
         id: "python-lang",
         name: "Python",
         hasVisualizer: false,
-        hasDoc: false,
+        hasDoc: true,
+        docComponent: "CategoryPage",
+        categoryData: "python",
         badge: "Dynamic",
-        comingSoon: true,
+        comingSoon: false,
       },
       {
         id: "javascript-lang",

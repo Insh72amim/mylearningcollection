@@ -698,5 +698,33 @@ export const categoryData = {
         description: "Concurrency, threads, and synchronization",
       },
     ],
+
+  },
+  python: {
+    name: "Python Language",
+    description: "Simple, versatile, and powerful. The language of AI and Data Science.",
+    color: "yellow",
+    topics: [
+      {
+        id: "python-syntax",
+        title: "Syntax & Basics",
+        description: "Variables, indentation, control flow, functions",
+      },
+      {
+        id: "python-datastructures",
+        title: "Data Structures",
+        description: "Lists, dictionaries, sets, and tuples",
+      },
+      {
+        id: "python-oop",
+        title: "Object-Oriented Programming",
+        description: "Classes, inheritance, and magic methods",
+      },
+      {
+        id: "python-advanced",
+        title: "Advanced Features",
+        description: "List comprehensions, decorators, lambdas",
+      },
+    ],
   },
 };

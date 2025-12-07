@@ -14,6 +14,7 @@ const SecurityAnalysisBook = React.lazy(() =>
 const CppSyntax = React.lazy(() => import("../languages/CppSyntax"));
 const CppOOP = React.lazy(() => import("../languages/CppOOP"));
 const JavaDocs = React.lazy(() => import("../languages/JavaDocs"));
+const PythonDocs = React.lazy(() => import("../languages/PythonDocs"));
 
 const CategoryPage = () => {
   const { technologyId } = useParams();
@@ -85,6 +86,18 @@ const CategoryPage = () => {
           )}
           {selectedTopic === "java-multithreading" && (
             <JavaDocs onBack={() => setSelectedTopic(null)} section="multithreading" />
+          )}
+          {selectedTopic === "python-syntax" && (
+            <PythonDocs onBack={() => setSelectedTopic(null)} section="syntax" />
+          )}
+          {selectedTopic === "python-datastructures" && (
+            <PythonDocs onBack={() => setSelectedTopic(null)} section="datastructures" />
+          )}
+          {selectedTopic === "python-oop" && (
+            <PythonDocs onBack={() => setSelectedTopic(null)} section="oop" />
+          )}
+          {selectedTopic === "python-advanced" && (
+            <PythonDocs onBack={() => setSelectedTopic(null)} section="advanced" />
           )}
         </Suspense>
       </div>
@@ -236,7 +249,8 @@ const CategoryPage = () => {
                   // Handle topic selection for programming languages and java
                   if (
                     tech.categoryData === "programming-languages" ||
-                    tech.categoryData === "java"
+                    tech.categoryData === "java" ||
+                    tech.categoryData === "python"
                   ) {
                     setSelectedTopic(topic.id);
                   }
@@ -247,7 +261,8 @@ const CategoryPage = () => {
                   colors.hover
                 } transition-all duration-200 text-left group ${
                   tech.categoryData === "programming-languages" ||
-                  tech.categoryData === "java"
+                  tech.categoryData === "java" ||
+                  tech.categoryData === "python"
                     ? "cursor-pointer hover:scale-105"
                     : "cursor-default"
                 }`}>
@@ -267,7 +282,8 @@ const CategoryPage = () => {
                     <div className="mt-3 pt-3 border-t border-gray-700">
                       <span className="text-xs text-gray-500">
                         {tech.categoryData === "programming-languages" ||
-                        tech.categoryData === "java"
+                        tech.categoryData === "java" ||
+                        tech.categoryData === "python"
                           ? "Click to explore →"
                           : "Detailed content coming soon"}
                       </span>
