@@ -217,50 +217,62 @@ const TechnologyPage = () => {
 
   return (
     <>
-      {/* Header & Tabs */}
-      <div className="bg-gradient-to-r from-gray-800/70 to-gray-800/60 border border-gray-700/40 min-h-[48px] md:h-[48px] flex items-center z-10 px-3 sm:px-4 md:pr-6 py-2 md:py-0 rounded-2xl shadow-lg backdrop-blur-md mt-2 mx-2 md:mx-0">
-        <div className="flex flex-col gap-3 md:gap-2 md:flex-row md:items-center md:justify-between w-full md:pl-6">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-sm font-bold text-white flex items-center gap-2">
-              {tech.name}
+      {/* Enhanced Header & Tabs */}
+      <div className="relative bg-gradient-to-r from-gray-800/80 via-gray-700/60 to-gray-800/80 border border-gray-600/40 min-h-[56px] md:h-[56px] flex items-center z-10 px-4 sm:px-6 md:px-8 py-3 md:py-0 rounded-2xl shadow-xl backdrop-blur-xl mt-3 mx-3 md:mx-0 overflow-hidden">
+        {/* Background gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent"></div>
+
+        <div className="relative flex flex-col gap-4 md:gap-3 md:flex-row md:items-center md:justify-between w-full">
+          <div className="flex items-center gap-3 flex-wrap">
+            <h1 className="text-base md:text-lg font-bold text-white flex items-center gap-3">
+              <span className="bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
+                {tech.name}
+              </span>
               <span
-                className={`text-[9px] px-1.5 py-0.5 rounded-md border bg-${tech.category.color}-900/70 text-${tech.category.color}-300 border-${tech.category.color}-700/40 backdrop-blur-sm whitespace-nowrap`}>
+                className={`text-[10px] md:text-xs px-2 py-1 rounded-lg border bg-${tech.category.color}-900/80 text-${tech.category.color}-300 border-${tech.category.color}-700/60 backdrop-blur-sm whitespace-nowrap shadow-lg font-medium`}>
                 {tech.category.name}
               </span>
             </h1>
           </div>
+
           {tech.hasVisualizer ? (
-            <div className="flex gap-1.5 bg-gray-900/40 rounded-xl p-0.5 border border-gray-700/40 backdrop-blur-sm shadow-inner w-full md:w-auto">
+            <div className="flex gap-2 bg-gray-900/60 rounded-xl p-1 border border-gray-700/60 backdrop-blur-md shadow-inner w-full md:w-auto">
               <button
                 onClick={() => setActiveTab("docs")}
                 disabled={!tech.hasDoc}
-                className={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-2.5 py-1.5 md:py-1 rounded-lg text-xs font-medium transition-all ${
+                className={`group flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 md:py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   activeTab === "docs"
-                    ? `bg-${tech.category.color}-600/90 text-white shadow-md`
-                    : "text-gray-400 hover:text-white hover:bg-gray-800/40"
+                    ? `bg-gradient-to-r from-${tech.category.color}-600/90 to-${tech.category.color}-500/80 text-white shadow-lg border border-${tech.category.color}-500/50`
+                    : "text-gray-400 hover:text-white hover:bg-gray-800/60 border border-transparent hover:border-gray-600/40"
                 } ${!tech.hasDoc ? "opacity-50 cursor-not-allowed" : ""}`}>
-                <BookOpen size={12} />
-                <span>Docs</span>
+                <BookOpen
+                  size={14}
+                  className="group-hover:scale-110 transition-transform duration-200"
+                />
+                <span>Documentation</span>
               </button>
               <button
                 onClick={() => setActiveTab("playground")}
                 disabled={!tech.hasVisualizer}
-                className={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-2.5 py-1.5 md:py-1 rounded-lg text-xs font-medium transition-all ${
+                className={`group flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 md:py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                   activeTab === "playground"
-                    ? `bg-${tech.category.color}-600/90 text-white shadow-md`
-                    : "text-gray-400 hover:text-white hover:bg-gray-800/40"
+                    ? `bg-gradient-to-r from-${tech.category.color}-600/90 to-${tech.category.color}-500/80 text-white shadow-lg border border-${tech.category.color}-500/50`
+                    : "text-gray-400 hover:text-white hover:bg-gray-800/60 border border-transparent hover:border-gray-600/40"
                 } ${
                   !tech.hasVisualizer ? "opacity-50 cursor-not-allowed" : ""
                 }`}>
-                <Code size={12} />
+                <Code
+                  size={14}
+                  className="group-hover:scale-110 transition-transform duration-200"
+                />
                 <span>Visualizer</span>
               </button>
             </div>
           ) : (
-            <span className="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 md:py-1 rounded-lg text-xs font-medium border border-gray-700/40 bg-gray-900/40 text-gray-100 backdrop-blur-sm w-full md:w-auto">
-              <BookOpen size={12} />
-              <span>Deep Dive & Docs</span>
-            </span>
+            <div className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-700/60 bg-gray-900/60 text-gray-100 backdrop-blur-md shadow-lg w-full md:w-auto">
+              <BookOpen size={14} />
+              <span>Documentation</span>
+            </div>
           )}
         </div>
       </div>

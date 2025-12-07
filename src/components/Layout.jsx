@@ -378,25 +378,66 @@ const Layout = () => {
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto bg-gray-900 relative">
-        <div className="lg:hidden sticky top-0 z-20 flex items-center justify-between px-4 min-h-[78px] py-3 border-b border-gray-800 bg-gray-900/95 backdrop-blur">
-          <button
-            onClick={() => setMobileSidebarOpen(true)}
-            className="flex items-center gap-2 text-sm font-medium text-gray-100">
-            <PanelLeftOpen size={18} />
-            <span>Menu</span>
-          </button>
-          <Link to="/" className="text-base font-semibold">
-            KnowledgeShelf
-          </Link>
+        <div className="lg:hidden sticky top-0 z-20 border-b border-gray-800/60 bg-gradient-to-r from-gray-900/95 via-gray-800/90 to-gray-900/95 backdrop-blur-lg shadow-xl">
+          <div className="flex items-center justify-between px-6 py-4">
+            {/* Left side - Menu button with enhanced styling */}
+            <button
+              onClick={() => setMobileSidebarOpen(true)}
+              className="group flex items-center gap-3 px-4 py-2.5 bg-gray-800/60 hover:bg-gray-700/70 border border-gray-700/40 hover:border-gray-600/50 rounded-xl text-gray-100 hover:text-white transition-all duration-200 shadow-lg hover:shadow-xl backdrop-blur-sm">
+              <PanelLeftOpen
+                size={18}
+                className="group-hover:scale-110 transition-transform duration-200"
+              />
+              <span className="font-medium text-sm">Menu</span>
+            </button>
+            {/* Center - Logo with enhanced styling */}
+            <Link
+              to="/"
+              className="group flex items-center gap-3 px-4 py-2 hover:bg-gray-800/40 rounded-xl transition-all duration-200 backdrop-blur-sm">
+              <div className="relative">
+                <img
+                  src="/logo.png"
+                  alt="Logo"
+                  className="w-8 h-8 rounded-lg shadow-lg group-hover:scale-105 transition-transform duration-200"
+                />
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 blur-sm -z-10"></div>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-lg font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                  KnowledgeShelf
+                </span>
+                <span className="text-xs text-gray-400 font-medium">
+                  Learn • Build • Master
+                </span>
+              </div>
+            </Link>
+            {/* Right side - Optional actions placeholder */}
+            <div className="w-[88px]"></div> {/* Spacer to center the logo */}
+          </div>
         </div>
 
         {!isMobile && sidebarHidden && (
-          <button
-            onClick={() => setSidebarHidden(false)}
-            className="absolute top-4 left-6 z-20 p-3 bg-gray-800/90 border border-gray-700 rounded-full text-gray-200 shadow-lg hover:bg-gray-700 transition"
-            aria-label="Show sidebar">
-            <PanelLeftOpen size={18} />
-          </button>
+          <div className="absolute top-6 left-6 z-20">
+            {/* Enhanced floating sidebar toggle */}
+            <button
+              onClick={() => setSidebarHidden(false)}
+              className="group relative p-4 bg-gradient-to-r from-gray-800/90 to-gray-700/90 border border-gray-600/50 hover:border-gray-500/60 rounded-2xl text-gray-200 hover:text-white shadow-xl hover:shadow-2xl transition-all duration-300 backdrop-blur-lg"
+              aria-label="Show sidebar">
+              <PanelLeftOpen
+                size={20}
+                className="group-hover:scale-110 transition-transform duration-200"
+              />
+
+              {/* Glowing effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+
+              {/* Tooltip */}
+              <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none shadow-lg border border-gray-700">
+                Show Navigation
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-800 border-l border-b border-gray-700 rotate-45"></div>
+              </div>
+            </button>
+          </div>
         )}
         <Outlet />
       </div>
