@@ -64,6 +64,12 @@ const CategoryPage = () => {
           {selectedTopic === "cpp-comparison" && (
             <CppOOP onBack={() => setSelectedTopic(null)} section="compare" />
           )}
+          {selectedTopic === "cpp-multithreading" && (
+            <CppOOP
+              onBack={() => setSelectedTopic(null)}
+              section="multithreading"
+            />
+          )}
         </Suspense>
       </div>
     );

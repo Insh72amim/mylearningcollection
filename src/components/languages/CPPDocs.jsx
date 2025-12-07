@@ -9,6 +9,7 @@ import {
   Play,
   Copy,
   Check,
+  Cpu,
 } from "lucide-react";
 import { getCppSectionData, getAllCppSections } from "../../data/cppData.js";
 
@@ -31,6 +32,7 @@ const CPPDocs = () => {
     syntax: Code,
     oop: Box,
     compare: GitCompare,
+    multithreading: Cpu,
   };
 
   const currentSection = getCppSectionData(selectedSection);
@@ -193,6 +195,8 @@ const CPPDocs = () => {
                               ? "text-blue-400"
                               : section.color === "purple"
                               ? "text-purple-400"
+                              : section.color === "orange"
+                              ? "text-orange-400"
                               : "text-green-400"
                           }`}
                         />

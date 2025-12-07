@@ -659,6 +659,11 @@ export const categoryData = {
         title: "Comparison",
         description: "Compare C++ with other languages and versions",
       },
+      {
+        id: "cpp-multithreading",
+        title: "Multithreading",
+        description: "Concurrency, threads, mutexes, and async operations",
+      },
     ],
   },
 };

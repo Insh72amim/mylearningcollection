@@ -5385,6 +5385,593 @@ This completes the comprehensive OOP section covering all fundamental and advanc
         },
       ],
     },
+    multithreading: {
+      id: "multithreading",
+      title: "Multithreading",
+      description: "Concurrency, threads, mutexes, and async operations",
+      icon: "Cpu",
+      color: "orange",
+      topics: [
+        {
+          id: "thread-basics",
+          title: "Thread Basics",
+          content: `
+# Thread Basics in C++
+
+## Thread Creation Patterns
+
+C++11 introduced the \`std::thread\` class, which provides a standard way to create and manage threads. Understanding how to launch threads with various callable objects is fundamental.
+
+### 5 Ways to Create Threads
+Below are the five common patterns for creating threads, ranging from function pointers to modern lambda expressions.
+
+\`\`\`cpp
+#include <iostream>
+#include <thread>
+#include <memory>
+
+// 1. Function Pointer
+void fun(int x) {
+    std::cout << "Function Pointer: " << x << std::endl;
+}
+
+// 2. Lambda Expression
+// Most common in modern C++. Allows capturing context variables.
+auto lambda = [](int x) {
+    std::cout << "Lambda: " << x << std::endl;
+};
+
+// 3. Functor (Function Object)
+class Base {
+public:
+    void operator()(int x) {
+        std::cout << "Functor: " << x << std::endl;
+    }
+};
+
+// 4. Non-static Member Function
+class Worker {
+public:
+    void run(int x) {
+        std::cout << "Member Function: " << x << std::endl;
+    }
+};
+
+// 5. Static Member Function
+class Utility {
+public:
+    static void staticRun(int x) {
+        std::cout << "Static Member: " << x << std::endl;
+    }
+};
+
+int main() {
+    // 1. Using Function Pointer
+    std::thread t1(fun, 10);
+    
+    // 2. Using Lambda
+    std::thread t2(lambda, 20);
+    
+    // 3. Using Functor
+    std::thread t3(Base(), 30);
+    
+    // 4. Using Non-static Member Function
+    // Requires passing the object instance (pointer) as the second argument
+    Worker w;
+    std::thread t4(&Worker::run, &w, 40);
+    
+    // 5. Using Static Member Function
+    std::thread t5(&Utility::staticRun, 50);
+
+    // Always join or detach!
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
+    t5.join();
+    
+    return 0;
+}
+\`\`\`
+
+## Lifecycle Management
+
+### ID, Sleep, and Yield
+Managing thread execution involves identifying threads, pausing execution, and cooperatively yielding control.
+
+\`\`\`cpp
+#include <iostream>
+#include <thread>
+#include <chrono>
+
+void worker() {
+    std::thread::id my_id = std::this_thread::get_id();
+    std::cout << "Worker ID: " << my_id << std::endl;
+    
+    // Sleep for a duration
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    
+    // Yield execution to allow other threads to run
+    // Useful in busy-wait loops to reduce CPU consumption
+    std::this_thread::yield();
+}
+
+int main() {
+    std::thread t1(worker);
+    std::thread::id t1_id = t1.get_id();
+    
+    std::cout << "Main thread sees t1 ID as: " << t1_id << std::endl;
+    
+    t1.join();
+    return 0;
+}
+\`\`\`
+
+### Join vs Detach
+When a thread object goes out of scope, it must be either **joined** or **detached**, otherwise \`std::terminate\` is called.
+
+- **Join**: The parent thread waits for the child thread to finish. This ensures the child has completed its work.
+- **Detach**: The child thread runs independently (daemon). The OS reclaims resources when it finishes. **Danger**: If the main application exits, detached threads are abruptly killed.
+
+\`\`\`cpp
+void heavyTask() {
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::cout << "Task finished" << std::endl;
+}
+
+int main() {
+    std::thread t_join(heavyTask);
+    std::thread t_detach(heavyTask);
+    
+    t_join.join();   // Wait for this one
+    t_detach.detach(); // Let this one run in background
+    
+    // If we return here immediately, t_detach might be killed before printing!
+    std::this_thread::sleep_for(std::chrono::seconds(3)); 
+    return 0;
+}
+\`\`\`
+          `,
+        },
+        {
+          id: "mutex-locking",
+          title: "Mutex & Locking",
+          content: `
+# Mutex and Locking Mechanisms
+
+Mutexes (Mutual Exclusions) are the primary mechanism to prevent Race Conditions by ensuring that only one thread can access a resource at a time.
+
+## Mutex Types
+
+### std::mutex and std::timed_mutex
+\`\`\`cpp
+#include <mutex>
+#include <chrono>
+
+std::mutex mtx;
+std::timed_mutex t_mtx;
+
+void critical_section() {
+    // Blocking lock
+    mtx.lock();
+    // ... do work ...
+    mtx.unlock();
+    
+    // Non-blocking try_lock
+    if (mtx.try_lock()) {
+        // ... do work ...
+        mtx.unlock();
+    }
+    
+    // Timed lock (try for 1 second)
+    if (t_mtx.try_lock_for(std::chrono::seconds(1))) {
+        // ... acquired ...
+        t_mtx.unlock();
+    }
+}
+\`\`\`
+
+### Recursive Mutex
+Standard mutexes cannot be locked twice by the same thread (undefined behavior). Use \`std::recursive_mutex\` if a thread needs to acquire the same lock multiple times (e.g., recursive functions).
+
+\`\`\`cpp
+std::recursive_mutex rm;
+
+void access(int count) {
+    if (count <= 0) return;
+    
+    rm.lock(); // Safe to re-lock
+    std::cout << "Locked level " << count << std::endl;
+    access(count - 1);
+    rm.unlock();
+}
+\`\`\`
+
+## RAII Lock Management (Recommended)
+Manual \`lock()\` and \`unlock()\` lead to bugs if an exception is thrown or a return statement is hit before unlock. Always use RAII wrappers.
+
+### std::lock_guard vs std::unique_lock
+\`\`\`cpp
+std::mutex m;
+
+void good_practice() {
+    // 1. std::lock_guard
+    // Simple, lightweight. Locks on construction, unlocks on destruction.
+    // Cannot be manually unlocked.
+    {
+        std::lock_guard<std::mutex> lg(m);
+        // Protected code
+    } // Automatically unlocked here
+
+    // 2. std::unique_lock
+    // More heavy-weight. Can be locked/unlocked manually, moved, and deferred.
+    // Required for condition_variables.
+    {
+        std::unique_lock<std::mutex> ul(m);
+        ul.unlock(); // Can unlock early
+        // ... heavy calculation not needing lock ...
+        ul.lock();   // Lock again
+    }
+}
+\`\`\`
+
+## Deadlock Avoidance
+Deadlocks occur when two threads wait for each other's locks.
+**Strategy**: Always lock mutexes in the same global order, or use \`std::lock\`.
+
+\`\`\`cpp
+std::mutex m1, m2;
+
+void threadA() {
+    // std::lock locks multiple mutexes using a deadlock-avoidance algorithm
+    std::lock(m1, m2);
+    
+    // Adopt the locks (tell wrappers we already locked them)
+    std::lock_guard<std::mutex> lg1(m1, std::adopt_lock);
+    std::lock_guard<std::mutex> lg2(m2, std::adopt_lock);
+    
+    std::cout << "Thread A doing work" << std::endl;
+}
+\`\`\`
+          `,
+        },
+        {
+          id: "sync-async",
+          title: "Synchronization & Async",
+          content: `
+# Synchronization & Async
+
+Coordination between threads often requires waiting for specific events or results.
+
+## Condition Variables
+Used for waiting for a condition to become true (e.g., "Queue is not empty"). Always used with \`std::unique_lock\`.
+
+### Producer-Consumer Pattern
+\`\`\`cpp
+#include <mutex>
+#include <condition_variable>
+#include <queue>
+
+std::queue<int> buffer;
+std::mutex mtx;
+std::condition_variable cv;
+const unsigned int MAX_BUFFER_SIZE = 10;
+
+void producer() {
+    for (int i = 0; i < 20; ++i) {
+        std::unique_lock<std::mutex> lock(mtx);
+        
+        // Wait if buffer is full
+        // cv.wait unlocks mtx and sleeps. Re-locks when notified AND predicate is true.
+        cv.wait(lock, [] { return buffer.size() < MAX_BUFFER_SIZE; });
+        
+        buffer.push(i);
+        std::cout << "Produced: " << i << std::endl;
+        
+        lock.unlock(); // Unlock before notifying to avoid waking thread just to block it
+        cv.notify_one();
+    }
+}
+
+void consumer() {
+    for (int i = 0; i < 20; ++i) {
+        std::unique_lock<std::mutex> lock(mtx);
+        
+        // Wait if buffer is empty
+        cv.wait(lock, [] { return !buffer.empty(); });
+        
+        int val = buffer.front();
+        buffer.pop();
+        std::cout << "Consumed: " << val << std::endl;
+        
+        lock.unlock();
+        cv.notify_one();
+    }
+}
+\`\`\`
+
+## Futures and Promises
+Standard mechanism to return values or exceptions from threads.
+
+### std::async
+High-level interface to run tasks.
+\`\`\`cpp
+#include <future>
+
+int calculate() { return 42; }
+
+int main() {
+    // launch::async forces a new thread
+    std::future<int> f = std::async(std::launch::async, calculate);
+    
+    // get() blocks until the result is ready
+    std::cout << "Result: " << f.get() << std::endl;
+    return 0;
+}
+\`\`\`
+
+### std::promise
+Low-level setting of the result. Use when you need to set the value from within a thread manually.
+\`\`\`cpp
+void worker(std::promise<int> p) {
+    try {
+        // ... calculation ...
+        p.set_value(100);
+    } catch (...) {
+        p.set_exception(std::current_exception());
+    }
+}
+
+int main() {
+    std::promise<int> p;
+    std::future<int> f = p.get_future();
+    std::thread t(worker, std::move(p));
+    
+    std::cout << "Got: " << f.get() << std::endl;
+    t.join();
+}
+\`\`\`
+          `,
+        },
+        {
+          id: "concurrency-problems",
+          title: "Concurrency Problems",
+          content: `
+# Classic Concurrency Problems (LeetCode)
+
+These problems are famous for testing thread coordination skills. Detailed solutions below.
+
+## 1. Print in Order (LeetCode 1114)
+**Goal**: Ensure \`first()\`, \`second()\`, and \`third()\` execute in that exact order, regardless of how threads are scheduled.
+
+### Solution using std::promise
+Promises are perfect here because they represent a one-time event that has happened.
+
+\`\`\`cpp
+class Foo {
+    std::promise<void> p1;
+    std::promise<void> p2;
+
+public:
+    void first(function<void()> printFirst) {
+        printFirst();
+        p1.set_value(); // Signal first is done
+    }
+
+    void second(function<void()> printSecond) {
+        p1.get_future().wait(); // Wait for first
+        printSecond();
+        p2.set_value(); // Signal second is done
+    }
+
+    void third(function<void()> printThird) {
+        p2.get_future().wait(); // Wait for second
+        printThird();
+    }
+};
+\`\`\`
+
+## 2. FizzBuzz Multithreaded (LeetCode 1195)
+**Goal**: 4 threads. One prints "Fizz" (div 3), one "Buzz" (div 5), one "FizzBuzz" (div 15), one numbers. Coordinate them up to \`n\`.
+
+### Solution using Condition Variable
+We track the current number \`i\` and each thread checks if it's their "turn".
+
+\`\`\`cpp
+class FizzBuzz {
+    int n;
+    int i;
+    std::mutex m;
+    std::condition_variable cv;
+
+public:
+    FizzBuzz(int n) {
+        this->n = n;
+        this->i = 1;
+    }
+
+    void fizz(function<void()> printFizz) {
+        while (true) {
+            std::unique_lock<std::mutex> lock(m);
+            cv.wait(lock, [this] { return i > n || (i % 3 == 0 && i % 5 != 0); });
+            if (i > n) break;
+            printFizz();
+            i++;
+            cv.notify_all();
+        }
+    }
+
+    void buzz(function<void()> printBuzz) {
+        while (true) {
+            std::unique_lock<std::mutex> lock(m);
+            cv.wait(lock, [this] { return i > n || (i % 5 == 0 && i % 3 != 0); });
+            if (i > n) break;
+            printBuzz();
+            i++;
+            cv.notify_all();
+        }
+    }
+
+    void fizzbuzz(function<void()> printFizzBuzz) {
+        while (true) {
+            std::unique_lock<std::mutex> lock(m);
+            cv.wait(lock, [this] { return i > n || (i % 15 == 0); });
+            if (i > n) break;
+            printFizzBuzz();
+            i++;
+            cv.notify_all();
+        }
+    }
+
+    void number(function<void(int)> printNumber) {
+        while (true) {
+            std::unique_lock<std::mutex> lock(m);
+            cv.wait(lock, [this] { return i > n || (i % 3 != 0 && i % 5 != 0); });
+            if (i > n) break;
+            printNumber(i);
+            i++;
+            cv.notify_all();
+        }
+    }
+};
+\`\`\`
+
+## 3. Print FooBar Alternately (LeetCode 1115)
+**Goal**: Thread A prints "Foo", Thread B prints "Bar". Repeat \`n\` times: FooBarFooBar...
+
+### Solution using Mutex & CV
+\`\`\`cpp
+class FooBar {
+    int n;
+    std::mutex m;
+    std::condition_variable cv;
+    bool fooTurn = true; // State to track whose turn
+
+public:
+    FooBar(int n) {
+        this->n = n;
+    }
+
+    void foo(function<void()> printFoo) {
+        for (int i = 0; i < n; i++) {
+            std::unique_lock<std::mutex> lock(m);
+            cv.wait(lock, [this] { return fooTurn; });
+            
+            printFoo();
+            fooTurn = false;
+            cv.notify_one();
+        }
+    }
+
+    void bar(function<void()> printBar) {
+        for (int i = 0; i < n; i++) {
+            std::unique_lock<std::mutex> lock(m);
+            cv.wait(lock, [this] { return !fooTurn; });
+            
+            printBar();
+            fooTurn = true;
+            cv.notify_one();
+        }
+    }
+};
+\`\`\`
+
+## 4. Print Zero Even Odd (LeetCode 1116)
+**Goal**: Print 01020304...0n. Thread A prints 0, B prints Odd, C prints Even.
+
+### Solution
+\`\`\`cpp
+class ZeroEvenOdd {
+    int n;
+    std::mutex m;
+    std::condition_variable cv;
+    int state = 0; // 0=Zero, 1=Odd, 2=Even
+    int i = 1;
+
+public:
+    ZeroEvenOdd(int n) {
+        this->n = n;
+    }
+
+    void zero(function<void(int)> printNumber) {
+        while (true) {
+            std::unique_lock<std::mutex> lock(m);
+            cv.wait(lock, [this] { return state == 0 || i > n; });
+            if (i > n) break;
+            
+            printNumber(0);
+            
+            if (i % 2 == 1) state = 1; // Next is odd
+            else state = 2;            // Next is even
+            
+            cv.notify_all();
+        }
+    }
+
+    void odd(function<void(int)> printNumber) {
+        while (true) {
+            std::unique_lock<std::mutex> lock(m);
+            cv.wait(lock, [this] { return state == 1 || i > n; });
+            if (i > n) break;
+            
+            printNumber(i++);
+            state = 0; // Back to zero
+            cv.notify_all();
+        }
+    }
+
+    void even(function<void(int)> printNumber) {
+        while (true) {
+            std::unique_lock<std::mutex> lock(m);
+            cv.wait(lock, [this] { return state == 2 || i > n; });
+            if (i > n) break;
+            
+            printNumber(i++);
+            state = 0; // Back to zero
+            cv.notify_all();
+        }
+    }
+};
+\`\`\`
+
+## 5. The Dining Philosophers (LeetCode 1226)
+**Goal**: 5 philosophers sit at a table. Each needs 2 forks to eat. Prevent deadlock.
+
+### Solution: Hierarchy Strategy
+To create a strictly ordered resource hierarchy, perform the check: always pick up the lower-numbered fork first, then the higher-numbered fork. This breaks the circular wait condition.
+
+\`\`\`cpp
+class DiningPhilosophers {
+    std::mutex forks[5];
+public:
+    void wantsToEat(int philosopher,
+                    function<void()> pickLeftFork,
+                    function<void()> pickRightFork,
+                    function<void()> eat,
+                    function<void()> putLeftFork,
+                    function<void()> putRightFork) {
+        
+        int first = philosopher;
+        int second = (philosopher + 1) % 5;
+        
+        // Enforce order: always lock smaller index first
+        if (first > second) std::swap(first, second);
+        
+        std::unique_lock<std::mutex> lock1(forks[first]);
+        std::unique_lock<std::mutex> lock2(forks[second]);
+        
+        pickLeftFork();
+        pickRightFork();
+        eat();
+        putLeftFork();
+        putRightFork();
+    }
+};
+\`\`\`
+          `,
+        },
+      ],
+    },
   },
 };
 
