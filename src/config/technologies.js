@@ -405,9 +405,11 @@ export const categories = [
         id: "javascript-lang",
         name: "JavaScript",
         hasVisualizer: false,
-        hasDoc: false,
+        hasDoc: true,
+        docComponent: "CategoryPage",
+        categoryData: "javascript",
         badge: "Event Loop",
-        comingSoon: true,
+        comingSoon: false,
       },
       {
         id: "go-lang",

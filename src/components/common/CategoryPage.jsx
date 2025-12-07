@@ -16,6 +16,7 @@ const CppOOP = React.lazy(() => import("../languages/CppOOP"));
 const JavaDocs = React.lazy(() => import("../languages/JavaDocs"));
 const PythonDocs = React.lazy(() => import("../languages/PythonDocs"));
 const GoDocs = React.lazy(() => import("../languages/GoDocs"));
+const JavaScriptDocs = React.lazy(() => import("../languages/JavaScriptDocs"));
 
 const CategoryPage = () => {
   const { technologyId } = useParams();
@@ -111,6 +112,18 @@ const CategoryPage = () => {
           )}
           {selectedTopic === "go-errorhandling" && (
             <GoDocs onBack={() => setSelectedTopic(null)} section="errorhandling" />
+          )}
+          {selectedTopic === "javascript-syntax" && (
+            <JavaScriptDocs onBack={() => setSelectedTopic(null)} section="syntax" />
+          )}
+          {selectedTopic === "javascript-functions" && (
+            <JavaScriptDocs onBack={() => setSelectedTopic(null)} section="functions" />
+          )}
+          {selectedTopic === "javascript-async" && (
+            <JavaScriptDocs onBack={() => setSelectedTopic(null)} section="async" />
+          )}
+          {selectedTopic === "javascript-dom" && (
+            <JavaScriptDocs onBack={() => setSelectedTopic(null)} section="dom" />
           )}
         </Suspense>
       </div>
@@ -264,7 +277,8 @@ const CategoryPage = () => {
                     tech.categoryData === "programming-languages" ||
                     tech.categoryData === "java" ||
                     tech.categoryData === "python" ||
-                    tech.categoryData === "go"
+                    tech.categoryData === "go" ||
+                    tech.categoryData === "javascript"
                   ) {
                     setSelectedTopic(topic.id);
                   }
@@ -277,7 +291,8 @@ const CategoryPage = () => {
                   tech.categoryData === "programming-languages" ||
                   tech.categoryData === "java" ||
                   tech.categoryData === "python" ||
-                  tech.categoryData === "go"
+                  tech.categoryData === "go" ||
+                  tech.categoryData === "javascript"
                     ? "cursor-pointer hover:scale-105"
                     : "cursor-default"
                 }`}>
@@ -299,7 +314,8 @@ const CategoryPage = () => {
                         {tech.categoryData === "programming-languages" ||
                         tech.categoryData === "java" ||
                         tech.categoryData === "python" ||
-                        tech.categoryData === "go"
+                        tech.categoryData === "go" ||
+                        tech.categoryData === "javascript"
                           ? "Click to explore →"
                           : "Detailed content coming soon"}
                       </span>

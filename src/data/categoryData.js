@@ -754,4 +754,31 @@ export const categoryData = {
       },
     ],
   },
+  javascript: {
+    name: "JavaScript Language",
+    description: "The language of the web. Dynamic, flexible, and everywhere.",
+    color: "yellow",
+    topics: [
+      {
+        id: "javascript-syntax",
+        title: "Syntax & Basics",
+        description: "Variables, control flow, template literals",
+      },
+      {
+        id: "javascript-functions",
+        title: "Functions",
+        description: "Arrow functions, callbacks, closures",
+      },
+      {
+        id: "javascript-async",
+        title: "Async JavaScript",
+        description: "Promises, async/await, event loop",
+      },
+      {
+        id: "javascript-dom",
+        title: "DOM Manipulation",
+        description: "Selecting, modifying, and handling events",
+      },
+    ],
+  },
 };
