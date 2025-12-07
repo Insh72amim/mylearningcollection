@@ -308,7 +308,7 @@ Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=`}
           language="javascript"
           title="Browser WebSocket Client"
           code={`// Create WebSocket connection
-const socket = new WebSocket('ws://localhost:8080');
+const socket = new WebSocket('wss://localhost:8080');
 
 // Connection opened
 socket.addEventListener('open', (event) => {
@@ -598,7 +598,7 @@ server.listen(3000, () => {
           code={`import { io } from 'socket.io-client';
 
 // Connect to server
-const socket = io('http://localhost:3000', {
+const socket = io('https://localhost:3000', {
   auth: {
     token: 'your-auth-token'
   },

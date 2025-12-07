@@ -886,7 +886,7 @@ rabbitmqctl set_policy ha-all "^" '{"ha-mode":"all"}' --apply-to queues`}
             code={`# Enable management plugin
 rabbitmq-plugins enable rabbitmq_management
 
-# Access UI at http://localhost:15672
+# Access UI at https://localhost:15672
 # Default credentials: guest/guest`}
           />
         </div>
