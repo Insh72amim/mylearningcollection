@@ -727,4 +727,31 @@ export const categoryData = {
       },
     ],
   },
+  go: {
+    name: "Go Language",
+    description: "Build simple, reliable, and efficient software.",
+    color: "cyan",
+    topics: [
+      {
+        id: "go-syntax",
+        title: "Syntax & Basics",
+        description: "Variables, imports, control flow, functions",
+      },
+      {
+        id: "go-structs",
+        title: "Structs & Interfaces",
+        description: "Type system, structs, and implicit interfaces",
+      },
+      {
+        id: "go-concurrency",
+        title: "Concurrency",
+        description: "Goroutines, channels, and select",
+      },
+      {
+        id: "go-errorhandling",
+        title: "Error Handling",
+        description: "Defer, panic, recover, and error patterns",
+      },
+    ],
+  },
 };
