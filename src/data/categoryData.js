@@ -671,4 +671,32 @@ export const categoryData = {
       },
     ],
   },
+
+  java: {
+    name: "Java Language",
+    description: "Write once, run anywhere. Master the Java language and ecosystem.",
+    color: "orange",
+    topics: [
+      {
+        id: "java-syntax",
+        title: "Syntax & Basics",
+        description: "Variables, types, control structures, and basic syntax",
+      },
+      {
+        id: "java-oop",
+        title: "Object-Oriented Programming",
+        description: "Classes, interfaces, inheritance, and polymorphism",
+      },
+      {
+        id: "java-collections",
+        title: "Collections Framework",
+        description: "Lists, Sets, Maps, and Queue implementations",
+      },
+      {
+        id: "java-multithreading",
+        title: "Multithreading",
+        description: "Concurrency, threads, and synchronization",
+      },
+    ],
+  },
 };

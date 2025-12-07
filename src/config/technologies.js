@@ -385,9 +385,11 @@ export const categories = [
         id: "java-lang",
         name: "Java",
         hasVisualizer: false,
-        hasDoc: false,
+        hasDoc: true,
+        docComponent: "CategoryPage",
+        categoryData: "java",
         badge: "OOP & JVM",
-        comingSoon: true,
+        comingSoon: false,
       },
       {
         id: "python-lang",

@@ -13,6 +13,7 @@ const SecurityAnalysisBook = React.lazy(() =>
 // Lazy load topic components
 const CppSyntax = React.lazy(() => import("../languages/CppSyntax"));
 const CppOOP = React.lazy(() => import("../languages/CppOOP"));
+const JavaDocs = React.lazy(() => import("../languages/JavaDocs"));
 
 const CategoryPage = () => {
   const { technologyId } = useParams();
@@ -72,6 +73,18 @@ const CategoryPage = () => {
           )}
           {selectedTopic === "cpp-stl" && (
             <CppOOP onBack={() => setSelectedTopic(null)} section="stl" />
+          )}
+          {selectedTopic === "java-syntax" && (
+            <JavaDocs onBack={() => setSelectedTopic(null)} section="syntax" />
+          )}
+          {selectedTopic === "java-oop" && (
+            <JavaDocs onBack={() => setSelectedTopic(null)} section="oop" />
+          )}
+          {selectedTopic === "java-collections" && (
+            <JavaDocs onBack={() => setSelectedTopic(null)} section="collections" />
+          )}
+          {selectedTopic === "java-multithreading" && (
+            <JavaDocs onBack={() => setSelectedTopic(null)} section="multithreading" />
           )}
         </Suspense>
       </div>
@@ -220,8 +233,11 @@ const CategoryPage = () => {
               <button
                 key={topic.id}
                 onClick={() => {
-                  // Handle topic selection for programming languages
-                  if (tech.categoryData === "programming-languages") {
+                  // Handle topic selection for programming languages and java
+                  if (
+                    tech.categoryData === "programming-languages" ||
+                    tech.categoryData === "java"
+                  ) {
                     setSelectedTopic(topic.id);
                   }
                 }}
@@ -230,7 +246,8 @@ const CategoryPage = () => {
                 } p-5 ${
                   colors.hover
                 } transition-all duration-200 text-left group ${
-                  tech.categoryData === "programming-languages"
+                  tech.categoryData === "programming-languages" ||
+                  tech.categoryData === "java"
                     ? "cursor-pointer hover:scale-105"
                     : "cursor-default"
                 }`}>
@@ -249,7 +266,8 @@ const CategoryPage = () => {
                     {/* Interactive indicator for programming languages */}
                     <div className="mt-3 pt-3 border-t border-gray-700">
                       <span className="text-xs text-gray-500">
-                        {tech.categoryData === "programming-languages"
+                        {tech.categoryData === "programming-languages" ||
+                        tech.categoryData === "java"
                           ? "Click to explore →"
                           : "Detailed content coming soon"}
                       </span>
