@@ -534,6 +534,14 @@ export const categories = [
         badge: "Hierarchical",
       },
       {
+        id: "graphs",
+        name: "Graphs",
+        hasVisualizer: false,
+        hasDoc: true,
+        docComponent: "GraphDocs",
+        badge: "Networks",
+      },
+      {
         id: "dp",
         name: "Dynamic Programming",
         hasVisualizer: false,

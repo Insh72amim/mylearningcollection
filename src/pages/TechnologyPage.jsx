@@ -96,6 +96,9 @@ const DynamicProgramming = React.lazy(() =>
 const TreeDocs = React.lazy(() =>
   import("../components/dsa/TreeDocs")
 );
+const GraphDocs = React.lazy(() =>
+  import("../components/dsa/GraphDocs")
+);
 const SystemDesignResources = React.lazy(() =>
   import("../components/system-design/SystemDesignResources")
 );
@@ -204,6 +207,8 @@ const TechnologyPage = () => {
         return DynamicProgramming;
       case "TreeDocs":
         return TreeDocs;
+      case "GraphDocs":
+        return GraphDocs;
       case "SystemDesignResources":
         return SystemDesignResources;
       default:
