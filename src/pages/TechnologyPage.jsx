@@ -93,6 +93,9 @@ const LLDExamples = React.lazy(() => import("../components/lld/LLDExamples"));
 const DynamicProgramming = React.lazy(() =>
   import("../components/dsa/DynamicProgramming")
 );
+const TreeDocs = React.lazy(() =>
+  import("../components/dsa/TreeDocs")
+);
 const SystemDesignResources = React.lazy(() =>
   import("../components/system-design/SystemDesignResources")
 );
@@ -199,6 +202,8 @@ const TechnologyPage = () => {
         return LLDExamples;
       case "DynamicProgramming":
         return DynamicProgramming;
+      case "TreeDocs":
+        return TreeDocs;
       case "SystemDesignResources":
         return SystemDesignResources;
       default:

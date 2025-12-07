@@ -526,12 +526,12 @@ export const categories = [
         comingSoon: true,
       },
       {
-        id: "trees-graphs",
-        name: "Trees & Graphs",
+        id: "trees",
+        name: "Trees",
         hasVisualizer: false,
-        hasDoc: false,
+        hasDoc: true,
+        docComponent: "TreeDocs",
         badge: "Hierarchical",
-        comingSoon: true,
       },
       {
         id: "dp",
