@@ -52,20 +52,6 @@ export const categoryData = {
           "Black-Scholes Theory",
         ],
       },
-      {
-        id: "quantitative-risk-management",
-        title: "Quantitative Risk Management",
-        author: "McNeil, Frey, and Embrechts",
-        year: "2015",
-        description:
-          "Comprehensive treatment of modern risk management techniques.",
-        topics: [
-          "VaR",
-          "Expected Shortfall",
-          "Copulas",
-          "Extreme Value Theory",
-        ],
-      },
     ],
     topics: [
       {
@@ -126,33 +112,7 @@ export const categoryData = {
           "Jordan Form",
           "Inner Product Spaces",
         ],
-      },
-      {
-        id: "real-analysis-rudin",
-        title: "Principles of Mathematical Analysis",
-        author: "Walter Rudin",
-        year: "1976",
-        description: 'Classic text on real analysis, known as "Baby Rudin".',
-        topics: [
-          "Sequences",
-          "Continuity",
-          "Differentiation",
-          "Riemann Integration",
-        ],
-      },
-      {
-        id: "topology-munkres",
-        title: "Topology",
-        author: "James Munkres",
-        year: "2000",
-        description: "Standard introduction to general and algebraic topology.",
-        topics: [
-          "Topological Spaces",
-          "Connectedness",
-          "Compactness",
-          "Fundamental Group",
-        ],
-      },
+      }
     ],
     topics: [
       {
@@ -217,31 +177,6 @@ export const categoryData = {
           "EM Algorithm",
           "Sampling Methods",
         ],
-      },
-      {
-        id: "hands-on-ml",
-        title:
-          "Hands-On Machine Learning with Scikit-Learn, Keras & TensorFlow",
-        author: "Aurélien Géron",
-        year: "2019",
-        edition: "2nd Edition",
-        description:
-          "Practical guide to building ML systems with popular frameworks.",
-        topics: [
-          "Supervised Learning",
-          "Deep Learning",
-          "Ensemble Methods",
-          "Deployment",
-        ],
-      },
-      {
-        id: "reinforcement-learning-sutton",
-        title: "Reinforcement Learning: An Introduction",
-        author: "Richard S. Sutton and Andrew G. Barto",
-        year: "2018",
-        edition: "2nd Edition",
-        description: "The standard text on reinforcement learning.",
-        topics: ["MDPs", "Q-Learning", "Policy Gradients", "Actor-Critic"],
       },
     ],
     topics: [
