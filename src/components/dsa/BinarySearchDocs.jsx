@@ -1,0 +1,140 @@
+import React, { useState } from 'react';
+import { Code, ExternalLink, ChevronDown, ChevronRight, Lightbulb, CheckCircle } from 'lucide-react';
+import CodeBlock from '../common/CodeBlock';
+import { binarySearchProblems, binarySearchResources } from '../../data/binarySearchData';
+
+const BinarySearchDocs = () => {
+  const [expandedProblem, setExpandedProblem] = useState(null);
+  const [filter, setFilter] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const toggleProblem = (id) => {
+    setExpandedProblem(expandedProblem === id ? null : id);
+  };
+
+  const allCategories = ['All', ...new Set(binarySearchProblems.map(p => p.category))];
+
+  const filteredProblems = binarySearchProblems.filter(problem => {
+    const matchesFilter = filter === 'All' || problem.category === filter;
+    const matchesSearch = problem.title.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
+  return (
+    <div className="h-full overflow-y-auto bg-gray-900">
+      <div className="max-w-7xl mx-auto p-8 space-y-8">
+        <div className="border-b border-gray-700 pb-6">
+          <h1 className="text-4xl font-bold text-white mb-3">Binary Search</h1>
+          <p className="text-lg text-gray-400">
+            Master lower/upper bound, binary search templates, and binary search on answer patterns.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {binarySearchResources.map((resource, idx) => (
+            <a
+              key={idx}
+              href={resource.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-indigo-500 transition-colors group"
+            >
+              <div className="flex items-start justify-between mb-2">
+                <span className="text-xs font-medium px-2 py-1 rounded bg-indigo-900/30 text-indigo-400 border border-indigo-800/50">
+                  {resource.type}
+                </span>
+                <ExternalLink size={16} className="text-gray-500 group-hover:text-white transition-colors" />
+              </div>
+              <h3 className="text-white font-medium group-hover:text-indigo-400 transition-colors">
+                {resource.title}
+              </h3>
+            </a>
+          ))}
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-gray-800/50 p-4 rounded-xl border border-gray-700">
+          <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+            {allCategories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setFilter(cat)}
+                className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-colors ${
+                  filter === cat ? 'bg-indigo-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+          <input
+            type="text"
+            placeholder="Search problems..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full md:w-64 bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500"
+          />
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+            <Code className="text-indigo-400" />
+            Problems & Implementations ({filteredProblems.length})
+          </h2>
+          
+          {filteredProblems.map((problem) => (
+            <div key={problem.id} className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden transition-all duration-200 hover:border-gray-600">
+              <button onClick={() => toggleProblem(problem.id)} className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-700/50 transition-colors">
+                <div className="flex items-center gap-4 flex-1">
+                  <div className={`flex items-center justify-center w-8 h-8 rounded-lg font-bold text-sm border ${problem.difficulty === 'Easy' ? 'bg-green-900/30 text-green-400 border-green-800' : problem.difficulty === 'Hard' ? 'bg-red-900/30 text-red-400 border-red-800' : 'bg-yellow-900/30 text-yellow-400 border-yellow-800'}`}>
+                    {problem.id}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-white mb-1 flex items-center gap-3">
+                      {problem.title}
+                      {problem.difficulty && (
+                        <span className={`text-xs px-2 py-0.5 rounded-full border ${problem.difficulty === 'Easy' ? 'border-green-800 text-green-400' : problem.difficulty === 'Hard' ? 'border-red-800 text-red-400' : 'border-yellow-800 text-yellow-400'}`}>
+                          {problem.difficulty}
+                        </span>
+                      )}
+                      <span className="text-xs px-2 py-0.5 rounded bg-gray-700 text-gray-400">{problem.category}</span>
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {problem.tags && problem.tags.map((tag, idx) => (
+                        <span key={idx} className="text-xs text-gray-500 bg-gray-900 px-2 py-0.5 rounded">{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                {expandedProblem === problem.id ? <ChevronDown className="text-gray-400" /> : <ChevronRight className="text-gray-400" />}
+              </button>
+
+              {expandedProblem === problem.id && (
+                <div className="px-6 pb-6 pt-2 border-t border-gray-700 bg-gray-900/30">
+                  {problem.thought && (
+                    <div className="mb-6 bg-indigo-900/10 border border-indigo-800/30 p-4 rounded-lg">
+                      <h4 className="text-sm font-semibold text-indigo-400 mb-2 flex items-center gap-2">
+                        <Lightbulb size={16} />Approach
+                      </h4>
+                      <p className="text-gray-300 text-sm italic">{problem.thought}</p>
+                    </div>
+                  )}
+                  {problem.solution && (
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-400 mb-2 uppercase tracking-wider flex items-center gap-2">
+                        <CheckCircle size={16} className="text-indigo-500" />
+                        Implementation ({problem.solution.language})
+                      </h4>
+                      <CodeBlock language={problem.solution.language} code={problem.solution.code} />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BinarySearchDocs;

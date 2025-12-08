@@ -99,6 +99,27 @@ const TreeDocs = React.lazy(() =>
 const GraphDocs = React.lazy(() =>
   import("../components/dsa/GraphDocs")
 );
+const ArraysDocs = React.lazy(() =>
+  import("../components/dsa/ArraysDocs")
+);
+const StackDocs = React.lazy(() =>
+  import("../components/dsa/StackDocs")
+);
+const HeapDocs = React.lazy(() =>
+  import("../components/dsa/HeapDocs")
+);
+const QueueDocs = React.lazy(() =>
+  import("../components/dsa/QueueDocs")
+);
+const BacktrackingDocs = React.lazy(() =>
+  import("../components/dsa/BacktrackingDocs")
+);
+const BinarySearchDocs = React.lazy(() =>
+  import("../components/dsa/BinarySearchDocs")
+);
+const StringDocs = React.lazy(() =>
+  import("../components/dsa/StringDocs")
+);
 const SystemDesignResources = React.lazy(() =>
   import("../components/system-design/SystemDesignResources")
 );
@@ -209,6 +230,20 @@ const TechnologyPage = () => {
         return TreeDocs;
       case "GraphDocs":
         return GraphDocs;
+      case "ArraysDocs":
+        return ArraysDocs;
+      case "StackDocs":
+        return StackDocs;
+      case "HeapDocs":
+        return HeapDocs;
+      case "QueueDocs":
+        return QueueDocs;
+      case "BacktrackingDocs":
+        return BacktrackingDocs;
+      case "BinarySearchDocs":
+        return BinarySearchDocs;
+      case "StringDocs":
+        return StringDocs;
       case "SystemDesignResources":
         return SystemDesignResources;
       default:
