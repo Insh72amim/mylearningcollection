@@ -83,6 +83,18 @@ const HullBook = React.lazy(() => import("../components/books/HullBook"));
 const SecurityAnalysisBook = React.lazy(() =>
   import("../components/books/SecurityAnalysisBook")
 );
+const DeepLearningBook = React.lazy(() =>
+  import("../components/books/DeepLearningBook")
+);
+const PatternRecognitionBook = React.lazy(() =>
+  import("../components/books/PatternRecognitionBook")
+);
+const ComplexAnalysisBook = React.lazy(() =>
+  import("../components/books/ComplexAnalysisBook")
+);
+const LinearAlgebraBook = React.lazy(() =>
+  import("../components/books/LinearAlgebraBook")
+);
 
 // Lazy load category page
 const CategoryPage = React.lazy(() =>
@@ -235,6 +247,14 @@ const TechnologyPage = () => {
         return HullBook;
       case "SecurityAnalysisBook":
         return SecurityAnalysisBook;
+      case "DeepLearningBook":
+        return DeepLearningBook;
+      case "PatternRecognitionBook":
+        return PatternRecognitionBook;
+      case "ComplexAnalysisBook":
+        return ComplexAnalysisBook;
+      case "LinearAlgebraBook":
+        return LinearAlgebraBook;
       case "CategoryPage":
         return CategoryPage;
       case "DesignPatterns":
