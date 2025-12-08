@@ -118,13 +118,7 @@ const SecurityAnalysisBook = ({ onBack }) => {
     <div className="max-w-5xl mx-auto text-gray-300 space-y-8 pb-20">
       {/* Header */}
       <div className="border-b border-gray-700 pb-8">
-        <button 
-          onClick={onBack}
-          className="flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-6 transition-colors"
-        >
-          <ArrowLeft size={20} />
-          Back to Finance
-        </button>
+
         
         <div className="flex items-start gap-6">
           <div className="w-24 h-32 bg-gradient-to-br from-yellow-700 to-orange-900 rounded-lg shadow-xl flex items-center justify-center shrink-0 border border-yellow-600">

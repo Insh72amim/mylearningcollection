@@ -33,12 +33,7 @@ const LinearAlgebraBook = ({ onBack }) => {
     <div className="w-full max-w-4xl lg:max-w-5xl mx-auto px-4 sm:px-6 lg:px-0 text-gray-300 space-y-8 pb-16 sm:pb-20">
       {/* Header - Cyan/Blue Theme for Linear Algebra */}
       <div className="border-b border-gray-700 pb-8">
-        <button
-          onClick={onBack}
-          className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 mb-6 transition-colors">
-          <ArrowLeft size={20} />
-          Back to Mathematics
-        </button>
+
 
         <div className="flex flex-col gap-4 sm:gap-6 sm:flex-row sm:items-start">
           <div className="w-full sm:w-24 h-24 sm:h-32 bg-gradient-to-br from-cyan-700 to-blue-900 rounded-lg shadow-xl flex items-center justify-center shrink-0 border border-cyan-600">
