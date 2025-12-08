@@ -7,9 +7,12 @@ import {
   TrendingUp,
   Activity,
   GitBranch,
+  Info,
 } from "lucide-react";
 import CodeBlock from "../common/CodeBlock";
 import InteractiveDiagram from "../common/InteractiveDiagram";
+import MathBlock from "../common/MathBlock";
+import StandardChart from "../common/StandardChart";
 import { hullChaptersDetailed } from "../../data/hull-chapters-data";
 
 const HullBook = ({ onBack }) => {
@@ -25,20 +28,10 @@ const HullBook = ({ onBack }) => {
   // Use the detailed data
   const chapters = hullChaptersDetailed;
 
-  const renderDiagram = (diagram) => {
-    if (diagram.type === "interactive") {
-      return (
-        <div className="my-6">
-          <InteractiveDiagram
-            type={diagram.component}
-            title={diagram.title}
-            description={diagram.description}
-          />
-        </div>
-      );
-    }
-    return null;
-  };
+  const parseMarkdown = (text) => {
+     if (!text) return "";
+     return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  }
 
   return (
     <div className="w-full max-w-4xl lg:max-w-5xl mx-auto px-4 sm:px-6 lg:px-0 text-gray-300 space-y-8 pb-16 sm:pb-20">
@@ -95,6 +88,9 @@ const HullBook = ({ onBack }) => {
                   <h3 className="text-base sm:text-lg font-semibold text-white mb-1">
                     {chapter.title}
                   </h3>
+                  <p className="text-sm text-gray-400 line-clamp-1 hidden sm:block">
+                    {chapter.summary}
+                  </p>
                 </div>
               </div>
               {expandedChapters[chapter.id] ? (
@@ -107,9 +103,9 @@ const HullBook = ({ onBack }) => {
             {expandedChapters[chapter.id] && (
               <div className="px-4 sm:px-6 pb-6 pt-2 border-t border-gray-700 bg-gray-800/50">
                 {/* Summary */}
-                <div className="mb-6">
+                <div className="mb-6 bg-gray-900/50 p-4 rounded-lg border border-gray-700/50">
                   <h4 className="text-sm font-semibold text-green-400 mb-2 uppercase tracking-wider">
-                    Summary
+                    Chapter Overview
                   </h4>
                   <p className="text-gray-300 leading-relaxed italic">
                     {chapter.summary}
@@ -127,9 +123,45 @@ const HullBook = ({ onBack }) => {
                           <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
                           {section.title}
                         </h4>
-                        <p className="text-gray-300 mb-4 leading-relaxed">
-                          {section.content}
-                        </p>
+                        
+                        {/* Text Block */}
+                        {section.content && (
+                          <p className="text-gray-300 mb-4 leading-relaxed" dangerouslySetInnerHTML={{__html: parseMarkdown(section.content)}} />
+                        )}
+                        
+                        {/* Definitions */}
+                        {section.definitions && (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            {section.definitions.map((def, dIdx) => (
+                              <div key={dIdx} className="bg-gray-800/80 p-3 rounded border-l-2 border-purple-500">
+                                <div className="text-purple-300 font-medium mb-1" dangerouslySetInnerHTML={{__html: parseMarkdown(def.term)}} />
+                                <div className="text-sm text-gray-400">{def.def}</div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Inline Math / Equations */}
+                        {section.match && (
+                           section.mathBlock ? (
+                             <MathBlock math={section.match} block={true} />
+                           ) : (
+                             <div className="bg-gray-800/50 p-3 rounded mb-4 text-center">
+                               <MathBlock math={section.match} block={true} />
+                             </div>
+                           )
+                        )}
+                        
+                        {section.equations && (
+                           <div className="space-y-2 mb-4">
+                              {section.equations.map((eq, eIdx) => (
+                                 <div key={eIdx} className="flex flex-col sm:flex-row sm:items-center justify-between bg-gray-800/40 p-3 rounded border border-gray-700/50">
+                                    <span className="text-sm text-gray-400 mb-2 sm:mb-0">{eq.label}</span>
+                                    <MathBlock math={eq.match} block={false} />
+                                 </div>
+                              ))}
+                           </div>
+                        )}
 
                         {/* Bullet Points */}
                         {section.points && (
@@ -137,12 +169,36 @@ const HullBook = ({ onBack }) => {
                             {section.points.map((point, pIdx) => (
                               <li
                                 key={pIdx}
-                                className="flex items-start gap-2 text-sm text-gray-400">
+                                className="flex items-start gap-2 text-sm text-gray-300">
                                 <span className="mt-1.5 w-1 h-1 rounded-full bg-gray-500 shrink-0"></span>
-                                <span>{point}</span>
+                                <span dangerouslySetInnerHTML={{__html: parseMarkdown(point)}} />
                               </li>
                             ))}
                           </ul>
+                        )}
+
+                        {/* Recharts StandardChart */}
+                        {section.chart && (
+                          <div className="my-6">
+                            <StandardChart 
+                              type={section.chart.type}
+                              title={section.chart.title}
+                              data={section.chart.data}
+                              xKey={section.chart.xKey}
+                              lines={section.chart.lines}
+                            />
+                          </div>
+                        )}
+
+                        {/* ReactFlow Interactive Diagram (Flows) */}
+                        {section.interactive && (
+                          <div className="my-6">
+                             <InteractiveDiagram
+                                initialNodes={section.interactive.initialNodes}
+                                initialEdges={section.interactive.initialEdges}
+                                title={section.interactive.title}
+                             />
+                          </div>
                         )}
 
                         {/* Code Example */}
@@ -158,24 +214,20 @@ const HullBook = ({ onBack }) => {
                     ))}
                   </div>
                 )}
-
-                {/* Diagrams */}
-                {chapter.diagrams && (
-                  <div className="mt-8">
-                    <h4 className="text-sm font-semibold text-purple-400 mb-4 uppercase tracking-wider flex items-center gap-2">
-                      <Activity size={16} />
-                      Interactive Diagrams
-                    </h4>
-                    <div className="space-y-6">
-                      {chapter.diagrams.map((diagram, idx) => (
-                        <div
-                          key={idx}
-                          className="rounded-xl border border-gray-800 bg-gray-900/30 p-3 sm:p-4 overflow-x-auto">
-                          {renderDiagram(diagram)}
+                
+                {/* Deep Dives */}
+                {chapter.deepDive && (
+                    <div className="mt-8 bg-gradient-to-br from-red-900/20 to-orange-900/20 border border-red-900/50 rounded-xl p-6">
+                        <div className="flex items-center gap-2 mb-4">
+                            <div className="p-2 bg-red-900/40 rounded-lg">
+                                <Info className="text-red-400" size={20} />
+                            </div>
+                            <h3 className="text-xl font-bold text-red-200">Deep Dive: {chapter.deepDive.title}</h3>
                         </div>
-                      ))}
+                        <p className="text-gray-300 leading-relaxed">
+                            {chapter.deepDive.content}
+                        </p>
                     </div>
-                  </div>
                 )}
 
                 {/* Key Points */}
@@ -191,7 +243,7 @@ const HullBook = ({ onBack }) => {
                           key={idx}
                           className="flex items-start gap-2 text-sm text-gray-300">
                           <span className="mt-1.5 w-1 h-1 rounded-full bg-blue-500 shrink-0"></span>
-                          <span>{point}</span>
+                          <span dangerouslySetInnerHTML={{__html: parseMarkdown(point)}} />
                         </li>
                       ))}
                     </ul>
