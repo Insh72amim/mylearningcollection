@@ -79,6 +79,10 @@ const DDIABook = React.lazy(() => import("../components/books/DDIABook"));
 const DatabaseInternalsBook = React.lazy(() =>
   import("../components/books/DatabaseInternalsBook")
 );
+const HullBook = React.lazy(() => import("../components/books/HullBook"));
+const SecurityAnalysisBook = React.lazy(() =>
+  import("../components/books/SecurityAnalysisBook")
+);
 
 // Lazy load category page
 const CategoryPage = React.lazy(() =>
@@ -227,6 +231,10 @@ const TechnologyPage = () => {
         return DDIABook;
       case "DatabaseInternalsBook":
         return DatabaseInternalsBook;
+      case "HullBook":
+        return HullBook;
+      case "SecurityAnalysisBook":
+        return SecurityAnalysisBook;
       case "CategoryPage":
         return CategoryPage;
       case "DesignPatterns":
