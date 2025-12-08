@@ -409,6 +409,11 @@ struct SlotDirectory {
   const partI = allChapters.filter((ch) => ch.part === "I");
   const partII = allChapters.filter((ch) => ch.part === "II");
 
+  const parseMarkdown = (text) => {
+    if (!text) return "";
+    return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  };
+
   const renderChapters = (chapterList) =>
     chapterList.map((chapter) => (
       <div
@@ -465,7 +470,9 @@ struct SlotDirectory {
                 {chapter.keyPoints.map((point, idx) => (
                   <li key={idx} className="flex gap-3 text-gray-300">
                     <span className="text-purple-400 mt-1">•</span>
-                    <span dangerouslySetInnerHTML={{ __html: point }} />
+                    <span
+                      dangerouslySetInnerHTML={{ __html: parseMarkdown(point) }}
+                    />
                   </li>
                 ))}
               </ul>
@@ -481,7 +488,12 @@ struct SlotDirectory {
                     {section.title}
                   </h5>
                   {section.content && (
-                    <p className="text-gray-300 mb-3">{section.content}</p>
+                    <p
+                      className="text-gray-300 mb-3"
+                      dangerouslySetInnerHTML={{
+                        __html: parseMarkdown(section.content),
+                      }}
+                    />
                   )}
                   {section.points && (
                     <ul className="space-y-2 mb-3">
@@ -490,7 +502,11 @@ struct SlotDirectory {
                           key={pidx}
                           className="flex gap-2 text-sm text-gray-300">
                           <span className="text-purple-400">→</span>
-                          <span>{point}</span>
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: parseMarkdown(point),
+                            }}
+                          />
                         </li>
                       ))}
                     </ul>

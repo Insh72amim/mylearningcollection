@@ -20,7 +20,7 @@ export const chapters6to12 = [
           'Key-range: Like encyclopedia volumes (A-C, D-F). Good for range queries, bad for skew',
           'Hash: mod operation or consistent hashing. Even distribution, no range queries',
           'Hot spots: Celebrity user gets all requests to one partition (Twitter justin bieber problem)',
-   'Skewed workload: Application-level techniques like adding random number to key'
+          'Skewed workload: Application-level techniques like adding random number to key'
         ]
       },
       {
@@ -34,12 +34,13 @@ export const chapters6to12 = [
         ]
       },
       {
-        title: 'Rebalancing Partitions',
+        title: 'Deep Dive: Discord\'s Ring Partitioning',
+        content: 'How Discord scaled their messages using Consistent Hashing.',
         points: [
-          'Hash mod N: Don\'t use, moves too much data when N changes',
-          'Fixed number of partitions: Create more partitions than nodes, move whole partitions',
-          'Dynamic partitioning: Split partitions when they grow too large (HBase, RethinkDB)',
-          'Automatic vs manual: Fully automatic can be unpredictable in production'
+          '**Problem**: MongoDB shards were not balanced. Moving chunks was slow.',
+          '**Solution**: Migrated to ScyllaDB (Cassandra compatible). Used consistent hashing (ring topology).',
+          '**Result**: Each message ID has a hash. The hash maps to a token on the ring. Node with that token owns data.',
+          '**Benefit**: Adding a node only moves 1/N data from neighbors, not full re-shuffle.'
         ]
       }
     ],
@@ -108,12 +109,13 @@ COMMIT;`
         }
       },
       {
-        title: 'Implementing Serializability',
+        title: 'Deep Dive: Google Spanner (TrueTime & 2PL)',
+        content: 'How Google achieved strict Serializability at global scale.',
         points: [
-          'Two-Phase Locking (2PL): Readers block writers and vice versa. Deadlocks possible',
-          'Serializable Snapshot Isolation (SSI): Optimistic concurrency. Detect conflicts, abort',
-          'Actual Serial Execution: Single-threaded execution. Used by Redis, VoltDB',
-          'Trade-offs: 2PL has worst-case latency, SSI has abort rate, serial has throughput limit'
+          '**Challenge**: Snapshot isolation across datacenters requires synchronized clocks. If clocks drift, you might read stale data.',
+          '**Solution**: TrueTime API. Uses GPS + Atomic clocks. Returns [earliest, latest] time interval.',
+          '**Commit Wait**: Transaction waits until "latest" time has definitely passed on all nodes before committing.',
+          '**Result**: External consistency (Linearizability). Client A writes, tells Client B. Client B reads => Guaranteed to see A\'s write.'
         ]
       }
     ],
@@ -154,50 +156,14 @@ COMMIT;`
         ]
       },
       {
-        title: 'Unreliable Clocks',
+        title: 'Deep Dive: Uber Ringpop (Failure Detection)',
+        content: 'How Uber detects if a node is down in a cluster of thousands.',
         points: [
-          'Time-of-day clocks: System.currentTimeMillis(). Can jump backward (NTP sync)',
-          'Monotonic clocks: Guaranteed to move forward. Good for measuring duration, not timestamps',
-          'Logical clocks: Lamport timestamps, vector clocks for ordering without physical time',
-          'Google TrueTime API: Uses GPS and atomic clocks, provides confidence interval'
-        ],
-        example: {
-          language: 'python',
-          title: 'clock_issues.py',
-          code: `import time
-
-# BAD: Using time-of-day for timeouts
-start = time.time()
-do_something()
-elapsed = time.time() - start  # Could be negative if clock adjusted!
-
-# GOOD: Using monotonic clock
-start = time.monotonic()
-do_something()
-elapsed = time.monotonic() - start  # Always positive
-
-# Lamport Clock for ordering events
-class LamportClock:
-    def __init__(self):
-        self.counter = 0
-    
-    def tick(self):
-        self.counter += 1
-        return self.counter
-    
-    def update(self, received_timestamp):
-        self.counter = max(self.counter, received_timestamp) + 1
-        return self.counter
-
-# Happens-before relationship
-node_a = LamportClock()
-node_b = LamportClock()
-
-t1 = node_a.tick()  # Event on A: counter = 1
-# Send message with timestamp t1 to B
-node_b.update(t1)    # B receives, counter = max(0, 1) + 1 = 2
-t2 = node_b.tick()  # Event on B: counter = 3`
-        }
+          '**Gossip Protocol**: Nodes randomly ping neighbors. "I am alive".',
+          '**Membership List**: Eventually consistent list of all active nodes.',
+          '**Phi Accrual Failure Detector**: Instead of hard timeout (is node dead?), output a probability (P_failure = 0.99).',
+          '**Benefit**: Adaptive to network conditions. If network is slow, P_failure rises slowly. Prevents false alarms during congestion.'
+        ]
       }
     ],
     diagram: {
@@ -230,76 +196,21 @@ t2 = node_b.tick()  # Event on B: counter = 3`
     ],
     sections: [
       {
-        title: 'Linearizability Explained',
-        points: [
-          'Operations appear instantaneous between invocation and completion',
-          'Once read returns new value, all subsequent reads return that value or newer',
-          'Recency guarantee: Reads see latest write, unlike eventual consistency',
-          'Cost: Requires coordination between replicas, hurts performance'
-        ]
-      },
-      {
         title: 'Consensus Algorithms',
         points: [
           'Raft: Leader election + log replication. Designed for understandability',
           'Paxos: Classic algorithm. Notoriously difficult to understand correctly',
           'Zab (ZooKeeper Atomic Broadcast): Used by Apache ZooKeeper',
           'All require majority quorum: f faults tolerable needs 2f+1 nodes'
-        ],
-        example: {
-          language: 'python',
-          title: 'raft_simplified.py',
-          code: `class RaftNode:
-    def __init__(self, node_id, all_nodes):
-        self.node_id = node_id
-        self.state = "FOLLOWER"  # FOLLOWER, CANDIDATE, LEADER
-        self.current_term = 0
-        self.voted_for = None
-        self.log = []
-        self.all_nodes = all_nodes
-    
-    def start_election(self):
-        self.state = "CANDIDATE"
-        self.current_term += 1
-        self.voted_for = self.node_id
-        votes = 1  # Vote for self
-        
-        for node in self.all_nodes:
-            if node.request_vote(self.current_term, self.node_id):
-                votes += 1
-        
-        if votes > len(self.all_nodes) // 2:
-            self.become_leader()
-    
-    def become_leader(self):
-        self.state = "LEADER"
-        # Send heartbeats to all followers
-        self.send_heartbeats()
-    
-    def replicate_entry(self, entry):
-        if self.state != "LEADER":
-            raise Exception("Only leader can replicate")
-        
-        self.log.append(entry)
-        acks = 1  # Self
-        
-        # Send to all followers
-        for node in self.all_nodes:
-            if node.append_entry(entry, self.current_term):
-                acks += 1
-        
-        # Commit when majority acknowledges
-        if acks > len(self.all_nodes) // 2:
-            self.commit_entry(entry)`
-        }
+        ]
       },
       {
-        title: 'Two-Phase Commit (2PC)',
+        title: 'Deep Dive: Zookeeper ZAB Protocol',
+        content: 'Why Kafka and Hadoop relied on Zookeeper for so long.',
         points: [
-          'Coordinator asks all participants to prepare (vote)',
-          'If all vote yes, coordinator commits. If any no, abort',
-          'Blocking protocol: If coordinator crashes after prepare, participants stuck',
-          'Used in databases for distributed transactions (XA transactions)'
+          '**Role**: Configuration management, naming service, distributed synchronization.',
+          '**Atomic Broadcast**: ZAB guarantees total order. If message A is delivered before B on one node, it is delivered A then B on all nodes.',
+          '**Use Case in Kafka**: Controller election. Who manages the partitions? Zookeeper decides. (Note: Kafka is moving to KRaft to remove this dependency).'
         ]
       }
     ],
@@ -337,41 +248,15 @@ t2 = node_b.tick()  # Event on B: counter = 3`
           'Shuffle: Sort and partition mapper output by key, transfer to reducers',
           'Reduce: Process all values for each key, write output',
           'Joins: Reduce-side join (sort-merge) or map-side join (broadcast/partition)'
-        ],
-        example: {
-          language: 'python',
-          title: 'word_count_mapreduce.py',
-          code: `# MapReduce Word Count Example
-
-def map_function(document):
-    """Mapper: emit (word, 1) for each word"""
-    for word in document.split():
-        yield(word.lower(), 1)
-
-def reduce_function(word, counts):
-    """Reducer: sum all counts for a word"""
-    return (word, sum(counts))
-
-# Execution framework handles:
-# 1. Partition input documents across mappers
-# 2. Shuffle: Group all (word, count) pairs by word
-# 3. Route to reducers
-# 4. Sort input to each reducer by key
-
-# Example flow:
-# Input: "Hello World Hello"
-# Map output: [("hello", 1), ("world", 1), ("hello", 1)]
-# Shuffle & Sort: {"hello": [1, 1], "world": [1]}
-# Reduce output: [("hello", 2), ("world", 1)]`
-        }
+        ]
       },
       {
-        title: 'Spark Improvements over MapReduce',
+        title: 'Deep Dive: Google\'s Original MapReduce',
+        content: 'The 2004 paper that changed everything.',
         points: [
-          'RDDs: Resilient Distributed Datasets kept in memory between stages',
-          'DAG execution: Build entire dataflow graph before executing',
-          'Lazy evaluation: Only materialize when action called (count, save)',
-          '10-100x faster than MapReduce for iterative algorithms (ML, graph processing)'
+          '**Context**: Google needed to index the entire web. Single machines were too slow.',
+          '**Innovation**: Move computation to data (not data to computation). Run Map code where the file block sits in GFS.',
+          '**Legacy**: Democratized "Big Data". Allowed non-experts to run massive parallel jobs without worrying about network sockets or partial failures.'
         ]
       }
     ],
@@ -420,71 +305,16 @@ def reduce_function(word, counts):
           'Consumer groups: Consumers in same group split partitions',
           'Offset tracking: Each consumer tracks position in log',
           'Retention: Messages kept for configured period (e.g., 7 days), not deleted after read'
-        ],
-        example: {
-          language: 'python',
-          title: 'kafka_stream_processing.py',
-          code: `from kafka import KafkaConsumer, KafkaProducer
-import json
-
-consumer = KafkaConsumer(
-    'user-events',
-    bootstrap_servers=['localhost:9092'],
-    group_id='analytics-group',
-    value_deserializer=lambda m: json.loads(m.decode('utf-8'))
-)
-
-producer = KafkaProducer(
-    bootstrap_servers=['localhost:9092'],
-    value_serializer=lambda v: json.dumps(v).encode('utf-8')
-)
-
-# Stream processing: Count events per user in 1-minute windows
-from collections import defaultdict
-import time
-
-window_counts = defaultdict(int)
-window_start = time.time()
-WINDOW_SIZE = 60  # 1 minute
-
-for message in consumer:
-    event = message.value
-    user_id = event['user_id']
-    
-    # Check if window has elapsed
-    if time.time() - window_start > WINDOW_SIZE:
-        # Emit window results
-        for user, count in window_counts.items():
-            producer.send('user-event-counts', {
-                'user_id': user,
-                'count': count,
-                'window_start': window_start
-            })
-        
-        # Reset window
-        window_counts.clear()
-        window_start = time.time()
-    
-    # Increment count for this user
-    window_counts[user_id] += 1`
-        }
-      },
-      {
-        title: 'Windowing Types',
-        points: [
-          'Tumbling windows: Fixed-size, non-overlapping (00:00-00:05, 00:05-00:10)',
-          'Sliding windows: Fixed-size, overlapping (00:00-00:05, 00:01-00:06)',
-          'Session windows: Variable-size based on activity gap (shopping basket)',
-          'Event time vs processing time: When event occurred vs when processed'
         ]
       },
       {
-        title: 'Exactly-Once Processing',
+        title: 'Deep Dive: Kafka at LinkedIn',
+        content: 'Kafka was invented at LinkedIn. Here is why.',
         points: [
-          'At-most-once: May lose messages (UDP-style)',
-          'At-least-once: May duplicate messages (most message brokers)',
-          'Exactly-once: Each message processed exactly once (requires idempotence or transactions)',
-          'Kafka Streams: Exactly-once via idempotent producer + transactional reads/writes'
+          '**Problem**: Point-to-point connections (Metric -> DB, Log -> Hadoop, App -> App) created a mesh N^2 complexity.',
+          '**Solution**: Unified Log. Everyone writes to Kafka. Everyone reads from Kafka.',
+          '**Scale**: LinkedIn processes 7+ trillion messages per day.',
+          '**Impact**: Decoupled producers and consumers. Allowed adding new consumers (e.g., real-time monitoring) without touching producers.'
         ]
       }
     ],
@@ -530,66 +360,13 @@ for message in consumer:
         ]
       },
       {
-        title: 'Lambda vs Kappa Architecture',
+        title: 'Deep Dive: The Data Lakehouse',
+        content: 'The unification of Data Warehouses and Data Lakes.',
         points: [
-          'Lambda: Batch layer reprocesses everything, speed layer recent only, merge results',
-          'Kappa: Single stream processing system, reprocess by replaying from Kafka',
-          'Trade-off: Lambda has complexity of two systems, Kappa requires replayable stream',
-          'Modern trend: Kappa with Kafka log retention or S3 archive'
-        ],
-        example: {
-          language: 'python',
-          title: 'event_sourcing.py',
-          code: `# Event Sourcing Example
-class BankAccount:
-    def __init__(self, account_id):
-        self.account_id = account_id
-        self.balance = 0
-        self.events = []
-    
-    def deposit(self, amount):
-        event = {"type": "Deposited", "amount": amount}
-        self.events.append(event)
-        self.apply(event)
-    
-    def withdraw(self, amount):
-        if self.balance >= amount:
-            event = {"type": "Withdrew", "amount": amount}
-            self.events.append(event)
-            self.apply(event)
-        else:
-            raise ValueError("Insufficient funds")
-    
-    def apply(self, event):
-        if event["type"] == "Deposited":
-            self.balance += event["amount"]
-        elif event["type"] == "Withdrew":
-            self.balance -= event["amount"]
-    
-    def rebuild_from_events(self, events):
-        """Rebuild state from event log"""
-        self.balance = 0
-        for event in events:
-            self.apply(event)
-
-# Usage
-account = BankAccount("ACC123")
-account.deposit(100)
-account.withdraw(30)
-
-# Can rebuild state anytime
-new_account = BankAccount("ACC123")
-new_account.rebuild_from_events(account.events)
-print(new_account.balance)  # 70`
-        }
-      },
-      {
-        title: 'End-to-End Data Integrity',
-        points: [
-          'Application-level checksums: Don\'t trust infrastructure alone',
-          'Immutable events: Easier to debug and audit than mutations',
-          'Idempotence: Make operations safe to retry',
-          'Compensating transactions: Undo operations if business rule violated later'
+          '**Data Warehouse**: Structured, clean, SQL (Snowflake). Expensive.',
+          '**Data Lake**: Unstructured, cheap storage (S3), PySpark. messy.',
+          '**Lakehouse (Databricks/Iceberg)**: Best of both. ACID transactions and SQL on top of cheap object storage files (Parquet).',
+          '**Future**: Compute and Storage completely decoupled. Query engines (Trino) query static files directly.'
         ]
       }
     ],
