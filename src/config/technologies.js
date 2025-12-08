@@ -518,6 +518,14 @@ export const categories = [
     color: "teal",
     technologies: [
       {
+        id: "standard-patterns",
+        name: "14 Standard Patterns",
+        hasVisualizer: false,
+        hasDoc: true,
+        docComponent: "StandardPatternsDocs",
+        badge: "Must Know",
+      },
+      {
         id: "arrays",
         name: "Arrays & Bit Manipulation",
         hasVisualizer: false,

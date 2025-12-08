@@ -120,6 +120,9 @@ const BinarySearchDocs = React.lazy(() =>
 const StringDocs = React.lazy(() =>
   import("../components/dsa/StringDocs")
 );
+const StandardPatternsDocs = React.lazy(() =>
+  import("../components/dsa/StandardPatternsDocs")
+);
 const SystemDesignResources = React.lazy(() =>
   import("../components/system-design/SystemDesignResources")
 );
@@ -244,6 +247,8 @@ const TechnologyPage = () => {
         return BinarySearchDocs;
       case "StringDocs":
         return StringDocs;
+      case "StandardPatternsDocs":
+        return StandardPatternsDocs;
       case "SystemDesignResources":
         return SystemDesignResources;
       default:
