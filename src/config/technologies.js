@@ -526,6 +526,14 @@ export const categories = [
         badge: "Must Know",
       },
       {
+        id: "leetcode-problems",
+        name: "LeetCode Problem List",
+        hasVisualizer: false,
+        hasDoc: true,
+        docComponent: "LeetCodeDocs",
+        badge: "100+ Problems",
+      },
+      {
         id: "arrays",
         name: "Arrays & Bit Manipulation",
         hasVisualizer: false,

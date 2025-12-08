@@ -123,6 +123,9 @@ const StringDocs = React.lazy(() =>
 const StandardPatternsDocs = React.lazy(() =>
   import("../components/dsa/StandardPatternsDocs")
 );
+const LeetCodeDocs = React.lazy(() =>
+  import("../components/dsa/LeetCodeDocs")
+);
 const SystemDesignResources = React.lazy(() =>
   import("../components/system-design/SystemDesignResources")
 );
@@ -252,6 +255,8 @@ const TechnologyPage = () => {
         return StringDocs;
       case "StandardPatternsDocs":
         return StandardPatternsDocs;
+      case "LeetCodeDocs":
+        return LeetCodeDocs;
       case "SystemDesignResources":
         return SystemDesignResources;
       case "HLDDocs":
