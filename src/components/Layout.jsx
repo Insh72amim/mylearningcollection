@@ -7,6 +7,7 @@ import {
   ChevronsUp,
   PanelLeftClose,
   PanelLeftOpen,
+  Code,
 } from "lucide-react";
 import { categories, superCategories } from "../config/technologies";
 
@@ -140,28 +141,41 @@ const Layout = () => {
               const active = isActive(techPath);
 
               return (
-                <Link
+                <div
                   key={tech.id}
-                  to={tech.comingSoon ? "#" : techPath}
-                  className={`flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
+                  className={`flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors group/item ${
                     active
                       ? `${colorClasses.bg} ${colorClasses.text} font-medium`
                       : tech.comingSoon
                       ? "text-gray-500 cursor-not-allowed"
                       : "text-gray-400 hover:text-white hover:bg-gray-700"
                   }`}
-                  onClick={(e) => tech.comingSoon && e.preventDefault()}>
-                  <span>{tech.name}</span>
-                  {tech.comingSoon ? (
-                    <span className="text-[10px] bg-gray-700 text-gray-400 px-2 py-0.5 rounded">
-                      Soon
-                    </span>
-                  ) : tech.hasVisualizer ? (
-                    <span className="text-[10px] bg-green-900/50 text-green-400 px-2 py-0.5 rounded border border-green-700/50">
-                      Visual
-                    </span>
-                  ) : null}
-                </Link>
+                  onClick={(e) => {
+                    if (tech.comingSoon) e.preventDefault();
+                  }}>
+                  <Link to={tech.comingSoon ? "#" : techPath} className="flex-1">
+                    {tech.name}
+                  </Link>
+
+                  <div className="flex items-center gap-2">
+                    {tech.comingSoon ? (
+                      <span className="text-[10px] bg-gray-700 text-gray-400 px-2 py-0.5 rounded">
+                        Soon
+                      </span>
+                    ) : (
+                      <>
+                        {tech.hasVisualizer && (
+                          <Link
+                            to={`${techPath}?tab=playground`}
+                            className="p-1.5 rounded-md hover:bg-gray-600/50 text-gray-400 hover:text-green-400 transition-colors"
+                            title="Open Visualizer">
+                            <Code size={14} />
+                          </Link>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
               );
             })}
           </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Suspense } from "react";
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate, useLocation } from "react-router-dom";
 import { BookOpen, Code, AlertTriangle } from "lucide-react";
 import { getTechnologyById } from "../config/technologies";
 
@@ -156,7 +156,18 @@ const KafkaArchitecture = React.lazy(() =>
 
 const TechnologyPage = () => {
   const { technologyId } = useParams();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState("docs");
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const tab = searchParams.get("tab");
+    if (tab === "playground") {
+      setActiveTab("playground");
+    } else {
+      setActiveTab("docs");
+    }
+  }, [location.search]);
 
   const tech = getTechnologyById(technologyId);
 
@@ -309,64 +320,7 @@ const TechnologyPage = () => {
   return (
     <>
       {/* Enhanced Header & Tabs */}
-      <div className="relative bg-gradient-to-r from-gray-800/80 via-gray-700/60 to-gray-800/80 border border-gray-600/40 min-h-[56px] md:h-[56px] flex items-center z-10 px-4 sm:px-6 md:px-8 py-3 md:py-0 rounded-2xl shadow-xl backdrop-blur-xl mt-3 mx-3 md:mx-0 overflow-hidden">
-        {/* Background gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent"></div>
 
-        <div className="relative flex flex-col gap-4 md:gap-3 md:flex-row md:items-center md:justify-between w-full">
-          <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-base md:text-lg font-bold text-white flex items-center gap-3">
-              <span className="bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
-                {tech.name}
-              </span>
-              <span
-                className={`text-[10px] md:text-xs px-2 py-1 rounded-lg border bg-${tech.category.color}-900/80 text-${tech.category.color}-300 border-${tech.category.color}-700/60 backdrop-blur-sm whitespace-nowrap shadow-lg font-medium`}>
-                {tech.category.name}
-              </span>
-            </h1>
-          </div>
-
-          {tech.hasVisualizer ? (
-            <div className="flex gap-2 bg-gray-900/60 rounded-xl p-1 border border-gray-700/60 backdrop-blur-md shadow-inner w-full md:w-auto">
-              <button
-                onClick={() => setActiveTab("docs")}
-                disabled={!tech.hasDoc}
-                className={`group flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 md:py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  activeTab === "docs"
-                    ? `bg-gradient-to-r from-${tech.category.color}-600/90 to-${tech.category.color}-500/80 text-white shadow-lg border border-${tech.category.color}-500/50`
-                    : "text-gray-400 hover:text-white hover:bg-gray-800/60 border border-transparent hover:border-gray-600/40"
-                } ${!tech.hasDoc ? "opacity-50 cursor-not-allowed" : ""}`}>
-                <BookOpen
-                  size={14}
-                  className="group-hover:scale-110 transition-transform duration-200"
-                />
-                <span>Documentation</span>
-              </button>
-              <button
-                onClick={() => setActiveTab("playground")}
-                disabled={!tech.hasVisualizer}
-                className={`group flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 md:py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  activeTab === "playground"
-                    ? `bg-gradient-to-r from-${tech.category.color}-600/90 to-${tech.category.color}-500/80 text-white shadow-lg border border-${tech.category.color}-500/50`
-                    : "text-gray-400 hover:text-white hover:bg-gray-800/60 border border-transparent hover:border-gray-600/40"
-                } ${
-                  !tech.hasVisualizer ? "opacity-50 cursor-not-allowed" : ""
-                }`}>
-                <Code
-                  size={14}
-                  className="group-hover:scale-110 transition-transform duration-200"
-                />
-                <span>Visualizer</span>
-              </button>
-            </div>
-          ) : (
-            <div className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-700/60 bg-gray-900/60 text-gray-100 backdrop-blur-md shadow-lg w-full md:w-auto">
-              <BookOpen size={14} />
-              <span>Documentation</span>
-            </div>
-          )}
-        </div>
-      </div>
 
       {/* Content Area */}
       <div className="flex-1 bg-gray-900">
