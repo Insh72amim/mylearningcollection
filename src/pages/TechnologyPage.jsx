@@ -126,6 +126,9 @@ const StandardPatternsDocs = React.lazy(() =>
 const SystemDesignResources = React.lazy(() =>
   import("../components/system-design/SystemDesignResources")
 );
+const HLDDocs = React.lazy(() =>
+  import("../components/system-design/HLDDocs")
+);
 
 // Lazy load visualizer components
 const KafkaArchitecture = React.lazy(() =>
@@ -251,6 +254,8 @@ const TechnologyPage = () => {
         return StandardPatternsDocs;
       case "SystemDesignResources":
         return SystemDesignResources;
+      case "HLDDocs":
+        return HLDDocs;
       default:
         return null;
     }
