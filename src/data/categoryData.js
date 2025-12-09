@@ -28,6 +28,11 @@ export const categoryData = {
         title: "Risk Measures",
         description: "Value at Risk (VaR), CVaR, Expected Shortfall",
       },
+      {
+        id: "financial-products",
+        title: "Financial Products",
+        description: "Stocks, Bonds, Derivatives, ETFs, and other instruments",
+      },
     ],
   },
   mathematics: {
@@ -280,14 +285,16 @@ export const categoryData = {
       {
         id: "cpp-stl",
         title: "STL",
-        description: "Standard Template Library: Containers, Algorithms, and Iterators",
+        description:
+          "Standard Template Library: Containers, Algorithms, and Iterators",
       },
     ],
   },
 
   java: {
     name: "Java Language",
-    description: "Write once, run anywhere. Master the Java language and ecosystem.",
+    description:
+      "Write once, run anywhere. Master the Java language and ecosystem.",
     color: "orange",
     topics: [
       {
@@ -311,11 +318,11 @@ export const categoryData = {
         description: "Concurrency, threads, and synchronization",
       },
     ],
-
   },
   python: {
     name: "Python Language",
-    description: "Simple, versatile, and powerful. The language of AI and Data Science.",
+    description:
+      "Simple, versatile, and powerful. The language of AI and Data Science.",
     color: "yellow",
     topics: [
       {

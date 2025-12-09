@@ -17,6 +17,7 @@ const JavaDocs = React.lazy(() => import("../languages/JavaDocs"));
 const PythonDocs = React.lazy(() => import("../languages/PythonDocs"));
 const GoDocs = React.lazy(() => import("../languages/GoDocs"));
 const JavaScriptDocs = React.lazy(() => import("../languages/JavaScriptDocs"));
+const FinanceDocs = React.lazy(() => import("../finance/FinanceDocs"));
 
 const CategoryPage = () => {
   const { technologyId } = useParams();
@@ -84,22 +85,51 @@ const CategoryPage = () => {
             <JavaDocs onBack={() => setSelectedTopic(null)} section="oop" />
           )}
           {selectedTopic === "java-collections" && (
-            <JavaDocs onBack={() => setSelectedTopic(null)} section="collections" />
+            <JavaDocs
+              onBack={() => setSelectedTopic(null)}
+              section="collections"
+            />
           )}
           {selectedTopic === "java-multithreading" && (
-            <JavaDocs onBack={() => setSelectedTopic(null)} section="multithreading" />
+            <JavaDocs
+              onBack={() => setSelectedTopic(null)}
+              section="multithreading"
+            />
           )}
           {selectedTopic === "python-syntax" && (
-            <PythonDocs onBack={() => setSelectedTopic(null)} section="syntax" />
+            <PythonDocs
+              onBack={() => setSelectedTopic(null)}
+              section="syntax"
+            />
           )}
           {selectedTopic === "python-datastructures" && (
-            <PythonDocs onBack={() => setSelectedTopic(null)} section="datastructures" />
+            <PythonDocs
+              onBack={() => setSelectedTopic(null)}
+              section="datastructures"
+            />
           )}
           {selectedTopic === "python-oop" && (
             <PythonDocs onBack={() => setSelectedTopic(null)} section="oop" />
           )}
+
+          {/* Finance Topics */}
+          {[
+            "black-scholes",
+            "monte-carlo-methods",
+            "portfolio-optimization",
+            "risk-measures",
+            "financial-products",
+          ].includes(selectedTopic) && (
+            <FinanceDocs
+              onBack={() => setSelectedTopic(null)}
+              section={selectedTopic}
+            />
+          )}
           {selectedTopic === "python-advanced" && (
-            <PythonDocs onBack={() => setSelectedTopic(null)} section="advanced" />
+            <PythonDocs
+              onBack={() => setSelectedTopic(null)}
+              section="advanced"
+            />
           )}
           {selectedTopic === "go-syntax" && (
             <GoDocs onBack={() => setSelectedTopic(null)} section="syntax" />
@@ -108,22 +138,40 @@ const CategoryPage = () => {
             <GoDocs onBack={() => setSelectedTopic(null)} section="structs" />
           )}
           {selectedTopic === "go-concurrency" && (
-            <GoDocs onBack={() => setSelectedTopic(null)} section="concurrency" />
+            <GoDocs
+              onBack={() => setSelectedTopic(null)}
+              section="concurrency"
+            />
           )}
           {selectedTopic === "go-errorhandling" && (
-            <GoDocs onBack={() => setSelectedTopic(null)} section="errorhandling" />
+            <GoDocs
+              onBack={() => setSelectedTopic(null)}
+              section="errorhandling"
+            />
           )}
           {selectedTopic === "javascript-syntax" && (
-            <JavaScriptDocs onBack={() => setSelectedTopic(null)} section="syntax" />
+            <JavaScriptDocs
+              onBack={() => setSelectedTopic(null)}
+              section="syntax"
+            />
           )}
           {selectedTopic === "javascript-functions" && (
-            <JavaScriptDocs onBack={() => setSelectedTopic(null)} section="functions" />
+            <JavaScriptDocs
+              onBack={() => setSelectedTopic(null)}
+              section="functions"
+            />
           )}
           {selectedTopic === "javascript-async" && (
-            <JavaScriptDocs onBack={() => setSelectedTopic(null)} section="async" />
+            <JavaScriptDocs
+              onBack={() => setSelectedTopic(null)}
+              section="async"
+            />
           )}
           {selectedTopic === "javascript-dom" && (
-            <JavaScriptDocs onBack={() => setSelectedTopic(null)} section="dom" />
+            <JavaScriptDocs
+              onBack={() => setSelectedTopic(null)}
+              section="dom"
+            />
           )}
         </Suspense>
       </div>
@@ -272,13 +320,14 @@ const CategoryPage = () => {
               <button
                 key={topic.id}
                 onClick={() => {
-                  // Handle topic selection for programming languages and java
+                  // Handle topic selection for programming languages, java, and finance
                   if (
                     tech.categoryData === "programming-languages" ||
                     tech.categoryData === "java" ||
                     tech.categoryData === "python" ||
                     tech.categoryData === "go" ||
-                    tech.categoryData === "javascript"
+                    tech.categoryData === "javascript" ||
+                    tech.categoryData === "finance"
                   ) {
                     setSelectedTopic(topic.id);
                   }
@@ -292,7 +341,8 @@ const CategoryPage = () => {
                   tech.categoryData === "java" ||
                   tech.categoryData === "python" ||
                   tech.categoryData === "go" ||
-                  tech.categoryData === "javascript"
+                  tech.categoryData === "javascript" ||
+                  tech.categoryData === "finance"
                     ? "cursor-pointer hover:scale-105"
                     : "cursor-default"
                 }`}>
