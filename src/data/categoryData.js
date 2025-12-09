@@ -401,4 +401,31 @@ export const categoryData = {
       },
     ],
   },
+  "prompt-engineering": {
+    name: "Prompt Engineering",
+    description: "Mastering the art of communicating with AI models",
+    color: "purple",
+    topics: [
+      {
+        id: "basics",
+        title: "Basics",
+        description: "Zero-shot, Few-shot, and core concepts",
+      },
+      {
+        id: "advanced",
+        title: "Advanced Techniques",
+        description: "Chain-of-Thought, Tree of Thoughts",
+      },
+      {
+        id: "patterns",
+        title: "Patterns",
+        description: "Persona, Template, and other patterns",
+      },
+      {
+        id: "safety",
+        title: "Safety & Limitations",
+        description: "Prompt Injection, Hallucinations",
+      },
+    ],
+  },
 };

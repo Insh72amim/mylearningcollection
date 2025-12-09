@@ -709,7 +709,6 @@ export const categories = [
         docComponent: "SecurityAnalysisBook",
         badge: "Graham & Dodd",
       },
-      
     ],
   },
   // {
@@ -915,6 +914,23 @@ export const categories = [
       },
     ],
   },
+  {
+    id: "prompt-engineering",
+    name: "Prompt Engineering",
+    icon: Terminal,
+    color: "purple",
+    technologies: [
+      {
+        id: "prompt-engineering-overview",
+        name: "Prompt Engineering",
+        hasVisualizer: false,
+        hasDoc: true,
+        docComponent: "CategoryPage",
+        categoryData: "prompt-engineering",
+        badge: "AI",
+      },
+    ],
+  },
   // {
   //   id: "philosophy",
   //   name: "Philosophy",
@@ -1029,6 +1045,7 @@ export const superCategories = [
       "finance",
       "mathematics",
       "ai-engineering",
+      "prompt-engineering",
       // "philosophy",
       // "psychology",
       // "poetry",

@@ -18,6 +18,9 @@ const PythonDocs = React.lazy(() => import("../languages/PythonDocs"));
 const GoDocs = React.lazy(() => import("../languages/GoDocs"));
 const JavaScriptDocs = React.lazy(() => import("../languages/JavaScriptDocs"));
 const FinanceDocs = React.lazy(() => import("../finance/FinanceDocs"));
+const PromptEngineeringDocs = React.lazy(() =>
+  import("../interests/PromptEngineeringDocs")
+);
 
 const CategoryPage = () => {
   const { technologyId } = useParams();
@@ -125,6 +128,17 @@ const CategoryPage = () => {
               section={selectedTopic}
             />
           )}
+
+          {/* Prompt Engineering Topics */}
+          {["basics", "advanced", "patterns", "safety"].includes(
+            selectedTopic
+          ) && (
+            <PromptEngineeringDocs
+              onBack={() => setSelectedTopic(null)}
+              section={selectedTopic}
+            />
+          )}
+
           {selectedTopic === "python-advanced" && (
             <PythonDocs
               onBack={() => setSelectedTopic(null)}
@@ -327,7 +341,8 @@ const CategoryPage = () => {
                     tech.categoryData === "python" ||
                     tech.categoryData === "go" ||
                     tech.categoryData === "javascript" ||
-                    tech.categoryData === "finance"
+                    tech.categoryData === "finance" ||
+                    tech.categoryData === "prompt-engineering"
                   ) {
                     setSelectedTopic(topic.id);
                   }
@@ -342,7 +357,8 @@ const CategoryPage = () => {
                   tech.categoryData === "python" ||
                   tech.categoryData === "go" ||
                   tech.categoryData === "javascript" ||
-                  tech.categoryData === "finance"
+                  tech.categoryData === "finance" ||
+                  tech.categoryData === "prompt-engineering"
                     ? "cursor-pointer hover:scale-105"
                     : "cursor-default"
                 }`}>
@@ -365,7 +381,9 @@ const CategoryPage = () => {
                         tech.categoryData === "java" ||
                         tech.categoryData === "python" ||
                         tech.categoryData === "go" ||
-                        tech.categoryData === "javascript"
+                        tech.categoryData === "javascript" ||
+                        tech.categoryData === "finance" ||
+                        tech.categoryData === "prompt-engineering"
                           ? "Click to explore →"
                           : "Detailed content coming soon"}
                       </span>
