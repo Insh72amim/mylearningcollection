@@ -1,6 +1,6 @@
 export const patternRecognitionChapters = [
   {
-    id: "chap-1",
+    id: 1,
     title: "Introduction",
     summary:
       "Core concepts of pattern recognition, including curve fitting, probability theory, and decision theory.",
@@ -75,7 +75,7 @@ export const patternRecognitionChapters = [
     ],
   },
   {
-    id: "chap-2",
+    id: 2,
     title: "Probability Distributions",
     summary:
       "Detailed study of specific probability distributions used as building blocks for complex models.",
@@ -121,7 +121,7 @@ export const patternRecognitionChapters = [
     ],
   },
   {
-    id: "chap-3",
+    id: 3,
     title: "Linear Models for Regression",
     summary:
       "Predicting continuous target variables using linear combinations of basis functions.",
@@ -165,7 +165,7 @@ export const patternRecognitionChapters = [
     ],
   },
   {
-    id: "chap-4",
+    id: 4,
     title: "Linear Models for Classification",
     summary:
       "Assigning inputs to discrete classes. Covers discriminant functions, generative models, and discriminative models.",

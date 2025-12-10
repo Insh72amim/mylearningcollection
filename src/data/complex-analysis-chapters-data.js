@@ -1,6 +1,6 @@
 export const complexAnalysisChapters = [
   {
-    id: "chap-1",
+    id: 1,
     title: "Complex Numbers",
     summary:
       "Fundamental properties of complex numbers, including algebraic operations, geometric representation, and polar form.",
@@ -52,7 +52,7 @@ export const complexAnalysisChapters = [
     ],
   },
   {
-    id: "chap-2",
+    id: 2,
     title: "Functions, Limits, and Continuity",
     summary:
       "Extending calculus concepts to functions of a complex variable.",
@@ -77,7 +77,7 @@ export const complexAnalysisChapters = [
     ],
   },
   {
-    id: "chap-3",
+    id: 3,
     title: "Complex Differentiation and Cauchy-Riemann",
     summary:
       "The heart of the subject. Holomorphic (analytic) functions and their rigid structural properties.",
@@ -115,7 +115,7 @@ export const complexAnalysisChapters = [
     ],
   },
   {
-    id: "chap-4",
+    id: 4,
     title: "Complex Integration",
     summary:
       "Line integrals in the complex plane and the powerful Cauchy Integral Theorem.",
@@ -150,7 +150,7 @@ export const complexAnalysisChapters = [
     ]
   },
   {
-    id: "chap-5",
+    id: 5,
     title: "Series Representations",
     summary: "Taylor and Laurent series expansions for complex functions.",
     sections: [
@@ -171,7 +171,7 @@ export const complexAnalysisChapters = [
     ]
   },
   {
-      id: "chap-6",
+      id: 6,
       title: "Residue Theory",
       summary: "A powerful method for evaluating difficult real integrals.",
       sections: [

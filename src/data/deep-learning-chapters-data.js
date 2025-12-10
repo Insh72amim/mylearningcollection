@@ -1,6 +1,6 @@
 export const deepLearningChapters = [
   {
-    id: "chap-2",
+    id: 2,
     title: "Linear Algebra",
     summary:
       "Mathematical foundation for understanding deep learning, focusing on scalars, vectors, matrices, and tensors.",
@@ -79,7 +79,7 @@ export const deepLearningChapters = [
     ],
   },
   {
-    id: "chap-3",
+    id: 3,
     title: "Probability and Information Theory",
     summary:
       "Language for dealing with uncertainty in AI systems. Covers random variables, distributions, and information measures.",
@@ -165,7 +165,7 @@ export const deepLearningChapters = [
     ],
   },
   {
-    id: "chap-4",
+    id: 4,
     title: "Numerical Computation",
     summary:
       "Algorithms for solving mathematical problems by updating estimates. Crucial for training neural networks.",
@@ -215,7 +215,7 @@ export const deepLearningChapters = [
     ],
   },
   {
-    id: "chap-5",
+    id: 5,
     title: "Machine Learning Basics",
     summary:
       "Core concepts of learning algorithms, capacity, overfitting, and hyperparameters.",

@@ -1,6 +1,6 @@
 export const linearAlgebraChapters = [
   {
-    id: "chap-1",
+    id: 1,
     title: "Vectors in R^n",
     summary:
       "The building blocks of linear algebra. Vectors, dot products, length, and orthogonality.",
@@ -38,7 +38,7 @@ export const linearAlgebraChapters = [
     ],
   },
   {
-    id: "chap-2",
+    id: 2,
     title: "Matrix Algebra",
     summary:
       "Operations on matrices, matrix multiplication, transpose, and special matrices.",
@@ -62,7 +62,7 @@ export const linearAlgebraChapters = [
     ],
   },
   {
-    id: "chap-3",
+    id: 3,
     title: "Systems of Linear Equations",
     summary:
       "Solving Ax = b using Gaussian elimination. The fundamental computational tool.",
@@ -97,7 +97,7 @@ export const linearAlgebraChapters = [
     ],
   },
   {
-    id: "chap-4",
+    id: 4,
     title: "Vector Spaces",
     summary:
       "Abstracting the properties of R^n to general vector spaces. Subspaces, span, linear independence, basis, and dimension.",
@@ -134,7 +134,7 @@ export const linearAlgebraChapters = [
     ]
   },
   {
-    id: "chap-5",
+    id: 5,
     title: "Determinants",
     summary: "A scalar value associated with a square matrix. Properties and geometric interpretation.",
     sections: [
@@ -149,7 +149,7 @@ export const linearAlgebraChapters = [
     ]
   },
   {
-      id: "chap-6",
+      id: 6,
       title: "Eigenvalues and Eigenvectors",
       summary: "Diagonalization and the characteristic equation.",
       sections: [
