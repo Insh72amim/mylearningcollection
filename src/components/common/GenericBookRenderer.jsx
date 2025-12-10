@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   ChevronDown,
   ChevronRight,
@@ -20,6 +21,29 @@ const GenericBookRenderer = ({
   mainColor = "blue",
 }) => {
   const [expandedChapters, setExpandedChapters] = useState({});
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const chapterId = searchParams.get("chapter");
+    if (chapterId) {
+      // Ensure we handle both string and number IDs by checking equivalence
+      const targetChapter = chapters.find(c => String(c.id) === String(chapterId));
+      if (targetChapter) {
+        setExpandedChapters((prev) => ({
+          ...prev,
+          [targetChapter.id]: true,
+        }));
+        
+        // Slight delay to allow render before scrolling
+        setTimeout(() => {
+          const element = document.getElementById(`chapter-${targetChapter.id}`);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 100);
+      }
+    }
+  }, [searchParams, chapters]);
 
   const toggleChapter = (chapterId) => {
     setExpandedChapters((prev) => ({
@@ -146,6 +170,7 @@ const GenericBookRenderer = ({
         {chapters.map((chapter) => (
           <div
             key={chapter.id}
+            id={`chapter-${chapter.id}`}
             className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden transition-all duration-200 hover:border-gray-600"
           >
             <button
