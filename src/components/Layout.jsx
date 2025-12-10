@@ -9,9 +9,11 @@ import {
   PanelLeftOpen,
   Code,
 } from "lucide-react";
+import SearchModal from "./common/SearchModal";
 import { categories, superCategories } from "../config/technologies";
 
 const Layout = () => {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
   const [sidebarHidden, setSidebarHidden] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -243,6 +245,19 @@ const Layout = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Keyboard shortcut for search
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const sidebarContent = (
     <div className="flex flex-col h-full bg-gray-800 border-r border-gray-700 overflow-hidden">
       {/* Sidebar Header */}
@@ -455,6 +470,7 @@ const Layout = () => {
         )}
         <Outlet />
       </div>
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </div>
   );
 };
