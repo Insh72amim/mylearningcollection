@@ -123,26 +123,39 @@ const HLDDocs = () => {
                   <div className="prose prose-invert max-w-none">
                     <div className="text-gray-300 whitespace-pre-line leading-relaxed">
                       {section.content.split('\n').map((line, lineIdx) => {
-                        // Handle bold text
-                        if (line.startsWith('**') && line.endsWith('**')) {
+                        // Helper for inline formatting
+                        const renderInline = (text) => {
+                          const parts = text.split(/(\*\*.*?\*\*)/g);
+                          return parts.map((part, i) => {
+                            if (part.startsWith('**') && part.endsWith('**')) {
+                              return <strong key={i} className="text-indigo-400 font-semibold">{part.slice(2, -2)}</strong>;
+                            }
+                            return part;
+                          });
+                        };
+
+                        // Handle headers (whole line bold)
+                        if (line.trim().startsWith('**') && line.trim().endsWith('**') && line.length < 100) {
                           return (
-                            <h3 key={lineIdx} className="text-lg font-semibold text-indigo-400 mt-4 mb-2">
+                            <h3 key={lineIdx} className="text-lg font-semibold text-indigo-400 mt-6 mb-3">
                               {line.replace(/\*\*/g, '')}
                             </h3>
                           );
                         }
+
                         // Handle list items
-                        if (line.startsWith('- ')) {
+                        if (line.trim().startsWith('- ')) {
                           return (
-                            <div key={lineIdx} className="flex items-start gap-2 ml-4 my-1">
-                              <span className="text-indigo-400 mt-1.5">•</span>
-                              <span>{line.substring(2)}</span>
+                            <div key={lineIdx} className="flex items-start gap-3 ml-4 my-2">
+                              <span className="text-indigo-500 mt-1.5 min-w-[6px]">•</span>
+                              <span className="text-gray-300 leading-relaxed">{renderInline(line.trim().substring(2))}</span>
                             </div>
                           );
                         }
-                        // Regular text
+
+                        // Regular text with inline formatting
                         if (line.trim()) {
-                          return <p key={lineIdx} className="my-2">{line}</p>;
+                          return <p key={lineIdx} className="my-3 text-gray-300 leading-relaxed">{renderInline(line)}</p>;
                         }
                         return null;
                       })}
