@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { BookOpen, ChevronDown, ChevronRight, Lightbulb, Code, Layers } from 'lucide-react';
 import CodeBlock from '../common/CodeBlock';
+import InteractiveDiagram from '../common/InteractiveDiagram';
 import { hldTopics } from '../../data/hldData';
 
 const HLDDocs = () => {
@@ -190,6 +191,18 @@ const HLDDocs = () => {
                       <CodeBlock
                         language={section.code.language}
                         code={section.code.content}
+                      />
+                    </div>
+                  )}
+
+                  {/* Interactive Diagram */}
+                  {section.interactive && (
+                    <div className="mt-8 mb-6">
+                      <InteractiveDiagram
+                        title={section.interactive.title}
+                        initialNodes={section.interactive.initialNodes}
+                        initialEdges={section.interactive.initialEdges}
+                        height="400px"
                       />
                     </div>
                   )}

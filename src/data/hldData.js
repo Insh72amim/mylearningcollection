@@ -56,47 +56,25 @@ export const hldTopics = {
           'Monitor p99 latency, not just average - tail latencies kill UX',
           'Each "9" of availability = 10x engineering cost'
         ],
-        code: {
-          language: 'text',
-          content: `
-┌─────────────────────────────────────────────────────────────┐
-│           VERTICAL VS HORIZONTAL SCALING                     │
-│                                                              │
-│  VERTICAL (Scale Up):                                        │
-│    ┌──────────┐        ┌───────────────┐                    │
-│    │ 4 cores  │  ═══▶  │  32 cores     │  Cost: $$$$        │
-│    │ 16 GB    │        │  256 GB       │  Latency: Low      │
-│    │ 1 Gbps   │        │  10 Gbps      │  Complexity: Low   │
-│    └──────────┘        └───────────────┘                    │
-│         ↑                                                    │
-│    Single Point of Failure (SPOF)                            │
-│                                                              │
-│  ─────────────────────────────────────────────────────       │
-│                                                              │
-│  HORIZONTAL (Scale Out):                                     │
-│                                                              │
-│         ┌─────────────────────┐                             │
-│         │   Load Balancer     │                             │
-│         └─────────────────────┘                             │
-│          ▼        ▼        ▼        ▼                        │
-│       ┌────┐  ┌────┐  ┌────┐  ┌────┐                       │
-│       │ S1 │  │ S2 │  │ S3 │  │... │  Cost: $               │
-│       └────┘  └────┘  └────┘  └────┘  Complexity: High      │
-│                                                              │
-│   Benefits: Redundancy, No SPOF, Linear Cost                │
-│   Challenges: Consistency, State Management                  │
-│                                                              │
-│  ─────────────────────────────────────────────────────       │
-│                                                              │
-│  Performance Bottleneck Analysis:                            │
-│                                                              │
-│  CPU Bound (100% util)    → Add cores / horizontal scale    │
-│  Memory Bound (OOM)       → Increase RAM / partition data   │
-│  Disk I/O Bound (wait)    → SSD / caching / sharding        │
-│  Network Bound (bw limit) → CDN / compression / sharding    │
-│  Lock Contention          → Sharding / lock-free structs    │
-└─────────────────────────────────────────────────────────────┘
-          `
+        interactive: {
+          title: "Vertical vs Horizontal Scaling",
+          initialNodes: [
+            // Vertical (Scale Up)
+            { id: 'v1', position: { x: 50, y: 50 }, data: { label: 'Server (Small)' }, style: { width: 100, height: 60, background: '#1f2937', color: 'white' } },
+            { id: 'v2', position: { x: 50, y: 150 }, data: { label: 'Server (Large)\n$$$ Cost' }, style: { width: 140, height: 100, background: '#3730a3', color: 'white', fontSize: '16px' } },
+            
+            // Horizontal (Scale Out)
+            { id: 'lb', position: { x: 400, y: 50 }, data: { label: 'Load Balancer' }, style: { width: 120, background: '#059669', color: 'white' } },
+            { id: 'h1', position: { x: 300, y: 180 }, data: { label: 'Node 1' }, style: { width: 80, background: '#1f2937', color: 'white' } },
+            { id: 'h2', position: { x: 420, y: 180 }, data: { label: 'Node 2' }, style: { width: 80, background: '#1f2937', color: 'white' } },
+            { id: 'h3', position: { x: 540, y: 180 }, data: { label: 'Node 3' }, style: { width: 80, background: '#1f2937', color: 'white' } },
+          ],
+          initialEdges: [
+            { id: 'e1', source: 'v1', target: 'v2', label: 'Upgrade HW', animated: true, style: { stroke: '#6366f1' } },
+            { id: 'e2', source: 'lb', target: 'h1', style: { stroke: '#059669' } },
+            { id: 'e3', source: 'lb', target: 'h2', style: { stroke: '#059669' } },
+            { id: 'e4', source: 'lb', target: 'h3', style: { stroke: '#059669' } },
+          ]
         }
       },
       {
@@ -690,53 +668,30 @@ public:
           'L7 enables blue-green deployments and canary releases',
           'SSL termination reduces backend CPU by 20-40%'
         ],
-        code: {
-          language: 'text',
-          content: `
-┌─────────────────────────────────────────────────────────────┐
-│         L4 (TRANSPORT LAYER) vs L7 (APPLICATION)             │
-│                                                              │
-│  L4 LOAD BALANCER (TCP/UDP):                                 │
-│                                                              │
-│    Client ──TCP SYN──▶ LB ──TCP──▶ Backend                  │
-│                                                              │
-│    Decision: IP:Port tuple                                   │
-│    Visibility: NONE (just forwards packets)                  │
-│    Performance: 10M+ RPS                                     │
-│    Latency: < 1ms                                            │
-│                                                              │
-│    Use: Database clusters, Redis, Game servers               │
-│                                                              │
-│  ─────────────────────────────────────────────────────       │
-│                                                              │
-│  L7 LOAD BALANCER (HTTP/HTTPS):                              │
-│                                                              │
-│    Client ──HTTPS──▶ LB (SSL terminate) ──HTTP──▶ Backend   │
-│                                                              │
-│    Decision:                                                 │
-│      • URL: /api/* → API pool                                │
-│      • Header: X-Version: v2 → Canary                        │
-│      • Cookie: premium=1 → Premium tier                      │
-│                                                              │
-│    Visibility: FULL (can inspect & modify HTTP)              │
-│    Performance: ~1M RPS                                      │
-│    Latency: ~5ms                                             │
-│                                                              │
-│    Use: Microservices, API Gateway, CDN origin               │
-│                                                              │
-│  ─────────────────────────────────────────────────────       │
-│                                                              │
-│  L7 ADVANCED ROUTING EXAMPLE:                                │
-│                                                              │
-│    Incoming Request: GET /api/users/123                      │
-│       ├─ Header "X-Version: v2" → Canary Pool (5%)           │
-│       ├─ Cookie "beta=true" → Beta Pool                      │
-│       ├─ IP in [EU range] → EU Data Center                   │
-│       └─ Default → Production Pool                           │
-│                                                              │
-│    Enables: Blue-Green, Canary, A/B Testing                  │
-└─────────────────────────────────────────────────────────────┘
-          `
+        interactive: {
+          title: "L4 vs L7 Load Balancing",
+          initialNodes: [
+            { id: 'client', position: { x: 0, y: 150 }, data: { label: 'Client' }, style: { background: '#2563eb', color: 'white', shape: 'circle', width: 60 } },
+            
+            // L4 Path
+            { id: 'l4', position: { x: 200, y: 50 }, data: { label: 'L4 LB (TCP)\nIP:Port Hash' }, style: { background: '#d97706', color: 'white', width: 120 } },
+            { id: 'db1', position: { x: 400, y: 0 }, data: { label: 'DB Primary' }, style: { background: '#1f2937', color: 'white' } },
+            { id: 'db2', position: { x: 400, y: 100 }, data: { label: 'DB Replica' }, style: { background: '#1f2937', color: 'white' } },
+            
+            // L7 Path
+            { id: 'l7', position: { x: 200, y: 250 }, data: { label: 'L7 LB (HTTP)\nSSL + Path Routing' }, style: { background: '#7c3aed', color: 'white', width: 140 } },
+            { id: 'api', position: { x: 450, y: 200 }, data: { label: 'API Service\n/api/*' }, style: { background: '#1f2937', color: 'white' } },
+            { id: 'web', position: { x: 450, y: 300 }, data: { label: 'Web Static\n/*' }, style: { background: '#1f2937', color: 'white' } },
+          ],
+          initialEdges: [
+            { id: 'e1', source: 'client', target: 'l4', label: 'TCP Conn', style: { stroke: '#d97706' } },
+            { id: 'e2', source: 'l4', target: 'db1', animated: true },
+            { id: 'e3', source: 'l4', target: 'db2', animated: true },
+            
+            { id: 'e4', source: 'client', target: 'l7', label: 'HTTPS', style: { stroke: '#7c3aed' } },
+            { id: 'e5', source: 'l7', target: 'api', label: '/api', animated: true },
+            { id: 'e6', source: 'l7', target: 'web', label: '/', animated: true },
+          ]
         }
       },
       {
@@ -974,8 +929,8 @@ private:
     ]
   },
 
-  'caching': {
-    id: 'caching',
+  'caching-patterns': {
+    id: 'caching-patterns',
     title: 'Caching Strategies & Distributed Caches',
     description: 'Comprehensive guide to caching patterns, eviction policies, cache coherence, and distributed caching systems',
     sections: [
@@ -1475,61 +1430,22 @@ Total expected hit rate: 95%+ (only 5% hit DB)
           'Multi-level caching achieves 95%+ hit rates',
           'CDN essential for global static content delivery'
         ],
-        code: {
-          language: 'text',
-          content: `
-┌─────────────────────────────────────────────────────────────┐
-│           MULTI-LEVEL CACHING ARCHITECTURE                   │
-│                                                              │
-│   Client Request → Product Page                              │
-│                                                              │
-│   1. Browser Cache (L1):                                     │
-│      • HTML: No cache                                        │
-│      • CSS/JS: Cache 1 week                                  │
-│      • Images: Cache 1 day                                   │
-│      Hit: ~40%, Latency: 0ms                                 │
-│         ↓ (miss)                                             │
-│                                                              │
-│   2. CDN Edge Server (L2):                                   │
-│      • Static assets: CSS, JS, images                        │
-│      • Geographic proximity                                  │
-│      Hit: ~30%, Latency: 10-50ms                             │
-│         ↓ (miss)                                             │
-│                                                              │
-│   3. Load Balancer                                           │
-│         ↓                                                    │
-│                                                              │
-│   4. App Server + In-Memory Cache (L3):                      │
-│      • Hot product data (HashMap)                            │
-│      • TTL: 30 seconds                                       │
-│      Hit: ~15%, Latency: <1ms                                │
-│         ↓ (miss)                                             │
-│                                                              │
-│   5. Redis Cluster (L4):                                     │
-│      ┌────────┬────────┬────────┐                           │
-│      │ Shard1 │ Shard2 │ Shard3 │                           │
-│      │(0-5460)│(5461-  │(10923-)│                           │
-│      └────────┴─10922)─┴────────┘                           │
-│      • Product metadata, pricing                             │
-│      • Session data, shopping cart                           │
-│      Hit: ~10%, Latency: 1-5ms                               │
-│         ↓ (miss)                                             │
-│                                                              │
-│   6. Database (L5):                                          │
-│      ┌──────────────┐    ┌──────────────┐                   │
-│      │ Primary (W)  │───▶│ Replica (R)  │                   │
-│      └──────────────┘    └──────────────┘                   │
-│      Hit: ~5%, Latency: 50-200ms                             │
-│                                                              │
-│   ─────────────────────────────────────────────────          │
-│                                                              │
-│   Cumulative Hit Rate:                                       │
-│   L1: 40% + L2: 18% + L3: 6.3% + L4: 3.2% + DB: 32.5%       │
-│   = 67.5% cached, 32.5% DB queries                           │
-│                                                              │
-│   With tuning: Achieve 95%+ cache hit rate                   │
-└─────────────────────────────────────────────────────────────┘
-          `
+        interactive: {
+          title: "Multi-Level Caching Strategy",
+          initialNodes: [
+            { id: 'client', position: { x: 250, y: 0 }, data: { label: 'Client' }, style: { background: '#2563eb', color: 'white', shape: 'circle' } },
+            { id: 'l1', position: { x: 250, y: 80 }, data: { label: 'L1: Browser Cache\n(Memory)' }, style: { background: '#059669', color: 'white' } },
+            { id: 'l2', position: { x: 250, y: 160 }, data: { label: 'L2: CDN\n(Edge Locations)' }, style: { background: '#059669', color: 'white' } },
+            { id: 'l3', position: { x: 250, y: 240 }, data: { label: 'L3: Redis/Memcached\n(App Cluster)' }, style: { background: '#059669', color: 'white' } },
+            { id: 'db', position: { x: 250, y: 320 }, data: { label: 'Database\n(Source of Truth)' }, style: { background: '#b91c1c', color: 'white' } },
+          ],
+          initialEdges: [
+            { id: 'e1', source: 'client', target: 'l1', label: '1. Check', animated: true },
+            { id: 'e2', source: 'l1', target: 'l2', label: '2. Miss', animated: true },
+            { id: 'e3', source: 'l2', target: 'l3', label: '3. Miss', animated: true },
+            { id: 'e4', source: 'l3', target: 'db', label: '4. Miss (Fetch)', animated: true },
+            { id: 'e5', source: 'db', target: 'l3', label: '5. Populate', style: { strokeDasharray: '5,5' } },
+          ]
         }
       }
     ]
@@ -1598,7 +1514,7 @@ Total expected hit rate: 95%+ (only 5% hit DB)
 - **Pros**:
   - Ultimate flexibility
   - Can implement any routing logic (geo, tenant, feature flags)
-- **Cons**:
+  - **Cons**:
   - Directory service is SPOF and bottleneck
   - Extra network hop per query
   - Directory must be highly available
@@ -1989,49 +1905,21 @@ Since network partitions WILL happen, the real choice during partition is:
           'CP: Reject requests to maintain consistency',
           'AP: Serve all requests, resolve conflicts later'
         ],
-        code: {
-          language: 'text',
-          content: `
-┌─────────────────────────────────────────────────────────────┐
-│                      CAP THEOREM                             │
-│                                                              │
-│                          C                                   │
-│                    (Consistency)                             │
-│                         /╲                                   │
-│                        /  ╲                                  │
-│                       /    ╲                                 │
-│                      / CA   ╲  ← NOT possible in             │
-│                     /(Single )╲   distributed systems!       │
-│                    /   Node   ╲                              │
-│                   /            ╲                             │
-│                  /              ╲                            │
-│                 /       CP       ╲                           │
-│                /    (MongoDB,     ╲                          │
-│               /      HBase,        ╲                         │
-│              /      ZooKeeper)      ╲                        │
-│             ╱────────────────────────╲                       │
-│            A ──────────  AP  ──────── P                      │
-│       (Availability)  (Cassandra) (Partition                 │
-│                      (DynamoDB)   Tolerance)                 │
-│                        (Riak)                                │
-│                                                              │
-│  Network Partition Scenario:                                 │
-│                                                              │
-│  Before Partition:                                           │
-│    ┌────┐ ◀────▶ ┌────┐ ◀────▶ ┌────┐                       │
-│    │ N1 │        │ N2 │        │ N3 │                       │
-│    └────┘        └────┘        └────┘                       │
-│                                                              │
-│  During Partition:                                           │
-│    ┌────┐ ◀────▶ ┌────┐   ╳╳╳╳╳   ┌────┐                   │
-│    │ N1 │        │ N2 │            │ N3 │                   │
-│    └────┘        └────┘            └────┘                   │
-│      ↓              ↓                 ↓                      │
-│                                                              │
-│  CP: N3 rejects writes (no quorum)                          │
-│  AP: N3 accepts writes (resolve conflict later)             │
-└─────────────────────────────────────────────────────────────┘
-          `
+        interactive: {
+          title: "The CAP Theorem Triangle",
+          initialNodes: [
+            { id: 'c', position: { x: 250, y: 0 }, data: { label: 'Consistency\n(Linearizable)' }, style: { background: '#4f46e5', color: 'white', width: 120 } },
+            { id: 'a', position: { x: 450, y: 300 }, data: { label: 'Availability\n(Always Respond)' }, style: { background: '#4f46e5', color: 'white', width: 120 } },
+            { id: 'p', position: { x: 50, y: 300 }, data: { label: 'Partition Tolerance\n(Network Faults)' }, style: { background: '#b91c1c', color: 'white', width: 140 } },
+            
+            { id: 'cp', position: { x: 100, y: 130 }, data: { label: 'CP System\n(MongoDB, HBASE)' }, style: { background: '#1f2937', color: 'white', border: '1px dashed white' } },
+            { id: 'ap', position: { x: 300, y: 280 }, data: { label: 'AP System\n(Cassandra, DNS)' }, style: { background: '#1f2937', color: 'white', border: '1px dashed white' } },
+          ],
+          initialEdges: [
+            { id: 'e1', source: 'c', target: 'a', label: 'CA (Impossible in Dist. Sys)', style: { stroke: '#ef4444', strokeWidth: 2 } },
+            { id: 'e2', source: 'a', target: 'p', style: { stroke: '#4f46e5' } },
+            { id: 'e3', source: 'p', target: 'c', style: { stroke: '#4f46e5' } },
+          ]
         }
       },
       {
@@ -2092,47 +1980,29 @@ Answer:
           'PC/EC systems: Strong consistency always (MongoDB)',
           'Tunable consistency allows per-query flexibility'
         ],
-        code: {
-          language: 'text',
-          content: `
-┌─────────────────────────────────────────────────────────────┐
-│                   PACELC CLASSIFICATION                      │
-│                                                              │
-│  System          Partition        Else (Normal)             │
-│  ──────────────────────────────────────────────              │
-│  DynamoDB          PA            EL (Latency)                │
-│  Cassandra         PA            EL                          │
-│  Riak              PA            EL                          │
-│                                                              │
-│  HBase             PC            EC (Consistency)            │
-│  MongoDB           PC            EC                          │
-│  (strong mode)                                               │
-│  BigTable          PC            EC                          │
-│  VoltDB            PC            EC                          │
-│                                                              │
-│  MongoDB           PA            EC                          │
-│  (eventual mode)                                             │
-│  PNUTS             PA            EC                          │
-│                                                              │
-│  ─────────────────────────────────────────────────           │
-│                                                              │
-│  Latency vs Consistency in Normal Operation:                │
-│                                                              │
-│  Strong Consistency (EC):                                    │
-│    Client ─write─▶ Leader ────▶ Replica 1                   │
-│                      │ ─────▶ Replica 2                   │
-│                      └─Wait for acks from all replicas       │
-│                      └─ACK to client (slower)                │
-│    Latency: 50-100ms                                         │
-│                                                              │
-│  Eventual Consistency (EL):                                  │
-│    Client ─write─▶ Leader ─ACK immediately                   │
-│                      │ ─async─▶ Replica 1                    │
-│                      └─async─▶ Replica 2                     │
-│    Latency: 1-5ms                                            │
-│    Trade-off: May read stale data                            │
-└─────────────────────────────────────────────────────────────┘
-          `
+        interactive: {
+          title: "PACELC Decision Tree",
+          initialNodes: [
+            { id: 'start', position: { x: 250, y: 0 }, data: { label: 'Is there a\nPartition?' }, style: { background: '#b91c1c', color: 'white', shape: 'diamond', width: 100, height: 100 } },
+            
+            // Partition Branch
+            { id: 'yes', position: { x: 100, y: 150 }, data: { label: 'YES (PAC)' }, style: { background: '#1f2937', color: '#fca5a5' } },
+            { id: 'pc', position: { x: 0, y: 250 }, data: { label: 'Choose Consistency\n(MongoDB, HBase)' }, style: { background: '#4f46e5', color: 'white', width: 140 } },
+            { id: 'pa', position: { x: 180, y: 250 }, data: { label: 'Choose Availability\n(Cassandra, Dynamo)' }, style: { background: '#059669', color: 'white', width: 140 } },
+            
+            // Normal Branch
+            { id: 'no', position: { x: 400, y: 150 }, data: { label: 'NO (ELC)' }, style: { background: '#1f2937', color: '#86efac' } },
+            { id: 'el', position: { x: 320, y: 250 }, data: { label: 'Latency Focus\n(DynamoDB)' }, style: { background: '#059669', color: 'white', width: 120 } },
+            { id: 'ec', position: { x: 480, y: 250 }, data: { label: 'Consistency Focus\n(BigTable)' }, style: { background: '#4f46e5', color: 'white', width: 120 } },
+          ],
+          initialEdges: [
+            { id: 'e1', source: 'start', target: 'yes', label: 'Network Failure', animated: true },
+            { id: 'e2', source: 'start', target: 'no', label: 'Normal Op', animated: true },
+            { id: 'e3', source: 'yes', target: 'pc', label: 'CP' },
+            { id: 'e4', source: 'yes', target: 'pa', label: 'AP' },
+            { id: 'e5', source: 'no', target: 'el', label: 'Low Latency' },
+            { id: 'e6', source: 'no', target: 'ec', label: 'Strong Cons.' },
+          ]
         }
       },
       {
@@ -2339,34 +2209,26 @@ private:
           'Paxos is the theoretical foundation but hard to implement',
           'Majority quorum (N/2 + 1) required for progress'
         ],
-        code: {
-          language: 'text',
-          content: `
-┌─────────────────────────────────────────────────────────────┐
-│                   PAXOS ALGORITHM FLOW                       │
-│                                                              │
-│  Phase 1: Prepare (Leader Election / Locking)                │
-│    Proposer            Acceptor 1         Acceptor 2         │
-│       │                    │                  │              │
-│       │── Prepare(N) ─────▶│                  │              │
-│       │                    │── Prepare(N) ───▶│              │
-│       │                    │                  │              │
-│       │◀── Promise(N) ─────│                  │              │
-│       │                    │◀── Promise(N) ───│              │
-│       │   (Got Majority!)  │                  │              │
-│                                                              │
-│  Phase 2: Accept (Replication)                               │
-│       │                    │                  │              │
-│       │── Accept(N, val) ─▶│                  │              │
-│       │                    │── Accept(N, val)▶│              │
-│       │                    │                  │              │
-│       │◀── Accepted(N, v) ─│                  │              │
-│       │                    │◀── Accepted(N, v)│              │
-│       │                    │                  │              │
-│    (Consensus Reached!)    ↓                  ↓              │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-          `
+        interactive: {
+          title: "Paxos Protocol Flow",
+          initialNodes: [
+            { id: 'prop', position: { x: 50, y: 100 }, data: { label: 'Proposer' }, style: { background: '#7c3aed', color: 'white' } },
+            { id: 'acc1', position: { x: 250, y: 0 }, data: { label: 'Acceptor 1' }, style: { background: '#1f2937', color: 'white' } },
+            { id: 'acc2', position: { x: 250, y: 100 }, data: { label: 'Acceptor 2' }, style: { background: '#1f2937', color: 'white' } },
+            { id: 'acc3', position: { x: 250, y: 200 }, data: { label: 'Acceptor 3' }, style: { background: '#1f2937', color: 'white' } },
+          ],
+          initialEdges: [
+            // Phase 1
+            { id: 'e1', source: 'prop', target: 'acc1', label: '1. Prepare(N)', animated: true, style: { stroke: '#d97706' } },
+            { id: 'e2', source: 'prop', target: 'acc2', label: '1. Prepare(N)', animated: true, style: { stroke: '#d97706' } },
+            { id: 'e3', source: 'prop', target: 'acc3', label: '1. Prepare(N)', animated: true, style: { stroke: '#d97706' } },
+            
+            // Responses (Implicit Phase 1b)
+            { id: 'e4', source: 'acc1', target: 'prop', label: '2. Promise', style: { stroke: '#059669', strokeDasharray: '5,5' } },
+            
+            // Phase 2
+            { id: 'e5', source: 'prop', target: 'acc2', label: '3. Accept(N, Val)', animated: true, style: { stroke: '#2563eb' } },
+          ]
         }
       },
       {
@@ -2547,36 +2409,30 @@ public:
           'Database sharing violates microservice autonomy',
           'Conway\'s Law: Architecture mirrors communication structure'
         ],
-        code: {
-          language: 'text',
-          content: `
-┌─────────────────────────────────────────────────────────────┐
-│                 MONOLITH vs MICROSERVICES                    │
-│                                                              │
-│  MONOLITH:                                                   │
-│    ┌───────────────────────────────────────────────┐        │
-│    │  [UI] [Auth] [Orders] [Inventory] [Payment]   │        │
-│    │               Shared Memory                   │        │
-│    └───────────────────────────────────────────────┘        │
-│                            │                                 │
-│                     ┌─────────────┐                          │
-│                     │ BIG SQL DB  │                          │
-│                     └─────────────┘                          │
-│                                                              │
-│  MICROSERVICES:                                              │
-│                                                              │
-│         ┌─────────┐      ┌─────────┐      ┌─────────┐        │
-│         │ Service A      │ Service B      │ Service C        │
-│         │ (Auth)  │      │ (Order) │      │(Inventory)       │
-│         └────┬────┘      └────┬────┘      └────┬────┘        │
-│              │                │                │             │
-│          ┌───┴───┐        ┌───┴───┐        ┌───┴───┐         │
-│          │Redis  │        │MySQL  │        │Postgres         │
-│          └───────┘        └───────┘        └───────┘         │
-│                                                              │
-│  Communication: REST / gRPC / Metadata via Events            │
-└─────────────────────────────────────────────────────────────┘
-          `
+        interactive: {
+          title: "Monolith vs Microservices",
+          initialNodes: [
+            // Monolith
+            { id: 'mono', position: { x: 50, y: 50 }, data: { label: 'Monolith\n[UI] [Auth] [Orders] [Pay]' }, style: { width: 180, height: 100, background: '#1f2937', color: 'white' } },
+            { id: 'db1', position: { x: 80, y: 200 }, data: { label: 'Shared Database' }, style: { width: 120, background: '#b91c1c', color: 'white', shape: 'cylinder' } },
+            
+            // Microservices
+            { id: 'ms1', position: { x: 300, y: 50 }, data: { label: 'Auth Service' }, style: { width: 100, background: '#4f46e5', color: 'white' } },
+            { id: 'ms2', position: { x: 420, y: 50 }, data: { label: 'Order Service' }, style: { width: 100, background: '#4f46e5', color: 'white' } },
+            { id: 'ms3', position: { x: 360, y: 200 }, data: { label: 'Payment Svc' }, style: { width: 100, background: '#4f46e5', color: 'white' } },
+            
+            // Databases
+            { id: 'db_auth', position: { x: 300, y: 120 }, data: { label: 'DB' }, style: { width: 40, height: 40, borderRadius: '50%', background: '#b91c1c', color: 'white', fontSize: '10px' } },
+            { id: 'db_ord', position: { x: 420, y: 120 }, data: { label: 'DB' }, style: { width: 40, height: 40, borderRadius: '50%', background: '#b91c1c', color: 'white', fontSize: '10px' } },
+            { id: 'db_pay', position: { x: 360, y: 270 }, data: { label: 'DB' }, style: { width: 40, height: 40, borderRadius: '50%', background: '#b91c1c', color: 'white', fontSize: '10px' } },
+          ],
+          initialEdges: [
+            { id: 'e1', source: 'mono', target: 'db1' },
+            { id: 'e2', source: 'ms1', target: 'db_auth' },
+            { id: 'e3', source: 'ms2', target: 'db_ord' },
+            { id: 'e4', source: 'ms3', target: 'db_pay' },
+            { id: 'e5', source: 'ms2', target: 'ms3', label: 'gRPC', animated: true, style: { stroke: '#059669' } },
+          ]
         }
       },
       {
@@ -2730,34 +2586,30 @@ Answer:
           'Streams = State managed by Consumer, retained on read',
           'Kafka partitions enable massive parallelism'
         ],
-        code: {
-          language: 'text',
-          content: `
-┌─────────────────────────────────────────────────────────────┐
-│                    KAFKA ARCHITECTURE                        │
-│                                                              │
-│  Topic: "UserClicks" (Partitioned)                           │
-│                                                              │
-│  ┌──────────────┐      ┌──────────────┐     ┌─────────────┐  │
-│  │ Partition 0  │      │ Partition 1  │     │ Partition 2 │  │
-│  │ [0][1][2]... │      │ [0][1][2]... │     │ [0][1]...   │  │
-│  └──────┬───────┘      └──────┬───────┘     └──────┬──────┘  │
-│         │                     │                    │         │
-│         ▼                     ▼                    ▼         │
-│  ┌──────────────┐      ┌──────────────┐     ┌─────────────┐  │
-│  │ Consumer A   │      │ Consumer B   │     │ Consumer C  │  │
-│  │ (Offset: 2)  │      │ (Offset: 2)  │     │ (Offset: 1) │  │
-│  └──────────────┘      └──────────────┘     └─────────────┘  │
-│    Consumer Group 1 (Analytics Engine)                       │
-│                                                              │
-│  ┌────────────────────────────────────────────────────────┐  │
-│  │ Consumer D (Reads P0, P1, P2) - Offset varies          │  │
-│  └────────────────────────────────────────────────────────┘  │
-│    Consumer Group 2 (Backup Service)                         │
-│                                                              │
-│  Design Rule: Max 1 consumer per partition per group         │
-└─────────────────────────────────────────────────────────────┘
-          `
+        interactive: {
+          title: "Kafka Architecture",
+          initialNodes: [
+            { id: 'topic', position: { x: 250, y: 0 }, data: { label: 'Topic: "UserClicks"' }, style: { background: '#2563eb', color: 'white', width: 200 } },
+            
+            // Partitions
+            { id: 'p0', position: { x: 100, y: 100 }, data: { label: 'Partition 0' }, style: { background: '#1f2937', color: 'white' } },
+            { id: 'p1', position: { x: 250, y: 100 }, data: { label: 'Partition 1' }, style: { background: '#1f2937', color: 'white' } },
+            { id: 'p2', position: { x: 400, y: 100 }, data: { label: 'Partition 2' }, style: { background: '#1f2937', color: 'white' } },
+            
+            // Consumer Group
+            { id: 'cg', position: { x: 250, y: 250 }, data: { label: 'Consumer Group A' }, style: { background: '#7c3aed', color: 'white', width: 200, opacity: 0.5 } },
+            { id: 'c1', position: { x: 100, y: 280 }, data: { label: 'Consumer 1' }, style: { background: '#7c3aed', color: 'white' } },
+            { id: 'c2', position: { x: 400, y: 280 }, data: { label: 'Consumer 2' }, style: { background: '#7c3aed', color: 'white' } },
+          ],
+          initialEdges: [
+            { id: 'e1', source: 'topic', target: 'p0', type: 'smoothstep' },
+            { id: 'e2', source: 'topic', target: 'p1', type: 'smoothstep' },
+            { id: 'e3', source: 'topic', target: 'p2', type: 'smoothstep' },
+            
+            { id: 'e4', source: 'p0', target: 'c1', animated: true, style: { stroke: '#059669' } },
+            { id: 'e5', source: 'p1', target: 'c2', animated: true, style: { stroke: '#059669' } },
+            { id: 'e6', source: 'p2', target: 'c2', animated: true, style: { stroke: '#059669' } },
+          ]
         }
       },
       {
@@ -2893,29 +2745,20 @@ class OrderSagaOrchestrator {
           'Async replication risks data loss but boosts performance',
           'Split Brain is the biggest risk in auto-failover'
         ],
-        code: {
-          language: 'text',
-          content: `
-┌─────────────────────────────────────────────────────────────┐
-│               MASTER-SLAVE REPLICATION                       │
-│                                                              │
-│      Write (Values)                                          │
-│         │                                                    │
-│         ▼                                                    │
-│    ┌────────────┐                                            │
-│    │   MASTER   │  Replication Stream (Binlog/WAL)           │
-│    │ (Read/Write)──────────────────┬─────────────────┐      │
-│    └────────────┘                  │                 │      │
-│         ▲                          ▼                 ▼      │
-│         │ (Reads?)           ┌────────────┐   ┌────────────┐│
-│    ┌────────────┐            │   SLAVE 1  │   │   SLAVE 2  ││
-│    │   CLIENT   │◀───────────│ (Read Only)│   │ (Read Only)││
-│    └────────────┘            └────────────┘   └────────────┘│
-│                                                              │
-│  Pros: Simple, Read Scaling, Backups                         │
-│  Cons: Master is Write Bottleneck, Failover Complexity       │
-└─────────────────────────────────────────────────────────────┘
-          `
+        interactive: {
+          title: "Master-Slave Replication",
+          initialNodes: [
+            { id: 'client', position: { x: 0, y: 150 }, data: { label: 'Client' }, style: { background: '#2563eb', color: 'white', shape: 'circle' } },
+            { id: 'master', position: { x: 200, y: 50 }, data: { label: 'Master (RW)\nProduces Binlog' }, style: { background: '#b91c1c', color: 'white', width: 140 } },
+            { id: 's1', position: { x: 400, y: 150 }, data: { label: 'Slave 1 (RO)' }, style: { background: '#1f2937', color: 'white' } },
+            { id: 's2', position: { x: 400, y: 250 }, data: { label: 'Slave 2 (RO)' }, style: { background: '#1f2937', color: 'white' } },
+          ],
+          initialEdges: [
+            { id: 'e1', source: 'client', target: 'master', label: 'Write (INSERT)', animated: true, style: { stroke: '#b91c1c' } },
+            { id: 'e2', source: 'client', target: 's1', label: 'Read (SELECT)', animated: true, style: { stroke: '#059669' } },
+            { id: 'e3', source: 'master', target: 's1', label: 'Replicate', style: { strokeDasharray: '5,5' } },
+            { id: 'e4', source: 'master', target: 's2', label: 'Replicate', style: { strokeDasharray: '5,5' } },
+          ]
         }
       },
       {
