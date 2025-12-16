@@ -203,5 +203,191 @@ export const patternRecognitionChapters = [
         "Generative models model the joint density p(x, C); Discriminative models model conditional p(C|x).",
         "Logistic regression is a linear classifier despite the non-linear sigmoid activation.",
     ]
-  }
+  },
+  {
+    id: 5,
+    title: "Neural Networks",
+    summary:
+      "Feed-forward neural networks, error backpropagation, and regularization techniques.",
+    sections: [
+      {
+        title: "Feed-forward Network Functions",
+        content:
+          "A two-layer neural network is a linear combination of nonlinear basis functions (hidden units) where the basis functions are adaptive.",
+        match:
+          "y_k(\\mathbf{x}, \\mathbf{w}) = \\sigma\\left(\\sum_{j=1}^M w_{kj}^{(2)} h\\left(\\sum_{i=1}^D w_{ji}^{(1)} x_i + w_{j0}^{(1)}\\right) + w_{k0}^{(2)}\\right)",
+        points: [
+          "Universal approximation theorem.",
+          "Hidden units act as feature detectors.",
+        ],
+      },
+      {
+        title: "Error Backpropagation",
+        content:
+          "An efficient method for evaluating the gradient of an error function minimizing a sum-of-squares error. It applies the chain rule of calculus recursively.",
+        match: "\\delta_j = h'(a_j) \\sum_k w_{kj} \\delta_k",
+        points: [
+          "Forward pass to compute activations.",
+          "Backward pass to compute errors (deltas).",
+        ],
+      },
+      {
+        title: "Regularization in Neural Networks",
+        content:
+          "Techniques to prevent overfitting in over-parameterized models, essential for training deep networks.",
+        points: [
+          "Weight decay (L2 regularization).",
+          "Early stopping.",
+          "Tangent propagation.",
+        ],
+      },
+    ],
+    keyPoints: [
+      "Neural networks entail automatic feature extraction.",
+      "Backpropagation is simply the chain rule of calculus applied efficiently.",
+      "Non-convex error surfaces imply local minima.",
+    ],
+  },
+  {
+    id: 6,
+    title: "Kernel Methods",
+    summary:
+      "Substituting inner products with kernel functions to work in high-dimensional feature spaces implicitly.",
+    sections: [
+      {
+        title: "Dual Representations",
+        content:
+          "Many linear models can be reformulated so that the weight vector is a linear combination of the training data vectors.",
+        match:
+          "J(\\mathbf{a}) = \\frac{1}{2} \\mathbf{a}^T \\mathbf{K} \\mathbf{K} \\mathbf{a} - \\mathbf{a}^T \\mathbf{K} \\mathbf{t} + \\frac{\\lambda}{2} \\mathbf{a}^T \\mathbf{K} \\mathbf{a}",
+      },
+      {
+        title: "Constructing Kernels",
+        content:
+          "A valid kernel must be a positive semi-definite function. Examples include polynomial, Gaussian, and sigmoid kernels.",
+        match:
+          "k(\\mathbf{x}, \\mathbf{x}') = \\exp\\left(-\\frac{||\\mathbf{x} - \\mathbf{x}'||^2}{2\\sigma^2}\\right)",
+        points: ["Mercer's Theorem.", "Kernels measure similarity."],
+      },
+      {
+        title: "Radial Basis Function Networks",
+        content:
+          "Linear models where the basis functions depend on the distance to a center.",
+        points: [
+            "Exact interpolation.",
+            "Nadaraya-Watson regression.",
+        ],
+      },
+    ],
+    keyPoints: [
+      "Kernel trick allows operating in infinite-dimensional spaces.",
+      "Computational cost depends on the number of data points, not input dimension.",
+    ],
+  },
+  {
+    id: 7,
+    title: "Sparse Kernel Machines",
+    summary:
+      "Kernel methods that result in sparse solutions, meaning they depend on only a subset of the training data (support vectors).",
+    sections: [
+      {
+        title: "Maximum Margin Classifiers",
+        content:
+          "The SVM finds the separating hyperplane that maximizes the margin to the nearest data points.",
+        match:
+          "\\arg\\max_{\\mathbf{w}, b} \\frac{1}{||\\mathbf{w}||} \\min_n [t_n(\\mathbf{w}^T \\mathbf{\\phi}(\\mathbf{x}_n) + b)]",
+      },
+      {
+        title: "Support Vector Machines (SVM)",
+        content:
+          "Using Lagrange multipliers, the optimization becomes a quadratic programming problem.",
+        points: [
+          "Support vectors lie on the margin boundary.",
+          "Robust to outliers due to margin maximization.",
+        ],
+      },
+      {
+        title: "Relevance Vector Machines (RVM)",
+        content:
+          "A Bayesian sparse kernel technique that provides probabilistic outputs, unlike standard SVMs.",
+        points: [
+          "Sparsity often greater than SVM.",
+          "Probabilistic predictions.",
+        ],
+      },
+    ],
+    keyPoints: [
+      "SVMs rely on convex optimization (global optimum).",
+      "Sparsity leads to efficient prediction times.",
+    ],
+  },
+  {
+    id: 8,
+    title: "Graphical Models",
+    summary:
+      "Probabilistic models for which a graph denotes the conditional dependence structure between random variables.",
+    sections: [
+      {
+        title: "Bayesian Networks",
+        content:
+          "Directed Acyclic Graphs (DAGs) representing causal relationships.",
+        match: "p(\\mathbf{x}) = \\prod_{k=1}^K p(x_k | \\text{pa}_k)",
+      },
+      {
+        title: "Markov Random Fields",
+        content:
+          "Undirected graphs representing soft constraints between variables.",
+        match: "p(\\mathbf{x}) = \\frac{1}{Z} \\prod_C \\psi_C(\\mathbf{x}_C)",
+      },
+      {
+        title: "Inference",
+        content:
+          "Computing posterior probabilities of latent variables given observed variables. Exact inference is NP-hard in general.",
+        points: [
+          "Sum-Product Algorithm (Belief Propagation) for trees.",
+          "Junction Tree algorithm for general graphs.",
+        ],
+      },
+    ],
+    keyPoints: [
+      "Visualizing complex dependencies.",
+      "Separation properties in the graph imply conditional independence.",
+    ],
+  },
+  {
+    id: 9,
+    title: "Mixture Models and EM",
+    summary:
+      "Modeling complex distributions as a combination of simpler distributions, trained via Expectation-Maximization.",
+    sections: [
+      {
+        title: "K-Means Clustering",
+        content:
+          "Iteratively assigning points to nearest centroids and updating centroids.",
+        match:
+          "J = \\sum_{n=1}^N \\sum_{k=1}^K r_{nk} ||\\mathbf{x}_n - \\boldsymbol{\\mu}_k||^2",
+      },
+      {
+        title: "Mixtures of Gaussians",
+        content:
+          "A linear superposition of Gaussians can approximate almost any continuous density.",
+        match:
+          "p(\\mathbf{x}) = \\sum_{k=1}^K \\pi_k \\mathcal{N}(\\mathbf{x} | \\boldsymbol{\\mu}_k, \\boldsymbol{\\Sigma}_k)",
+      },
+      {
+        title: "The EM Algorithm",
+        content:
+          "A general iterative technique for maximum likelihood estimation in models with latent variables.",
+        points: [
+          "E-step: Evaluate responsibilities.",
+          "M-step: Re-estimate parameters.",
+          "Guaranteed to not decrease likelihood.",
+        ],
+      },
+    ],
+    keyPoints: [
+      "Latent variables explain observed data clusters.",
+      "EM is a powerful optimization strategy for missing data problems.",
+    ],
+  },
 ];

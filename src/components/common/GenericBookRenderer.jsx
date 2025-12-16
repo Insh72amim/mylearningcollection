@@ -11,6 +11,8 @@ import CodeBlock from "./CodeBlock";
 import InteractiveDiagram from "./InteractiveDiagram";
 import MathBlock from "./MathBlock";
 import StandardChart from "./StandardChart";
+import OptionsPricingSimulator from "../finance/OptionsPricingSimulator";
+import MonteCarloSimulator from "../finance/MonteCarloSimulator";
 
 const GenericBookRenderer = ({
   title,
@@ -336,6 +338,18 @@ const GenericBookRenderer = ({
                               language={section.example.language}
                               code={section.example.code}
                             />
+                          </div>
+                        )}
+                        {/* Options Pricing Simulator */}
+                        {section.simulator === 'options-pricing' && (
+                          <div className="my-8">
+                            <OptionsPricingSimulator />
+                          </div>
+                        )}
+                        {/* Monte Carlo Simulator */}
+                        {section.simulator === 'monte-carlo' && (
+                          <div className="my-8">
+                            <MonteCarloSimulator />
                           </div>
                         )}
                       </div>

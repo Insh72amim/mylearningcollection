@@ -2212,10 +2212,10 @@ private:
         interactive: {
           title: "Paxos Protocol Flow",
           initialNodes: [
-            { id: 'prop', position: { x: 50, y: 100 }, data: { label: 'Proposer' }, style: { background: '#7c3aed', color: 'white' } },
-            { id: 'acc1', position: { x: 250, y: 0 }, data: { label: 'Acceptor 1' }, style: { background: '#1f2937', color: 'white' } },
-            { id: 'acc2', position: { x: 250, y: 100 }, data: { label: 'Acceptor 2' }, style: { background: '#1f2937', color: 'white' } },
-            { id: 'acc3', position: { x: 250, y: 200 }, data: { label: 'Acceptor 3' }, style: { background: '#1f2937', color: 'white' } },
+            { id: 'prop', position: { x: 0, y: 150 }, data: { label: 'Proposer' }, style: { background: '#7c3aed', color: 'white', width: 120 } },
+            { id: 'acc1', position: { x: 400, y: 0 }, data: { label: 'Acceptor 1' }, style: { background: '#1f2937', color: 'white' } },
+            { id: 'acc2', position: { x: 400, y: 150 }, data: { label: 'Acceptor 2' }, style: { background: '#1f2937', color: 'white' } },
+            { id: 'acc3', position: { x: 400, y: 300 }, data: { label: 'Acceptor 3' }, style: { background: '#1f2937', color: 'white' } },
           ],
           initialEdges: [
             // Phase 1

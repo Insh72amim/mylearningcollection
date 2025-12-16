@@ -9,6 +9,9 @@ const HullBook = React.lazy(() => import("../books/HullBook"));
 const SecurityAnalysisBook = React.lazy(() =>
   import("../books/SecurityAnalysisBook")
 );
+const PatternRecognitionBook = React.lazy(() =>
+  import("../books/PatternRecognitionBook")
+);
 
 // Lazy load topic components
 const CppSyntax = React.lazy(() => import("../languages/CppSyntax"));
@@ -21,6 +24,10 @@ const FinanceDocs = React.lazy(() => import("../finance/FinanceDocs"));
 const PromptEngineeringDocs = React.lazy(() =>
   import("../interests/PromptEngineeringDocs")
 );
+const MathematicsDocs = React.lazy(() =>
+  import("../mathematics/MathematicsDocs")
+);
+const AiMlDocs = React.lazy(() => import("../ai-ml/AiMlDocs"));
 
 const CategoryPage = () => {
   const { technologyId } = useParams();
@@ -48,6 +55,9 @@ const CategoryPage = () => {
           )}
           {selectedBook === "SecurityAnalysisBook" && (
             <SecurityAnalysisBook onBack={() => setSelectedBook(null)} />
+          )}
+          {selectedBook === "PatternRecognitionBook" && (
+            <PatternRecognitionBook onBack={() => setSelectedBook(null)} />
           )}
         </Suspense>
       </div>
@@ -134,6 +144,34 @@ const CategoryPage = () => {
             selectedTopic
           ) && (
             <PromptEngineeringDocs
+              onBack={() => setSelectedTopic(null)}
+              section={selectedTopic}
+            />
+          )}
+
+          {/* Mathematics Topics */}
+          {[
+            "fourier-analysis",
+            "differential-equations",
+            "abstract-algebra",
+            "measure-theory",
+            "numerical-methods",
+          ].includes(selectedTopic) && (
+            <MathematicsDocs
+              onBack={() => setSelectedTopic(null)}
+              section={selectedTopic}
+            />
+          )}
+
+          {/* AI/ML Topics */}
+          {[
+            "transformers-attention",
+            "gradient-descent-optimization",
+            "cnn-architectures",
+            "generative-models",
+            "mlops-deployment",
+          ].includes(selectedTopic) && (
+            <AiMlDocs
               onBack={() => setSelectedTopic(null)}
               section={selectedTopic}
             />
@@ -342,6 +380,8 @@ const CategoryPage = () => {
                     tech.categoryData === "go" ||
                     tech.categoryData === "javascript" ||
                     tech.categoryData === "finance" ||
+                    tech.categoryData === "mathematics" ||
+                    tech.categoryData === "machine-learning" ||
                     tech.categoryData === "prompt-engineering"
                   ) {
                     setSelectedTopic(topic.id);
@@ -383,6 +423,8 @@ const CategoryPage = () => {
                         tech.categoryData === "go" ||
                         tech.categoryData === "javascript" ||
                         tech.categoryData === "finance" ||
+                        tech.categoryData === "mathematics" ||
+                        tech.categoryData === "machine-learning" ||
                         tech.categoryData === "prompt-engineering"
                           ? "Click to explore →"
                           : "Detailed content coming soon"}
