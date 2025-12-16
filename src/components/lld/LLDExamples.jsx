@@ -12,6 +12,12 @@ import {
   FileCode,
 } from "lucide-react";
 import { lldExamplesDetailed } from "../../data/lldExamplesDetailed";
+import {
+  elevatorDiagramData,
+  parkingLotDiagramData,
+  chessDiagramData,
+} from "../../data/lldDiagramData";
+import ClassDiagram from "./ClassDiagram";
 import CodeBlock from "../common/CodeBlock";
 
 const LLDExamples = () => {
@@ -40,6 +46,19 @@ const LLDExamples = () => {
         return "bg-red-900/30 text-red-400 border-red-700";
       default:
         return "bg-gray-900/30 text-gray-400 border-gray-700";
+    }
+  };
+
+  const getDiagramData = (exampleId) => {
+    switch (exampleId) {
+      case "elevator":
+        return elevatorDiagramData;
+      case "parking-lot":
+        return parkingLotDiagramData;
+      case "chess":
+        return chessDiagramData;
+      default:
+        return null;
     }
   };
 
@@ -175,13 +194,16 @@ const LLDExamples = () => {
                         <div>
                           <h4 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
                             <Box className="w-5 h-5 text-purple-500" />
-                            Class Diagram
+                            Interactive Class Diagram
                           </h4>
-                          <div className="bg-gray-950 rounded-lg p-6 overflow-x-auto">
-                            <pre className="text-gray-300 text-sm font-mono whitespace-pre">
-                              {example.classDiagram}
-                            </pre>
-                          </div>
+                          <p className="text-sm text-gray-400 mb-4">
+                            Drag nodes to rearrange • Scroll to zoom • Click and
+                            drag background to pan
+                          </p>
+                          <ClassDiagram
+                            nodes={getDiagramData(example.id).nodes}
+                            edges={getDiagramData(example.id).edges}
+                          />
                         </div>
                       </div>
                     )}
