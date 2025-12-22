@@ -756,6 +756,15 @@ export const categories = [
         categoryData: "machine-learning",
         badge: "AI/ML",
       },
+      {
+        id: "ai-engineering-docs",
+        name: "LLM & RAG Engineering",
+        hasVisualizer: true,
+        hasDoc: true,
+        docComponent: "CategoryPage",
+        categoryData: "ai-engineering",
+        badge: "LLMs & Agents",
+      },
     ],
   },
   {

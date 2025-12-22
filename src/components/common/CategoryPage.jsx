@@ -28,6 +28,7 @@ const MathematicsDocs = React.lazy(() =>
   import("../mathematics/MathematicsDocs")
 );
 const AiMlDocs = React.lazy(() => import("../ai-ml/AiMlDocs"));
+const AiEngineeringDocs = React.lazy(() => import("../ai-ml/AiEngineeringDocs"));
 
 const CategoryPage = () => {
   const { technologyId } = useParams();
@@ -172,6 +173,19 @@ const CategoryPage = () => {
             "mlops-deployment",
           ].includes(selectedTopic) && (
             <AiMlDocs
+              onBack={() => setSelectedTopic(null)}
+              section={selectedTopic}
+            />
+          )}
+
+          {/* AI Engineering Topics */}
+          {[
+            "llm-engineering",
+            "rag-pipeline",
+            "vector-databases",
+            "agentic-frameworks",
+          ].includes(selectedTopic) && (
+            <AiEngineeringDocs
               onBack={() => setSelectedTopic(null)}
               section={selectedTopic}
             />
@@ -382,6 +396,7 @@ const CategoryPage = () => {
                     tech.categoryData === "finance" ||
                     tech.categoryData === "mathematics" ||
                     tech.categoryData === "machine-learning" ||
+                    tech.categoryData === "ai-engineering" ||
                     tech.categoryData === "prompt-engineering"
                   ) {
                     setSelectedTopic(topic.id);
@@ -398,6 +413,7 @@ const CategoryPage = () => {
                   tech.categoryData === "go" ||
                   tech.categoryData === "javascript" ||
                   tech.categoryData === "finance" ||
+                  tech.categoryData === "ai-engineering" ||
                   tech.categoryData === "prompt-engineering"
                     ? "cursor-pointer hover:scale-105"
                     : "cursor-default"
@@ -425,6 +441,7 @@ const CategoryPage = () => {
                         tech.categoryData === "finance" ||
                         tech.categoryData === "mathematics" ||
                         tech.categoryData === "machine-learning" ||
+                        tech.categoryData === "ai-engineering" ||
                         tech.categoryData === "prompt-engineering"
                           ? "Click to explore →"
                           : "Detailed content coming soon"}

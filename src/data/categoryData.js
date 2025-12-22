@@ -107,6 +107,33 @@ export const categoryData = {
       },
     ],
   },
+  "ai-engineering": {
+    name: "AI & LLM Engineering",
+    description: "Master modern AI workflows: LLMs, RAG, Vector DBs, and Agentic Frameworks.",
+    color: "fuchsia",
+    topics: [
+      {
+        id: "llm-engineering",
+        title: "LLM Engineering",
+        description: "Tokenization, Prompting patterns, Fine-tuning vs RAG",
+      },
+      {
+        id: "rag-pipeline",
+        title: "RAG Pipeline",
+        description: "Ingestion, Retrieval, and Generation architectures",
+      },
+      {
+        id: "vector-databases",
+        title: "Vector Databases",
+        description: "Similarity search, HNSW, Embeddings, distance metrics",
+      },
+      {
+        id: "agentic-frameworks",
+        title: "Agentic Frameworks",
+        description: "LangChain, LlamaIndex, ReAct, autonomous agents",
+      },
+    ],
+  },
   philosophy: {
     name: "Philosophy",
     description:
