@@ -2,6 +2,7 @@ import React from 'react';
 import { MarkerType } from 'reactflow';
 import InteractiveDiagram from '../common/InteractiveDiagram';
 import CodeBlock from '../common/CodeBlock';
+import K8sLifecycleVisualizer from './K8sLifecycleVisualizer';
 
 const KubernetesDocs = () => {
   const clusterNodes = [
@@ -101,6 +102,19 @@ const KubernetesDocs = () => {
               Watches for newly created Pods and assigns them to a node.
             </div>
           </div>
+        </div>
+
+        <div className="mt-12 bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-2xl">
+           <div className="flex justify-between items-center mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-white tracking-tight">Interactive Lifecycle Simulator</h3>
+                <p className="text-sm text-gray-400 mt-1">Simulate a deployment lifecycle and see how the Control Plane handles node failures in real-time.</p>
+              </div>
+              <div className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full">
+                <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Live Simulation</span>
+              </div>
+           </div>
+           <K8sLifecycleVisualizer />
         </div>
       </section>
 
