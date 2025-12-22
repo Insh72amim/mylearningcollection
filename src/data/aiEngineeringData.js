@@ -1,5 +1,42 @@
 export const aiEngineeringData = {
   sections: {
+    "rag-pipeline": {
+      id: "rag-pipeline",
+      title: "RAG Pipeline",
+      description: "Retrieval Augmented Generation: architectural patterns and implementation.",
+      content: `
+# Retrieval Augmented Generation (RAG)
+
+RAG connects LLMs to your private, real-time data without the need for constant retraining.
+
+### The RAG Workflow
+1. **Ingestion**: 
+   - **Load**: Extract text from PDFs, Docs, DBs.
+   - **Chunk**: Split long text into smaller pieces (Fixed-size, Semantic).
+   - **Embed**: Convert chunks into high-dimensional vectors.
+2. **Retrieval**: 
+   - User query is embedded.
+   - Search the Vector DB for the top-k most similar chunks.
+3. **Generation**: 
+   - Prompt = Context (Retrieved Chunks) + User Query.
+   - LLM generates answer based *only* on the context.
+
+### Challenges in RAG
+- **Lost in the Middle**: LLMs often ignore information in the middle of a large context.
+- **Retrieval Quality**: If the retrieved chunks are irrelevant, the answer will be wrong.
+- **Hallucination**: Even with RAG, models might invent facts if the threshold is low.
+
+\`\`\`python
+# Conceptual RAG Workflow
+query = "What are the latest revenue numbers?"
+relevant_docs = vector_db.search(query, k=3)
+context = "\\n".join([doc.page_content for doc in relevant_docs])
+
+prompt = f"Context: {context}\\nQuestion: {query}\\nAnswer:"
+response = llm.generate(prompt)
+\`\`\`
+`
+    },
     "llm-engineering": {
       id: "llm-engineering",
       title: "LLM Engineering",
@@ -36,43 +73,6 @@ Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls.
 Each can has 3 tennis balls. How many tennis balls does he have now?
 A: Let's think step by step.
 """
-\`\`\`
-`
-    },
-    "rag-pipeline": {
-      id: "rag-pipeline",
-      title: "RAG Pipeline",
-      description: "Retrieval Augmented Generation: architectural patterns and implementation.",
-      content: `
-# Retrieval Augmented Generation (RAG)
-
-RAG connects LLMs to your private, real-time data without the need for constant retraining.
-
-### The RAG Workflow
-1. **Ingestion**: 
-   - **Load**: Extract text from PDFs, Docs, DBs.
-   - **Chunk**: Split long text into smaller pieces (Fixed-size, Semantic).
-   - **Embed**: Convert chunks into high-dimensional vectors.
-2. **Retrieval**: 
-   - User query is embedded.
-   - Search the Vector DB for the top-k most similar chunks.
-3. **Generation**: 
-   - Prompt = Context (Retrieved Chunks) + User Query.
-   - LLM generates answer based *only* on the context.
-
-### Challenges in RAG
-- **Lost in the Middle**: LLMs often ignore information in the middle of a large context.
-- **Retrieval Quality**: If the retrieved chunks are irrelevant, the answer will be wrong.
-- **Hallucination**: Even with RAG, models might invent facts if the threshold is low.
-
-\`\`\`python
-# Conceptual RAG Workflow
-query = "What are the latest revenue numbers?"
-relevant_docs = vector_db.search(query, k=3)
-context = "\\n".join([doc.page_content for doc in relevant_docs])
-
-prompt = f"Context: {context}\\nQuestion: {query}\\nAnswer:"
-response = llm.generate(prompt)
 \`\`\`
 `
     },

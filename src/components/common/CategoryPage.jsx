@@ -28,7 +28,6 @@ const MathematicsDocs = React.lazy(() =>
   import("../mathematics/MathematicsDocs")
 );
 const AiMlDocs = React.lazy(() => import("../ai-ml/AiMlDocs"));
-const AiEngineeringDocs = React.lazy(() => import("../ai-ml/AiEngineeringDocs"));
 
 const CategoryPage = () => {
   const { technologyId } = useParams();
@@ -164,28 +163,19 @@ const CategoryPage = () => {
             />
           )}
 
-          {/* AI/ML Topics */}
+          {/* AI/ML & AI Engineering Topics */}
           {[
             "transformers-attention",
             "gradient-descent-optimization",
             "cnn-architectures",
             "generative-models",
             "mlops-deployment",
-          ].includes(selectedTopic) && (
-            <AiMlDocs
-              onBack={() => setSelectedTopic(null)}
-              section={selectedTopic}
-            />
-          )}
-
-          {/* AI Engineering Topics */}
-          {[
             "llm-engineering",
             "rag-pipeline",
             "vector-databases",
             "agentic-frameworks",
           ].includes(selectedTopic) && (
-            <AiEngineeringDocs
+            <AiMlDocs
               onBack={() => setSelectedTopic(null)}
               section={selectedTopic}
             />

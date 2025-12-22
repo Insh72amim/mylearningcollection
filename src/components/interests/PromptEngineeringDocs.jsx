@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   MessageSquare,
@@ -11,8 +12,23 @@ import {
 } from "lucide-react";
 import CodeBlock from "../common/CodeBlock";
 
-const PromptEngineeringDocs = ({ onBack }) => {
+const PromptEngineeringDocs = ({ section, onBack }) => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("basics");
+
+  React.useEffect(() => {
+    if (section && ["basics", "advanced", "patterns", "safety"].includes(section)) {
+      setActiveTab(section);
+    }
+  }, [section]);
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate("/");
+    }
+  };
 
   const tabs = [
     { id: "basics", label: "Basics", icon: MessageSquare },
@@ -27,7 +43,7 @@ const PromptEngineeringDocs = ({ onBack }) => {
       <div className="p-6 border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="flex items-center gap-4 mb-6">
           <button
-            onClick={onBack}
+            onClick={handleBack}
             className="p-2 hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-white">
             <ArrowLeft className="w-5 h-5" />
           </button>

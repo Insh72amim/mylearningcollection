@@ -158,25 +158,6 @@ const Layout = () => {
                   <Link to={tech.comingSoon ? "#" : techPath} className="flex-1">
                     {tech.name}
                   </Link>
-
-                  <div className="flex items-center gap-2">
-                    {tech.comingSoon ? (
-                      <span className="text-[10px] bg-gray-700 text-gray-400 px-2 py-0.5 rounded">
-                        Soon
-                      </span>
-                    ) : (
-                      <>
-                        {tech.hasVisualizer && (
-                          <Link
-                            to={`${techPath}?tab=playground`}
-                            className="p-1.5 rounded-md hover:bg-gray-600/50 text-gray-400 hover:text-green-400 transition-colors"
-                            title="Open Visualizer">
-                            <Code size={14} />
-                          </Link>
-                        )}
-                      </>
-                    )}
-                  </div>
                 </div>
               );
             })}

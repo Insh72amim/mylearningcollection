@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import CodeBlock from "../common/CodeBlock";
 import MathBlock from "../common/MathBlock";
+import RagPlayground from "./RagPlayground";
 import { aiMlData } from "../../data/aiMlData";
 
 const AiMlDocs = ({ section, onBack }) => {
@@ -17,14 +18,19 @@ const AiMlDocs = ({ section, onBack }) => {
   const sectionData = aiMlData.getSection("machine-learning");
 
   useEffect(() => {
-    if (sectionData && sectionData.topics.length > 0) {
-        if (["transformers-attention", "gradient-descent-optimization", "cnn-architectures", "generative-models", "mlops-deployment"].includes(section)) {
-            setSelectedTopic(section);
-        } else {
-             setSelectedTopic(sectionData.topics[0].id);
-        }
+    if (section && sectionData) {
+      const topicExists = sectionData.topics.find(t => t.id === section);
+      if (topicExists) {
+        setSelectedTopic(section);
+      }
     }
-  }, [section, sectionData]);
+  }, [section]);
+
+  useEffect(() => {
+    if (!selectedTopic && sectionData && sectionData.topics.length > 0) {
+      setSelectedTopic(sectionData.topics[0].id);
+    }
+  }, [sectionData, selectedTopic]);
 
   if (!sectionData) {
     return <div className="p-8 text-gray-300">Section not found</div>;
@@ -204,6 +210,14 @@ const AiMlDocs = ({ section, onBack }) => {
              {currentTopic && (
                   <div className="animate-fadeIn">
                     {renderContent(currentTopic.content)}
+                    {selectedTopic === "rag-pipeline" && (
+                      <div className="mt-12 pt-12 border-t border-gray-800">
+                        <h2 className="text-2xl font-bold text-white mb-6">Interactive RAG Pipeline Explorer</h2>
+                        <div className="bg-gray-800/30 rounded-2xl border border-gray-700/50 p-1 overflow-hidden">
+                          <RagPlayground />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
           </div>

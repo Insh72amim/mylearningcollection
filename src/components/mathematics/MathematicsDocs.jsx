@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   Sigma,
@@ -14,21 +15,32 @@ import MathBlock from "../common/MathBlock";
 import { mathematicsData } from "../../data/mathematicsData";
 
 const MathematicsDocs = ({ section, onBack }) => {
+  const navigate = useNavigate();
   const [selectedTopic, setSelectedTopic] = useState(null);
-  const sectionData = mathematicsData.getSection("mathematics-overview"); // Currently all under one overview, can be adjusted if sections are split
+  const sectionData = mathematicsData.getSection("mathematics-overview");
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate("/");
+    }
+  };
 
   useEffect(() => {
-    // If specific section ID matches a topic ID, select it? 
-    // Or just default to first topic if general "mathematics-overview" is passed but we want to show specific topic.
-    // For now, let's default to the first topic if sectionData exists.
-    if (sectionData && sectionData.topics.length > 0) {
-        if (["fourier-analysis", "differential-equations", "abstract-algebra", "measure-theory", "numerical-methods"].includes(section)) {
-            setSelectedTopic(section);
-        } else {
-             setSelectedTopic(sectionData.topics[0].id);
-        }
+    if (section && sectionData) {
+      const topicExists = sectionData.topics.find(t => t.id === section);
+      if (topicExists) {
+        setSelectedTopic(section);
+      }
     }
-  }, [section, sectionData]); // Add sectionData to dependency array
+  }, [section]);
+
+  useEffect(() => {
+    if (!selectedTopic && sectionData && sectionData.topics.length > 0) {
+      setSelectedTopic(sectionData.topics[0].id);
+    }
+  }, [sectionData, selectedTopic]);
 
   if (!sectionData) {
     return <div className="p-8 text-gray-300">Section not found</div>;
@@ -175,7 +187,7 @@ const MathematicsDocs = ({ section, onBack }) => {
       <div className="flex flex-col border-b border-gray-800 bg-gray-900/95 backdrop-blur-sm sticky top-0 z-10">
         <div className="p-4 flex items-center gap-4">
           <button
-            onClick={onBack}
+            onClick={handleBack}
             className="p-2 hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-white">
             <ArrowLeft size={20} />
           </button>

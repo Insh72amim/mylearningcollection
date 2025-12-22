@@ -105,13 +105,6 @@ export const categoryData = {
         description:
           "Model serving, monitoring, A/B testing, continuous training",
       },
-    ],
-  },
-  "ai-engineering": {
-    name: "AI & LLM Engineering",
-    description: "Master modern AI workflows: LLMs, RAG, Vector DBs, and Agentic Frameworks.",
-    color: "fuchsia",
-    topics: [
       {
         id: "llm-engineering",
         title: "LLM Engineering",

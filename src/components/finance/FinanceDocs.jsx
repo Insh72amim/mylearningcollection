@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   TrendingUp,
@@ -15,18 +16,36 @@ import MathBlock from "../common/MathBlock";
 import { financeData } from "../../data/financeData";
 
 const FinanceDocs = ({ section, onBack }) => {
+  const navigate = useNavigate();
   const [selectedTopic, setSelectedTopic] = useState(null);
-  const sectionData = financeData.getSection(section);
+  const sectionData = financeData.getSection(section || "financial-products");
+
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate("/");
+    }
+  };
 
   useEffect(() => {
-    if (sectionData && sectionData.topics.length > 0) {
+    if (section && sectionData) {
       if (section === "financial-products") {
         setSelectedTopic(null);
       } else {
-        setSelectedTopic(sectionData.topics[0].id);
+        const topicExists = sectionData.topics.find(t => t.id === section);
+        if (topicExists) {
+          setSelectedTopic(section);
+        }
       }
     }
-  }, [section]);
+  }, [section, sectionData]);
+
+  useEffect(() => {
+    if (!selectedTopic && sectionData && sectionData.topics.length > 0 && section !== "financial-products") {
+      setSelectedTopic(sectionData.topics[0].id);
+    }
+  }, [sectionData, selectedTopic, section]);
 
   if (!sectionData) {
     return <div className="p-8 text-gray-300">Section not found</div>;
@@ -257,7 +276,7 @@ const FinanceDocs = ({ section, onBack }) => {
       <div className="flex flex-col border-b border-gray-800 bg-gray-900/95 backdrop-blur-sm sticky top-0 z-10">
         <div className="p-4 flex items-center gap-4">
           <button
-            onClick={onBack}
+            onClick={handleBack}
             className="p-2 hover:bg-gray-800 rounded-lg transition-colors text-gray-400 hover:text-white">
             <ArrowLeft size={20} />
           </button>
