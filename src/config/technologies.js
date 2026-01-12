@@ -453,7 +453,7 @@ export const categories = [
   },
   {
     id: "dsa",
-    name: "Data Structures & Algo",
+    name: "DSA",
     icon: GitBranch,
     color: "teal",
     technologies: [
@@ -724,7 +724,7 @@ export const categories = [
 export const superCategories = [
   {
     id: "software-engineering",
-    name: "Software Engineering",
+    name: "SDE",
     icon: Layers,
     color: "blue",
     categoryIds: [
@@ -760,7 +760,7 @@ export const superCategories = [
   },
   {
     id: "ai-technologies",
-    name: "AI & ML Engineering",
+    name: "AI & ML",
     icon: Brain,
     color: "fuchsia",
     categoryIds: ["ai-books", "ai-engineering", "ml-overview", "prompt-engineering"],
